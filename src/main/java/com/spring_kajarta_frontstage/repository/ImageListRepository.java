@@ -1,5 +1,7 @@
 package com.spring_kajarta_frontstage.repository;
 
-public class ImageListRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public class ImageListRepository extends repository {
 
 }
