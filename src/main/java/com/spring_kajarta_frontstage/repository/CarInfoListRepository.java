@@ -1,9 +1,9 @@
 package com.spring_kajarta_frontstage.repository;
 
-import org.springframework.stereotype.Repository;
-import com.kajarta.demo.CarInfoList;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface CarInfoListRepository extends JpaRepository<CarInfoList, Integer> {
+import com.kajarta.demo.model.CarinfoList;
+
+public interface CarInfoListRepository extends JpaRepository<CarinfoList, Integer> {
 
 }
