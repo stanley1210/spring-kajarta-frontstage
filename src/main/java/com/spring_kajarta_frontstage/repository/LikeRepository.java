@@ -2,9 +2,9 @@ package com.spring_kajarta_frontstage.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.kajarta.demo.model.LikeList;
+import com.kajarta.demo.model.Like;
 
 @Repository
-public interface LikeListRepository extends JpaRepository<LikeList, Integer> {
+public interface LikeRepository extends JpaRepository<Like, Integer> {
 
 }
