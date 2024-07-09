@@ -31,8 +31,7 @@ public class ViewCarAssignedService {
             Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
             Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
             Integer view_car_id = obj.isNull("view_car_id") ? null : obj.getInt("view_car_id");
-            String season_str_day = obj.isNull("season_str_day") ? null : obj.getString("season_str_day");
-            Integer sales_score = obj.isNull("sales_score") ? null : obj.getInt("sales_score");
+            Integer assigned_status = obj.isNull("assigned_status") ? null : obj.getInt("assigned_status");
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
@@ -43,8 +42,8 @@ public class ViewCarAssignedService {
                 insert.setTeamLeaderId(team_leader_id);
                 ;
                 insert.setEmployee(null);
-                insert.set(sales_score);
-                insert.setEmployee(null);
+                insert.setViewCar(null);
+                insert.setAssignedStatus(null);
                 insert.setCreateTime(null);
                 insert.setUpdateTime(null);
 
@@ -61,10 +60,10 @@ public class ViewCarAssignedService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            String season_str_day = obj.isNull("season_str_day") ? null : obj.getString("season_str_day");
-            Integer team_leader_rating = obj.isNull("team_leader_rating") ? null : obj.getInt("team_leader_rating");
-            Integer sales_score = obj.isNull("sales_score") ? null : obj.getInt("sales_score");
+            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
             Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+            Integer view_car_id = obj.isNull("view_car_id") ? null : obj.getInt("view_car_id");
+            Integer assigned_status = obj.isNull("assigned_status") ? null : obj.getInt("assigned_status");
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
@@ -72,10 +71,10 @@ public class ViewCarAssignedService {
             if (optional.isPresent()) {
                 ViewCarAssigned update = optional.get();
                 update.setId(id);
-                update.setSeasonStrDay(null);
-                update.setTeamLeaderRating(team_leader_rating);
-                update.setSalesScore(sales_score);
+                update.setTeamLeaderId(team_leader_id);
                 update.setEmployee(null);
+                update.setViewCar(null);
+                update.setAssignedStatus(null);
                 update.setCreateTime(null);
                 update.setUpdateTime(null);
 
