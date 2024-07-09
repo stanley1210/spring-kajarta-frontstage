@@ -1,8 +1,5 @@
 package com.spring_kajarta_frontstage.service;
 
-import java.time.Instant;
-import java.util.Optional;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +7,6 @@ import org.springframework.stereotype.Service;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.ViewCar;
-import com.spring_kajarta_frontstage.repository.CarRepository;
-import com.spring_kajarta_frontstage.repository.CustomerRepository;
 import com.spring_kajarta_frontstage.repository.ViewCarRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
@@ -21,9 +16,9 @@ public class ViewCarService {
     @Autowired
     private ViewCarRepository viewCarRepo;
     @Autowired
-    private CarRepository carRepo;
+    private CarService carService;
     @Autowired
-    private CustomerRepository customerRepo;
+    private CustomerService customerService;
 
     // 新增
     public ViewCar create(String json) {
@@ -44,25 +39,20 @@ public class ViewCarService {
             Short dealShort = deal == null ? null : (short) deal.intValue();
             Short viewCarStatusShort = viewCarStatus == null ? null : (short) viewCarStatus.intValue();
 
-            // Find the associated entities
-            Optional<Car> optionalCar = carRepo.findById(carId);
-            Optional<Customer> optionalCustomer = customerRepo.findById(customerId);
+            Customer customer = customerService.findCustomerById(customerId);
+            Car car = carService.findCarById(carId);
+
 
                 ViewCar insert = new ViewCar();
                 insert.setViewTimeSection(viewTimeSectionShort);
-                insert.setCar(optionalCar.orElse(null)); // Set Car entity
+                insert.setCar(car); // Set Car entity
                 insert.setSalesScore(salesScore);
                 insert.setFactoryScore(factoryScore);
                 insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd").toInstant());
                 insert.setCarScore(carScore);
                 insert.setDeal(dealShort);
-                insert.setCustomer(optionalCustomer.orElse(null)); // Set Customer entity
+                insert.setCustomer(customer); // Set Customer entity
                 insert.setViewCarStatus(viewCarStatusShort);
-
-                // 設置創建時間和更新時間
-                Instant now = Instant.now();
-                insert.setCreateTime(now);
-                insert.setUpdateTime(now);
 
                 return viewCarRepo.save(insert);
             
