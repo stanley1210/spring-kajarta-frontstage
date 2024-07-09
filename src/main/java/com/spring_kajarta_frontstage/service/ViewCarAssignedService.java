@@ -15,7 +15,7 @@ import com.spring_kajarta_frontstage.repository.ViewCarAssignedRepository;
 public class ViewCarAssignedService {
 
     @Autowired
-    private ViewCarAssignedRepository viewCarAssignedRepository;
+    private ViewCarAssignedRepository viewCarAssignedRepo;
 
     @Autowired
     private EmployeeService employeeService;
@@ -35,7 +35,7 @@ public class ViewCarAssignedService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<ViewCarAssigned> optional = viewCarAssignedRepository.findById(id);
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
             if (optional.isEmpty()) {
                 ViewCarAssigned insert = new ViewCarAssigned();
                 insert.setId(id);
@@ -47,7 +47,7 @@ public class ViewCarAssignedService {
                 insert.setCreateTime(null);
                 insert.setUpdateTime(null);
 
-                return viewCarAssignedRepository.save(insert);
+                return viewCarAssignedRepo.save(insert);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class ViewCarAssignedService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<ViewCarAssigned> optional = viewCarAssignedRepository.findById(id);
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
             if (optional.isPresent()) {
                 ViewCarAssigned update = optional.get();
                 update.setId(id);
@@ -78,7 +78,7 @@ public class ViewCarAssignedService {
                 update.setCreateTime(null);
                 update.setUpdateTime(null);
 
-                return viewCarAssignedRepository.save(update);
+                return viewCarAssignedRepo.save(update);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,13 +90,13 @@ public class ViewCarAssignedService {
     public List<ViewCarAssigned> select(ViewCarAssigned viewCarAssignedbean) {
         List<ViewCarAssigned> result = null;
         if (viewCarAssignedbean != null && viewCarAssignedbean.getId() != null) {
-            Optional<ViewCarAssigned> optional = viewCarAssignedRepository.findById(viewCarAssignedbean.getId());
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(viewCarAssignedbean.getId());
             if (optional.isPresent()) {
                 result = new ArrayList<>();
                 result.add(optional.get());
             }
         } else {
-            result = viewCarAssignedRepository.findAll();
+            result = viewCarAssignedRepo.findAll();
         }
         return result;
     }
@@ -104,7 +104,7 @@ public class ViewCarAssignedService {
     // 查詢一筆
     public ViewCarAssigned findById(Integer id) {
         if (id != null) {
-            Optional<ViewCarAssigned> optional = viewCarAssignedRepository.findById(id);
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
             if (optional.isPresent()) {
                 return optional.get();
             }

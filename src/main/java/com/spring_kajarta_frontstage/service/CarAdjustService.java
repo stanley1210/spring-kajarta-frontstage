@@ -17,7 +17,7 @@ import com.spring_kajarta_frontstage.repository.CarRepository;
 public class CarAdjustService {
 
     @Autowired
-    private CarAdjustRepository carAdjustRepository;
+    private CarAdjustRepository carAdjustRepo;
 
     @Autowired
     private EmployeeService employeeService;
@@ -39,7 +39,7 @@ public class CarAdjustService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<CarAdjust> optional = carAdjustRepository.findById(id);
+            Optional<CarAdjust> optional = carAdjustRepo.findById(id);
             if (optional.isEmpty()) {
                 CarAdjust insert = new CarAdjust();
                 insert.setId(id);
@@ -52,7 +52,7 @@ public class CarAdjustService {
                 insert.setCreateTime(null);
                 insert.setUpdateTime(null);
 
-                return carAdjustRepository.save(insert);
+                return carAdjustRepo.save(insert);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class CarAdjustService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<CarAdjust> optional = carAdjustRepository.findById(id);
+            Optional<CarAdjust> optional = carAdjustRepo.findById(id);
             if (optional.isPresent()) {
                 CarAdjust update = optional.get();
                 update.setId(id);
@@ -87,7 +87,7 @@ public class CarAdjustService {
                 update.setCreateTime(null);
                 update.setUpdateTime(null);
 
-                return carAdjustRepository.save(update);
+                return carAdjustRepo.save(update);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,13 +99,13 @@ public class CarAdjustService {
     public List<CarAdjust> select(CarAdjust carAdjustbean) {
         List<CarAdjust> result = null;
         if (carAdjustbean != null && carAdjustbean.getId() != null) {
-            Optional<CarAdjust> optional = carAdjustRepository.findById(carAdjustbean.getId());
+            Optional<CarAdjust> optional = carAdjustRepo.findById(carAdjustbean.getId());
             if (optional.isPresent()) {
                 result = new ArrayList<>();
                 result.add(optional.get());
             }
         } else {
-            result = carAdjustRepository.findAll();
+            result = carAdjustRepo.findAll();
         }
         return result;
     }
@@ -113,7 +113,7 @@ public class CarAdjustService {
     // 查詢一筆
     public CarAdjust findById(Integer id) {
         if (id != null) {
-            Optional<CarAdjust> optional = carAdjustRepository.findById(id);
+            Optional<CarAdjust> optional = carAdjustRepo.findById(id);
             if (optional.isPresent()) {
                 return optional.get();
             }

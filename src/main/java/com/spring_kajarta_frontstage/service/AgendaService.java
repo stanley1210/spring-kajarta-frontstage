@@ -15,14 +15,14 @@ import com.spring_kajarta_frontstage.repository.AgendaRepository;
 public class AgendaService {
 
     @Autowired
-    private AgendaRepository agendaRepository;
+    private AgendaRepository agendaRepo;
 
     // 刪除
     public boolean remove(Integer id) {
         if (id != null) {
-            Optional<Agenda> optional = agendaRepository.findById(id);
+            Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isPresent()) {
-                agendaRepository.deleteById(id);
+                agendaRepo.deleteById(id);
                 return true;
             }
         }
@@ -44,7 +44,7 @@ public class AgendaService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<Agenda> optional = agendaRepository.findById(id);
+            Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isEmpty()) {
                 Agenda insert = new Agenda();
                 insert.setId(id);
@@ -56,7 +56,7 @@ public class AgendaService {
                 insert.setCreateTime(null);
                 insert.setUpdateTime(null);
 
-                return agendaRepository.save(insert);
+                return agendaRepo.save(insert);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,7 +79,7 @@ public class AgendaService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<Agenda> optional = agendaRepository.findById(id);
+            Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isPresent()) {
                 Agenda update = new Agenda();
                 update.setId(id);
@@ -91,7 +91,7 @@ public class AgendaService {
                 update.setCreateTime(null);
                 update.setUpdateTime(null);
 
-                return agendaRepository.save(update);
+                return agendaRepo.save(update);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,13 +103,13 @@ public class AgendaService {
     public List<Agenda> select(Agenda agendabean) {
         List<Agenda> result = null;
         if (agendabean != null && agendabean.getId() != null) {
-            Optional<Agenda> optional = agendaRepository.findById(agendabean.getId());
+            Optional<Agenda> optional = agendaRepo.findById(agendabean.getId());
             if (optional.isPresent()) {
                 result = new ArrayList<>();
                 result.add(optional.get());
             }
         } else {
-            result = agendaRepository.findAll();
+            result = agendaRepo.findAll();
         }
         return result;
     }
@@ -117,7 +117,7 @@ public class AgendaService {
     // 查詢一筆
     public Agenda findById(Integer id) {
         if (id != null) {
-            Optional<Agenda> optional = agendaRepository.findById(id);
+            Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isPresent()) {
                 return optional.get();
             }

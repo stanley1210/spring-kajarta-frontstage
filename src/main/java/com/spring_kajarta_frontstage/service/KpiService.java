@@ -15,7 +15,7 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 @Service
 public class KpiService {
     @Autowired
-    private KpiRepository kpiRepository;
+    private KpiRepository kpiRepo;
 
     @Autowired
     private EmployeeService employeeService;
@@ -32,18 +32,18 @@ public class KpiService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<Kpi> optional = kpiRepository.findById(id);
+            Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isEmpty()) {
                 Kpi insert = new Kpi();
                 insert.setId(id);
                 insert.setSeasonStrDay(null);
                 insert.setTeamLeaderRating(team_leader_rating);
                 insert.setSalesScore(sales_score);
-                insert.setEmployee(null);  //-----------
+                insert.setEmployee(null); // -----------
                 insert.setCreateTime(null);
                 insert.setUpdateTime(null);
 
-                return kpiRepository.save(insert);
+                return kpiRepo.save(insert);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class KpiService {
             String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
             String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
-            Optional<Kpi> optional = kpiRepository.findById(id);
+            Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isPresent()) {
                 Kpi update = optional.get();
                 update.setId(id);
@@ -74,7 +74,7 @@ public class KpiService {
                 update.setCreateTime(null);
                 update.setUpdateTime(null);
 
-                return kpiRepository.save(update);
+                return kpiRepo.save(update);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,13 +86,13 @@ public class KpiService {
     public List<Kpi> select(Kpi kpibean) {
         List<Kpi> result = null;
         if (kpibean != null && kpibean.getId() != null) {
-            Optional<Kpi> optional = kpiRepository.findById(kpibean.getId());
+            Optional<Kpi> optional = kpiRepo.findById(kpibean.getId());
             if (optional.isPresent()) {
                 result = new ArrayList<>();
                 result.add(optional.get());
             }
         } else {
-            result = kpiRepository.findAll();
+            result = kpiRepo.findAll();
         }
         return result;
     }
@@ -100,7 +100,7 @@ public class KpiService {
     // 查詢一筆
     public Kpi findById(Integer id) {
         if (id != null) {
-            Optional<Kpi> optional = kpiRepository.findById(id);
+            Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isPresent()) {
                 return optional.get();
             }
