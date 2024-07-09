@@ -112,5 +112,13 @@ public class ViewCarAssignedService {
         return null;
     }
 
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return viewCarAssignedRepo.existsById(id);
+        }
+        return false;
+    }
+
     // 查詢多筆
 }

@@ -108,6 +108,14 @@ public class KpiService {
         return null;
     }
 
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return kpiRepo.existsById(id);
+        }
+        return false;
+    }
+
     // 查詢多筆
 
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.CarAdjust;
 import com.spring_kajarta_frontstage.repository.CarAdjustRepository;
-import com.spring_kajarta_frontstage.repository.CarRepository;
 
 @Service
 public class CarAdjustService {
@@ -119,6 +118,14 @@ public class CarAdjustService {
             }
         }
         return null;
+    }
+
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return carAdjustRepo.existsById(id);
+        }
+        return false;
     }
 
     // 查詢多筆

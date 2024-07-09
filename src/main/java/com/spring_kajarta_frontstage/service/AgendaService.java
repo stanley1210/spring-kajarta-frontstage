@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,6 +126,33 @@ public class AgendaService {
         return null;
     }
 
-    // 查詢多筆
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return agendaRepo.existsById(id);
+        }
+        return false;
+    }
 
+    // 計算數量
+    public long count(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return agendaRepo.count(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // 查詢多筆
+    public List<Agenda> find(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return agendaRepo.find(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
