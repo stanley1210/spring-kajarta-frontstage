@@ -38,13 +38,10 @@ public class KpiService {
                 insert.setId(id);
                 insert.setSeasonStrDay(null);
                 insert.setTeamLeaderRating(team_leader_rating);
-                ;
                 insert.setSalesScore(sales_score);
                 insert.setEmployee(null);
                 insert.setCreateTime(null);
-                ;
                 insert.setUpdateTime(null);
-                ;
 
                 return kpiRepository.save(insert);
             }
@@ -72,13 +69,10 @@ public class KpiService {
                 update.setId(id);
                 update.setSeasonStrDay(null);
                 update.setTeamLeaderRating(team_leader_rating);
-                ;
                 update.setSalesScore(sales_score);
                 update.setEmployee(null);
                 update.setCreateTime(null);
-                ;
                 update.setUpdateTime(null);
-                ;
 
                 return kpiRepository.save(update);
             }
@@ -104,6 +98,15 @@ public class KpiService {
     }
 
     // 查詢一筆
+    public Kpi findById(Integer id) {
+        if (id != null) {
+            Optional<Kpi> optional = kpiRepository.findById(id);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
 
     // 查詢多筆
 
