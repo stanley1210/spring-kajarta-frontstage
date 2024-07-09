@@ -1,8 +1,8 @@
 package com.spring_kajarta_frontstage.repository;
 
-import com.kajarta.demo.model.Notice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.kajarta.demo.model.Kpi;
 
-public interface NoticeRepository extends JpaRepository<Notice, Integer> {
+public interface KpiRepository extends JpaRepository<Kpi, Integer> {
 
 }
