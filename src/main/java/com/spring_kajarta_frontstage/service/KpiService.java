@@ -17,8 +17,8 @@ public class KpiService {
     @Autowired
     private KpiRepository kpiRepository;
 
-    // @Autowired
-    // private EmployeeR
+    @Autowired
+    private EmployeeService employeeService;
 
     // 新增
     public Kpi create(String json) {
@@ -39,7 +39,7 @@ public class KpiService {
                 insert.setSeasonStrDay(null);
                 insert.setTeamLeaderRating(team_leader_rating);
                 insert.setSalesScore(sales_score);
-                insert.setEmployee(null);
+                insert.setEmployee(null);  //-----------
                 insert.setCreateTime(null);
                 insert.setUpdateTime(null);
 

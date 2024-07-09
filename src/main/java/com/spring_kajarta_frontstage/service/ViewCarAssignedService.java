@@ -17,6 +17,12 @@ public class ViewCarAssignedService {
     @Autowired
     private ViewCarAssignedRepository viewCarAssignedRepository;
 
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private ViewCarService viewCarService;
+
     // 新增
     public ViewCarAssigned create(String json) {
         try {
