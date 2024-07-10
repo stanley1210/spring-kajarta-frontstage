@@ -1,24 +1,9 @@
 package com.spring_kajarta_frontstage.service;
 
-import java.util.Optional;
+import com.kajarta.demo.vo.CustomerVO;
 
-import org.springframework.beans.factory.annotation.Autowired;
+public interface CustomerService {
 
-import org.springframework.stereotype.Service;
-
-import com.kajarta.demo.model.Customer;
-import com.spring_kajarta_frontstage.repository.CustomerRepository;
-
-@Service
-public class CustomerService {
-    @Autowired
-    private CustomerRepository customerRepo;
-
-    public Customer findCustomerById(Integer id) {
-        Optional<Customer> optional = customerRepo.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        return null;
-    }
+    // 單筆查詢，依據用戶id查詢單一用戶資訊
+    CustomerVO findById(Integer customerId);
 }
