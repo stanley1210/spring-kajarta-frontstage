@@ -5,4 +5,7 @@ public interface EmployeeService {
     // 單筆查詢，依據員工id查詢單一員工資訊
     Employee findById(Integer employeeId);
 
+    // 新增
+
+
 }

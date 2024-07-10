@@ -13,9 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @Tag(name = "管理後台-會員")
 @Slf4j
 @Validated
@@ -42,6 +41,24 @@ public class CustomerController {
         }
 
         return ResultUtil.success(customerVO);
+    }
+
+    @Operation(summary = "會員資訊-新增會員")
+    @PostMapping(value = "/add")
+    public Result<CustomerVO> addCustomer(@RequestBody CustomerVO customerVO) {
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-新增客戶資訊：{}", "到時候換成上一步拿到的管理員", customerVO.toString());
+        try {
+            Customer customer = new Customer();
+            BeanUtils.copyProperties(customerVO, customer);  // 將 CustomerVO 的屬性複製到 Customer 實體中
+            Customer savedCustomer = customerService.create(customer);  // 保存 Customer 實體
+            CustomerVO savedCustomerVO = new CustomerVO();
+            BeanUtils.copyProperties(savedCustomer, savedCustomerVO);  // 將保存後的 Customer 實體屬性複製到新的 CustomerVO 中
+            return ResultUtil.success(savedCustomerVO);
+        } catch (Exception e) {
+            return ResultUtil.error("新增用戶出錯");
+        }
     }
 
 
