@@ -127,7 +127,7 @@ public class AgendaController {
     }
 
     // 多筆查詢
-    @PostMapping("/products/find")
+    @PostMapping("/agenda/find")
     public String find(@RequestBody String body) {
         JSONObject responseBody = new JSONObject();
         List<Agenda> agendas = agendaService.find(body);

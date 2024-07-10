@@ -30,12 +30,10 @@ public class AgendaDAOImpl implements AgendaDAO {
     public long count(JSONObject obj) {
         Integer id = obj.isNull("id") ? null : obj.getInt("id");
         Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-        String business_purpose = obj.isNull("business_purpose") ? null : obj.getString("business_purpose");
         String unavailable_time_str = obj.isNull("unavailable_time_str") ? null : obj.getString("unavailable_time_str");
         String unavailable_time_end = obj.isNull("unavailable_time_end") ? null : obj.getString("unavailable_time_end");
         Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
         String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
-        String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
         CriteriaBuilder criterBuilder = this.getSession().getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criterBuilder.createQuery(Long.class);
