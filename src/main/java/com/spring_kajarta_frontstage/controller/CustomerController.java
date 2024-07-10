@@ -31,7 +31,6 @@ public class CustomerController {
     public Result<CustomerVO> info(@Parameter(description = "會員id") Integer customerId){
         // todo:依據token獲取後台登入用戶
 
-
         log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
         CustomerVO customerVO;
         try {
