@@ -33,16 +33,16 @@ public class CustomerController {
 
 
         log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
-        CustomerVO customerVo = null;
+        CustomerVO customerVO;
         try {
             Customer customer = customerService.findById(customerId);
-            CustomerVO customerVO = new CustomerVO();
+            customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
 
-        return ResultUtil.success(customerVo);
+        return ResultUtil.success(customerVO);
     }
 
 
