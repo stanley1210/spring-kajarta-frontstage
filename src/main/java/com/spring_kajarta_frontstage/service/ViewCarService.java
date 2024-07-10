@@ -26,43 +26,43 @@ public class ViewCarService {
     private CustomerService customerService;
 
     // 新增
-    public ViewCar create(String json) {
-        try {
-            JSONObject obj = new JSONObject(json);
+    // public ViewCar create(String json) {
+    //     try {
+    //         JSONObject obj = new JSONObject(json);
 
-            Integer viewTimeSection = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
-            Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
-            Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
-            Integer factoryScore = obj.isNull("factoryScore") ? null : obj.getInt("factoryScore");
-            String viewCarDate = obj.isNull("viewCarDate") ? null : obj.getString("viewCarDate");
-            Integer carScore = obj.isNull("carScore") ? null : obj.getInt("carScore");
-            Integer deal = obj.isNull("deal") ? null : obj.getInt("deal");
-            Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
-            Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
-
-
-            CustomerVO customer = customerService.findById(customerId);
-            Car car = carService.findCarById(carId);
+    //         Integer viewTimeSection = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+    //         Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
+    //         Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
+    //         Integer factoryScore = obj.isNull("factoryScore") ? null : obj.getInt("factoryScore");
+    //         String viewCarDate = obj.isNull("viewCarDate") ? null : obj.getString("viewCarDate");
+    //         Integer carScore = obj.isNull("carScore") ? null : obj.getInt("carScore");
+    //         Integer deal = obj.isNull("deal") ? null : obj.getInt("deal");
+    //         Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
+    //         Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
 
-                ViewCar insert = new ViewCar();
-                insert.setViewTimeSection(viewTimeSection);
-                insert.setCar(car); // Set Car entity
-                insert.setSalesScore(salesScore);
-                insert.setFactoryScore(factoryScore);
-                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
-                insert.setCarScore(carScore);
-                insert.setDeal(deal);
-                insert.setCustomer(customer); // Set Customer entity
-                insert.setViewCarStatus(viewCarStatus);
+    //         Customer customer = customerService.findById(customerId);
+    //         Car car = carService.findCarById(carId);
 
-                return viewCarRepo.save(insert);
+
+    //             ViewCar insert = new ViewCar();
+    //             insert.setViewTimeSection(viewTimeSection);
+    //             insert.setCar(car); // Set Car entity
+    //             insert.setSalesScore(salesScore);
+    //             insert.setFactoryScore(factoryScore);
+    //             insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
+    //             insert.setCarScore(carScore);
+    //             insert.setDeal(deal);
+    //             insert.setCustomer(customer); // Set Customer entity
+    //             insert.setViewCarStatus(viewCarStatus);
+
+    //             return viewCarRepo.save(insert);
             
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     return null;
+    // }
     // 刪除
 
     // 查詢一筆
