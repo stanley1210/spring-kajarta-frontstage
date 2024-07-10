@@ -66,7 +66,7 @@ public class ViewCarService {
 
     // 查詢一筆
 
-	public ViewCar findViewCarById(Integer id) {
+	public ViewCar findById(Integer id) {
 		if(id!=null) {
 			Optional<ViewCar> optional = viewCarRepo.findById(id);
 			if(optional.isPresent()) {
