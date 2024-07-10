@@ -24,7 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     /**
      * 查詢單筆，依據用戶id查詢單一用戶資訊
      * @param customerId
-     * @return CustomerVO
+     * @return Customer
      */
     @Override
     public Customer findById(Integer customerId) {
