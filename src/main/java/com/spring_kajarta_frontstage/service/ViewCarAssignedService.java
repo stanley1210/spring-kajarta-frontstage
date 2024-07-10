@@ -66,8 +66,8 @@ public class ViewCarAssignedService {
                 ViewCarAssigned update = optional.get();
                 update.setId(id);
                 update.setTeamLeaderId(team_leader_id);
-                update.setEmployee(viewCarService.findById(view_car_id));
-                update.setViewCar(null);
+                update.setEmployee(employeeService.findById(employee_id));
+                update.setViewCar(viewCarService.findById(view_car_id));
                 update.setAssignedStatus(assigned_status);
 
                 return viewCarAssignedRepo.save(update);
