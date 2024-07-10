@@ -26,14 +26,9 @@ public class CustomerServiceImpl implements CustomerService {
      * @return CustomerVO
      */
     @Override
-    public CustomerVO findById(Integer customerId) {
+    public Customer findById(Integer customerId) {
         Optional<Customer> customer = customerRepo.findById(customerId);
-        if (customer.isEmpty()){
-            return null;
-        }
-        CustomerVO customerVO = new CustomerVO();
-        BeanUtils.copyProperties(customer.get(), customerVO);
-        return customerVO;
+        return customer.orElse(null);
     }
 
 
