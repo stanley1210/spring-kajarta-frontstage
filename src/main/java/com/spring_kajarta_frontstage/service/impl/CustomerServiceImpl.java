@@ -3,8 +3,6 @@ package com.spring_kajarta_frontstage.service.impl;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.vo.CustomerVO;
 import com.spring_kajarta_frontstage.repository.CustomerRepository;
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
