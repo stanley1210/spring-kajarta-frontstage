@@ -37,6 +37,7 @@ public class CustomerController {
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
+
         return ResultUtil.success(customerVo);
     }
 
