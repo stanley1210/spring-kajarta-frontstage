@@ -15,6 +15,7 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -33,7 +34,7 @@ public class AgendaController {
         JSONObject obj = new JSONObject(body);
         // Integer id = obj.isNull("id") ? null : obj.getInt("id");
 
-        if (true) {// agendaService.判斷時間是否重複(id)
+        if (false) {// agendaService.判斷時間是否重複(id)
             responseBody.put("success", false);
             responseBody.put("message", "XX已存在");
         } else {
@@ -101,6 +102,7 @@ public class AgendaController {
     // 單筆查詢
     @GetMapping("/agenda/{pk}")
     public String findById(@PathVariable(name = "pk") Integer id) {
+        System.out.println("AgendaController");
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
 
