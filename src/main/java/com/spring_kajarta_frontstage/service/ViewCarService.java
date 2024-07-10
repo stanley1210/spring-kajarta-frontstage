@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.ViewCar;
+import com.kajarta.demo.vo.CustomerVO;
 import com.spring_kajarta_frontstage.repository.ViewCarRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
@@ -40,7 +41,7 @@ public class ViewCarService {
             Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
 
-            Customer customer = customerService.findCustomerById(customerId);
+            CustomerVO customer = customerService.findById(customerId);
             Car car = carService.findCarById(carId);
 
 
@@ -49,7 +50,7 @@ public class ViewCarService {
                 insert.setCar(car); // Set Car entity
                 insert.setSalesScore(salesScore);
                 insert.setFactoryScore(factoryScore);
-                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd").toInstant());
+                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
                 insert.setCarScore(carScore);
                 insert.setDeal(deal);
                 insert.setCustomer(customer); // Set Customer entity
