@@ -1,5 +1,9 @@
 package com.spring_kajarta_frontstage.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,24 +39,21 @@ public class ViewCarService {
             Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
             Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
-            Short viewTimeSectionShort = viewTimeSection == null ? null : (short) viewTimeSection.intValue();
-            Short dealShort = deal == null ? null : (short) deal.intValue();
-            Short viewCarStatusShort = viewCarStatus == null ? null : (short) viewCarStatus.intValue();
 
             Customer customer = customerService.findCustomerById(customerId);
             Car car = carService.findCarById(carId);
 
 
                 ViewCar insert = new ViewCar();
-                insert.setViewTimeSection(viewTimeSectionShort);
+                insert.setViewTimeSection(viewTimeSection);
                 insert.setCar(car); // Set Car entity
                 insert.setSalesScore(salesScore);
                 insert.setFactoryScore(factoryScore);
                 insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd").toInstant());
                 insert.setCarScore(carScore);
-                insert.setDeal(dealShort);
+                insert.setDeal(deal);
                 insert.setCustomer(customer); // Set Customer entity
-                insert.setViewCarStatus(viewCarStatusShort);
+                insert.setViewCarStatus(viewCarStatus);
 
                 return viewCarRepo.save(insert);
             
@@ -64,6 +65,16 @@ public class ViewCarService {
     // 刪除
 
     // 查詢一筆
+
+	public ViewCar findById(Integer id) {
+		if(id!=null) {
+			Optional<ViewCar> optional = viewCarRepo.findById(id);
+			if(optional.isPresent()) {
+				return optional.get();
+			}
+		}
+		return null;
+	}
 
     // 查詢多筆
 
