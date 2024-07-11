@@ -30,15 +30,16 @@ public class LeaveController {
     private LeaveService leaveService;
     @Operation(summary = "請假資訊-依據請假id查詢單筆")
     @GetMapping("/info")
-    public Result<LeaveVO> info(@Parameter(description = "請假id") Integer id){
+    public Result<LeaveVO> info(@Parameter(description = "請假id") Integer leaveId){
         // todo:依據token獲取後台登入用戶
 
-        log.info("{}-後台查詢請假資訊-單筆：{}", "到時候換成上一步拿到的管理員", id);
+        log.info("{}-後台查詢請假資訊-單筆：{}", "到時候換成上一步拿到的管理員", leaveId);
         LeaveVO leaveVO;
         try {
-            Leave leave = leaveService.findById(id);
+            Leave leave = leaveService.findById(leaveId);
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
+            leaveVO.setEmployeeId(leaveVO.getEmployee().getId());
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
@@ -47,3 +48,5 @@ public class LeaveController {
     }
 
 }
+
+
