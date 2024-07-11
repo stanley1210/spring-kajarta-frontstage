@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.ViewCar;
+
 import com.spring_kajarta_frontstage.repository.ViewCarRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
@@ -86,11 +87,11 @@ public class ViewCarService {
         return viewCarRepo.findAll();
     }
     // 刪除
-	public boolean delete(ViewCar bean) {
-		if(bean!=null && bean.getId()!=null) {
-			Optional<ViewCar> optional = viewCarRepo.findById(bean.getId());
+	public boolean remove(Integer id) {
+		if(id!=null) {
+			Optional<ViewCar> optional = viewCarRepo.findById(id);
 			if(optional.isPresent()) {
-				viewCarRepo.deleteById(bean.getId());
+				viewCarRepo.deleteById(id);
 				return true;
 			}
 		}

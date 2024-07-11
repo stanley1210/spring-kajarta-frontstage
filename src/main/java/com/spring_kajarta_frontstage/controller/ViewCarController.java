@@ -107,26 +107,26 @@ private ViewCarService viewCarService;
 
     //多條件查詢
     //刪除
-//   @DeleteMapping("/delete/{id}")
-//     public String remove(@PathVariable Integer id) {
-//         JSONObject responseBody = new JSONObject();
-//         if(id==null) {
-//             responseBody.put("success", false);
-//             responseBody.put("message", "Id是必要欄位");
-//         } else {
-//             if(!productService.exists(id)) {
-//                 responseBody.put("success", false);
-//                 responseBody.put("message", "Id不存在");
-//             } else {
-//                 if(!productService.remove(id)) {
-//                     responseBody.put("success", false);
-//                     responseBody.put("message", "刪除失敗");
-//                 } else {
-//                     responseBody.put("success", true);
-//                     responseBody.put("message", "刪除成功");
-//                 }
-//             }
-//         }
-//         return responseBody.toString();
-//     }
+  @DeleteMapping("/delete/{id}")
+    public String remove(@PathVariable Integer id) {
+        JSONObject responseBody = new JSONObject();
+        if(id==null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "Id是必要欄位");
+        } else {
+            if(!viewCarService.exists(id)) {
+                responseBody.put("success", false);
+                responseBody.put("message", "Id不存在");
+            } else {
+                if(!viewCarService.remove(id)) {
+                    responseBody.put("success", false);
+                    responseBody.put("message", "刪除失敗");
+                } else {
+                    responseBody.put("success", true);
+                    responseBody.put("message", "刪除成功");
+                }
+            }
+        }
+        return responseBody.toString();
+    }
 }
