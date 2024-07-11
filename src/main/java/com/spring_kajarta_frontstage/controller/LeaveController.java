@@ -39,7 +39,7 @@ public class LeaveController {
             Leave leave = leaveService.findById(leaveId);
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
-            leaveVO.setEmployeeId(leaveVO.getEmployee().getId());
+            leaveVO.setEmployeeId(leave.getEmployee().getId());
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
