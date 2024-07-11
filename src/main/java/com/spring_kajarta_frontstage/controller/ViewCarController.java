@@ -15,7 +15,7 @@ import com.spring_kajarta_frontstage.service.ViewCarService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
-@RequestMapping("/front/viewCar/create")
+@RequestMapping("/front/viewCar")
 @CrossOrigin
 public class ViewCarController {
 @Autowired
@@ -51,7 +51,7 @@ private ViewCarService viewCarService;
     //修改
     //查一
 
- @GetMapping("/front/viewCar/select")
+ @GetMapping("/select/{pk}")
     public String findById(@PathVariable(name = "pk") Integer id) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
@@ -65,13 +65,13 @@ private ViewCarService viewCarService;
 
                     .put("id", viewCar.getId())
                     .put("viewTimeSection", viewCar.getViewTimeSection())
-                    .put("car", viewCar.getCar())
+                    .put("car", viewCar.getCar().getId())
                     .put("salesScore", viewCar.getSalesScore())
                     .put("factoryScore", viewCar.getFactoryScore())
                     .put("viewCarDate",viewCarDate)
                     .put("carScore", viewCar.getCarScore())
                     .put("deal", viewCar.getDeal())
-                    .put("customer", viewCar.getCustomer())
+                    .put("customer", viewCar.getCustomer().getId())
                     .put("createTime",createTime)
                     .put("updateTime", updateTime)
                     .put("viewCarStatus", viewCar.getViewCarStatus());
