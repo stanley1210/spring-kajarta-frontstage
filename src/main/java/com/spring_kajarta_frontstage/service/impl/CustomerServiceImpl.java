@@ -32,12 +32,15 @@ public class CustomerServiceImpl implements CustomerService {
         return customer.orElse(null);
     }
 
+    // 新增
     @Override
-    public Customer create(Customer customer) {
-        Customer newCustomer = new Customer();
+    public CustomerVO create(CustomerVO customerVO){
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerVO, customer);
         customer = customerRepo.save(customer);
-        BeanUtils.copyProperties(customer, newCustomer); // 將傳入的 Customer 屬性複製到新的實體
-        return newCustomer; // 保存新的實體並返回
+        CustomerVO customerVONew = new CustomerVO();
+        BeanUtils.copyProperties(customer, customerVONew);
+        return customerVONew;
     }
 
 

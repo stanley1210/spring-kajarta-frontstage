@@ -48,17 +48,14 @@ public class CustomerController {
     public Result<CustomerVO> addCustomer(@RequestBody CustomerVO customerVO) {
         // todo:依據token獲取後台登入用戶
 
+
         log.info("{}-新增客戶資訊：{}", "到時候換成上一步拿到的管理員", customerVO.toString());
         try {
-            Customer customer = new Customer();
-            BeanUtils.copyProperties(customerVO, customer);  // 將 CustomerVO 的屬性複製到 Customer 實體中
-            Customer savedCustomer = customerService.create(customer);  // 保存 Customer 實體
-            CustomerVO savedCustomerVO = new CustomerVO();
-            BeanUtils.copyProperties(savedCustomer, savedCustomerVO);  // 將保存後的 Customer 實體屬性複製到新的 CustomerVO 中
-            return ResultUtil.success(savedCustomerVO);
+            customerVO = customerService.create(customerVO);
         } catch (Exception e) {
             return ResultUtil.error("新增用戶出錯");
         }
+        return ResultUtil.success(customerVO);
     }
 
 

@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.service;
 
 import com.kajarta.demo.model.Customer;
+import com.kajarta.demo.vo.CustomerVO;
 
 public interface CustomerService {
 
@@ -8,5 +9,5 @@ public interface CustomerService {
     Customer findById(Integer customerId);
 
     // 新增
-    Customer create(Customer customer);
+    CustomerVO create(CustomerVO customerVO);
 }

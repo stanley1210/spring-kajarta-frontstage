@@ -16,9 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "管理後台-員工")
 @Slf4j
@@ -44,10 +42,22 @@ public class EmployeeController {
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
-
         return ResultUtil.success(employeeVO);
+    }
+
+    @Operation(summary = "員工資訊-新增員工")
+    @PostMapping(value = "/add")
+    public Result<EmployeeVO> addEmployee(@RequestBody EmployeeVO employeeVO) {
+        // todo:依據token獲取後台登入用戶
 
 
+        log.info("{}-新增客戶資訊：{}", "到時候換成上一步拿到的管理員", employeeVO.toString());
+        try {
+            employeeVO = employeeService.create(employeeVO);
+        } catch (Exception e) {
+            return ResultUtil.error("新增用戶出錯");
+        }
+        return ResultUtil.success(employeeVO);
     }
 
 }
