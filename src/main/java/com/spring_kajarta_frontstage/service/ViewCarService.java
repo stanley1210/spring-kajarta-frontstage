@@ -40,8 +40,8 @@ public class ViewCarService {
             Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
 
-            Customer customer = customerService.findCustomerById(customerId);
-            Car car = carService.findCarById(carId);
+            Customer customer = customerService.findById(customerId);
+            Car car = carService.findById(carId);
 
 
                 ViewCar insert = new ViewCar();
@@ -49,7 +49,7 @@ public class ViewCarService {
                 insert.setCar(car); // Set Car entity
                 insert.setSalesScore(salesScore);
                 insert.setFactoryScore(factoryScore);
-                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd").toInstant());
+                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
                 insert.setCarScore(carScore);
                 insert.setDeal(deal);
                 insert.setCustomer(customer); // Set Customer entity

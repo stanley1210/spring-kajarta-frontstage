@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CustomerVO;
 import com.spring_kajarta_frontstage.service.CustomerService;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,16 +31,17 @@ public class CustomerController {
     public Result<CustomerVO> info(@Parameter(description = "會員id") Integer customerId){
         // todo:依據token獲取後台登入用戶
 
-
         log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
-        CustomerVO customerVo = null;
+        CustomerVO customerVO;
         try {
-            customerVo = customerService.findById(customerId);
+            Customer customer = customerService.findById(customerId);
+            customerVO = new CustomerVO();
+            BeanUtils.copyProperties(customer, customerVO);
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
 
-        return ResultUtil.success(customerVo);
+        return ResultUtil.success(customerVO);
     }
 
 

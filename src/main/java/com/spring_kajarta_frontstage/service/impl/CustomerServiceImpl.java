@@ -23,17 +23,12 @@ public class CustomerServiceImpl implements CustomerService {
     /**
      * 查詢單筆，依據用戶id查詢單一用戶資訊
      * @param customerId
-     * @return CustomerVO
+     * @return Customer
      */
     @Override
-    public CustomerVO findById(Integer customerId) {
+    public Customer findById(Integer customerId) {
         Optional<Customer> customer = customerRepo.findById(customerId);
-        if (customer.isEmpty()){
-            return null;
-        }
-        CustomerVO customerVO = new CustomerVO();
-        BeanUtils.copyProperties(customer.get(), customerVO);
-        return customerVO;
+        return customer.orElse(null);
     }
 
 

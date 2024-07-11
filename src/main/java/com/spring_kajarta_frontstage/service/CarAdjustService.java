@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.CarAdjust;
 import com.spring_kajarta_frontstage.repository.CarAdjustRepository;
-import com.spring_kajarta_frontstage.repository.CarRepository;
 
 @Service
 public class CarAdjustService {
@@ -36,21 +35,17 @@ public class CarAdjustService {
             Integer approval_status = obj.isNull("approval_status") ? null : obj.getInt("approval_status");
             Integer approval_type = obj.isNull("approval_type") ? null : obj.getInt("approval_type");
             BigDecimal floating_amount = obj.isNull("floating_amount") ? null : obj.getBigDecimal("floating_amount");
-            String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
-            String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
             Optional<CarAdjust> optional = carAdjustRepo.findById(id);
             if (optional.isEmpty()) {
                 CarAdjust insert = new CarAdjust();
                 insert.setId(id);
                 insert.setTeamLeaderId(team_leader_id);
-                insert.setEmployee(null);
-                insert.setCar(null);
-                insert.setApprovalStatus(null);
-                insert.setApprovalType(null);
+                insert.setEmployee(employeeService.findById(employee_id));
+                insert.setCar(carService.findById(car_id));
+                insert.setApprovalStatus(approval_status);
+                insert.setApprovalType(approval_type);
                 insert.setFloatingAmount(floating_amount);
-                insert.setCreateTime(null);
-                insert.setUpdateTime(null);
 
                 return carAdjustRepo.save(insert);
             }
@@ -71,21 +66,17 @@ public class CarAdjustService {
             Integer approval_status = obj.isNull("approval_status") ? null : obj.getInt("approval_status");
             Integer approval_type = obj.isNull("approval_type") ? null : obj.getInt("approval_type");
             BigDecimal floating_amount = obj.isNull("floating_amount") ? null : obj.getBigDecimal("floating_amount");
-            String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
-            String update_time = obj.isNull("update_time") ? null : obj.getString("update_time");
 
             Optional<CarAdjust> optional = carAdjustRepo.findById(id);
             if (optional.isPresent()) {
                 CarAdjust update = optional.get();
                 update.setId(id);
                 update.setTeamLeaderId(team_leader_id);
-                update.setEmployee(null);
-                update.setCar(null);
-                update.setApprovalStatus(null);
-                update.setApprovalType(null);
+                update.setEmployee(employeeService.findById(employee_id));
+                update.setCar(carService.findById(car_id));
+                update.setApprovalStatus(approval_status);
+                update.setApprovalType(approval_type);
                 update.setFloatingAmount(floating_amount);
-                update.setCreateTime(null);
-                update.setUpdateTime(null);
 
                 return carAdjustRepo.save(update);
             }
@@ -119,6 +110,14 @@ public class CarAdjustService {
             }
         }
         return null;
+    }
+
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return carAdjustRepo.existsById(id);
+        }
+        return false;
     }
 
     // 查詢多筆
