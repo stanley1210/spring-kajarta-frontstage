@@ -114,7 +114,6 @@ public class AgendaService {
 
     // 查詢一筆
     public Agenda findById(Integer id) {
-        System.out.println("AgendaService");
         if (id != null) {
             Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isPresent()) {
