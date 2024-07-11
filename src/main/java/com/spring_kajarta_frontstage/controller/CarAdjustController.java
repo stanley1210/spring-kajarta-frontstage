@@ -39,6 +39,8 @@ public class CarAdjustController {
             CarAdjust carAdjust = carAdjustService.findById(id);
             carAdjustVO = new CarAdjustVO();
             BeanUtils.copyProperties(carAdjust, carAdjustVO);
+            carAdjustVO.setEmployeeId(carAdjust.getEmployee().getId());
+            carAdjustVO.setCarId(carAdjust.getCar().getId());
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
