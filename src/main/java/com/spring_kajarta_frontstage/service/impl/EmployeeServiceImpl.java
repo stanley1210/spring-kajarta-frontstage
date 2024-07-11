@@ -33,9 +33,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeVO, employee);
         employee = employeeRepo.save(employee);
-        CustomerVO customerVONew = new CustomerVO();
-        BeanUtils.copyProperties(employee, customerVONew);
-        return employeeVO;
+        EmployeeVO employeeVONew = new EmployeeVO();
+        BeanUtils.copyProperties(employee, employeeVONew);
+        return employeeVONew;
     }
 
 
