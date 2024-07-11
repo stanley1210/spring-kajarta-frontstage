@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -168,6 +169,37 @@ public class AgendaController {
         responseBody.put("count", count);
         responseBody.put("list", array);
 
+        return responseBody.toString();
+    }
+
+    // 多件查詢 Spring版
+    @PostMapping("/agenda/find2")
+    public String find2(@RequestBody String body) {
+        JSONObject responseBody = new JSONObject();
+        List<Agenda> agendas = agendaService.find2(body);
+        JSONArray array = new JSONArray();
+
+        if (agendas != null && !agendas.isEmpty()) {
+            for (Agenda agenda : agendas) {
+
+                String unavailable_time_str = DatetimeConverter.toString(agenda.getUnavailableTimeStr(), "yyyy-MM-dd");
+                String unavailable_time_end = DatetimeConverter.toString(agenda.getUnavailableTimeEnd(), "yyyy-MM-dd");
+                String create_time = DatetimeConverter.toString(agenda.getCreateTime(), "yyyy-MM-dd");
+                String update_time = DatetimeConverter.toString(agenda.getUpdateTime(), "yyyy-MM-dd");
+                JSONObject item = new JSONObject()
+                        .put("id", agenda.getId())
+                        .put("employee_id", agenda.getEmployee().getName())
+                        .put("business_purpose", agenda.getBusinessPurpose())
+                        .put("unavailable_time_str", unavailable_time_str)
+                        .put("unavailable_time_end", unavailable_time_end)
+                        .put("create_time", create_time)
+                        .put("update_time", update_time)
+                        .put("unavailable_status", agenda.getUnavailableStatus());
+                array = array.put(item);
+            }
+        }
+
+        responseBody.put("list", array);
         return responseBody.toString();
     }
 
