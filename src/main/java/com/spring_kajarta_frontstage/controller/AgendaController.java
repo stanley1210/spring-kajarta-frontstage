@@ -33,6 +33,11 @@ public class AgendaController {
 
         JSONObject obj = new JSONObject(body);
         // Integer id = obj.isNull("id") ? null : obj.getInt("id");
+        Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+        Integer business_purpose = obj.isNull("business_purpose") ? null : obj.getInt("business_purpose");
+        Integer unavailable_time_str = obj.isNull("unavailable_time_str") ? null : obj.getInt("unavailable_time_str");
+        Integer unavailable_time_end = obj.isNull("unavailable_time_end") ? null : obj.getInt("unavailable_time_end");
+        Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
 
         if (false) {// agendaService.判斷時間是否重複(id)
             responseBody.put("success", false);

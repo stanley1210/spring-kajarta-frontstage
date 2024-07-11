@@ -154,37 +154,34 @@ public class AgendaService {
         return null;
     }
 
-    // // 查詢多筆 @Query 測試
-    // public List<Agenda> find2(String json) {
-    // try {
-    // JSONObject obj = new JSONObject(json);
-    // Integer id = obj.isNull("id") ? null : obj.getInt("id");
-    // Integer employee_id = obj.isNull("employee_id") ? null :
-    // obj.getInt("employee_id");
-    // String unavailable_time_str = obj.isNull("unavailable_time_str") ? null
-    // : obj.getString("unavailable_time_str");
-    // String unavailable_time_end = obj.isNull("unavailable_time_end") ? null
-    // : obj.getString("unavailable_time_end");
-    // Integer unavailable_status = obj.isNull("unavailable_status") ? null :
-    // obj.getInt("unavailable_status");
-    // String create_time = obj.isNull("create_time") ? null :
-    // obj.getString("create_time");
+    // 查詢多筆 @Query 測試
+    public List<Agenda> find2(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+            String unavailable_time_str = obj.isNull("unavailable_time_str") ? null
+                    : obj.getString("unavailable_time_str");
+            String unavailable_time_end = obj.isNull("unavailable_time_end") ? null
+                    : obj.getString("unavailable_time_end");
+            Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
+            String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
 
-    // java.util.Date date_time_str = DatetimeConverter.parse(unavailable_time_str,
-    // "yyyy-MM-dd");
-    // java.util.Date date_time_end = DatetimeConverter.parse(unavailable_time_end,
-    // "yyyy-MM-dd");
-    // java.util.Date date_create_time = DatetimeConverter.parse(create_time,
-    // "yyyy-MM-dd");
-    // Employee employee = employeeService.findById(employee_id);
+            java.util.Date date_time_str = DatetimeConverter.parse(unavailable_time_str,
+                    "yyyy-MM-dd");
+            java.util.Date date_time_end = DatetimeConverter.parse(unavailable_time_end,
+                    "yyyy-MM-dd");
+            java.util.Date date_create_time = DatetimeConverter.parse(create_time,
+                    "yyyy-MM-dd");
+            Employee employee = employeeService.findById(employee_id);
 
-    // return agendaRepo.find2(id, employee, date_time_str, date_time_end,
-    // date_create_time,
-    // unavailable_status);
-    // } catch (JSONException e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+            return agendaRepo.find2(id, employee, date_time_str, date_time_end,
+                    date_create_time,
+                    unavailable_status);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
