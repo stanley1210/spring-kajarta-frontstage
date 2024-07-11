@@ -24,6 +24,13 @@ public class ViewCarService {
     @Autowired
     private CustomerService customerService;
 
+    public boolean exists(Integer id) {
+		if(id!=null) {
+			return viewCarRepo.existsById(id);
+		}
+		return false;
+	}
+
     // 新增
     public ViewCar create(String json) {
         try {
@@ -39,10 +46,8 @@ public class ViewCarService {
             Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
             Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
-
             Customer customer = customerService.findById(customerId);
             Car car = carService.findById(carId);
-
 
                 ViewCar insert = new ViewCar();
                 insert.setViewTimeSection(viewTimeSection);
@@ -62,7 +67,8 @@ public class ViewCarService {
         }
         return null;
     }
-    // 刪除
+
+    //修改(空)
 
     // 查詢一筆
 
@@ -75,7 +81,20 @@ public class ViewCarService {
 		}
 		return null;
 	}
-
-    // 查詢多筆
+    // 查全
+    public List<ViewCar> findAll() {
+        return viewCarRepo.findAll();
+    }
+    // 刪除
+	public boolean delete(ViewCar bean) {
+		if(bean!=null && bean.getId()!=null) {
+			Optional<ViewCar> optional = viewCarRepo.findById(bean.getId());
+			if(optional.isPresent()) {
+				viewCarRepo.deleteById(bean.getId());
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
