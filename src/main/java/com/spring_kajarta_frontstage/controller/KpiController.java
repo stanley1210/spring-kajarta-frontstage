@@ -17,6 +17,7 @@ import com.kajarta.demo.vo.KpiVO;
 import com.spring_kajarta_frontstage.service.KpiService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class KpiController {
 
     @Operation(summary = "KPI-依據KPI id查詢單筆")
     @GetMapping("/{id}")
-    public Result<KpiVO> info(@PathVariable Integer id) {
+    public Result<KpiVO> info(@Parameter(description = "KPI id") @PathVariable Integer id) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢Kpi列表資訊-單筆：{}", "到時候換成上一步拿到的管理員", id);

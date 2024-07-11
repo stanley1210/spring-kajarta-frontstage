@@ -13,6 +13,9 @@ import com.kajarta.demo.model.Agenda;
 import com.spring_kajarta_frontstage.service.AgendaService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,8 +108,9 @@ public class AgendaController {
     }
 
     // 單筆查詢
+    @Operation(summary = "時間排程表-依據排程id查詢單筆")
     @GetMapping("/agenda/{pk}")
-    public String findById(@PathVariable(name = "pk") Integer id) {
+    public String findById(@Parameter(description = "排程id") @PathVariable(name = "pk") Integer id) {
         System.out.println("AgendaController");
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();

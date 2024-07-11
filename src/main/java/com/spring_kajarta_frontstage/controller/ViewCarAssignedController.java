@@ -15,6 +15,7 @@ import com.kajarta.demo.vo.ViewCarAssignedVO;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.ViewCarAssignedService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class ViewCarAssignedController {
 
     @Operation(summary = "賞車指派表-依據賞車指派表id查詢單筆")
     @GetMapping("/{id}")
-    public Result<ViewCarAssignedVO> info(@PathVariable Integer id) {
+    public Result<ViewCarAssignedVO> info(@Parameter(description = "賞車指派表id") @PathVariable Integer id) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢賞車指派表資訊-單筆：{}", "到時候換成上一步拿到的管理員", id);

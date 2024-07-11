@@ -9,6 +9,7 @@ import com.spring_kajarta_frontstage.service.CarAdjustService;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +37,9 @@ public class CarAdjustController {
     @Autowired
     private EmployeeService employeeService;
 
-    @Operation(summary = "調整簽核列-依據調整簽核列id查詢單筆")
+    @Operation(summary = "調整簽核列表-依據調整簽核id查詢單筆")
     @GetMapping("/{id}")
-    public Result<CarAdjustVO> info(@PathVariable Integer id) {
+    public Result<CarAdjustVO> info(@Parameter(description = "調整簽核id") @PathVariable Integer id) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢調整簽核列資訊-單筆：{}", "到時候換成上一步拿到的管理員", id);
