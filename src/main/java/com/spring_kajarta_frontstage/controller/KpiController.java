@@ -34,6 +34,9 @@ public class KpiController {
     @Autowired
     private KpiService kpiService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     @Operation(summary = "KPI-依據KPI id查詢單筆")
     @GetMapping("/")
     public Result<KpiVO> info(@Parameter(description = "KPI id") Integer id) {
@@ -48,8 +51,8 @@ public class KpiController {
             BeanUtils.copyProperties(kpi, kpiVO);
 
             // 主管 teamleader
-            // Employee teamleader = kpi.getEmployee(),getTeamLeader();
-            // kpiVO.setTeamLeaderName(teamleader.getName());
+            Employee teamleader = kpi.getEmployee().getTeamLeader();
+            kpiVO.setTeamLeaderName(teamleader.getName());
             kpiVO.setEmployeeName(kpi.getEmployee().getName());
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
