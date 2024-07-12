@@ -53,11 +53,11 @@ public class AgendaController {
 
         JSONObject obj = new JSONObject(body);
         // Integer id = obj.isNull("id") ? null : obj.getInt("id");
-        Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-        Integer business_purpose = obj.isNull("business_purpose") ? null : obj.getInt("business_purpose");
-        Integer unavailable_time_str = obj.isNull("unavailable_time_str") ? null : obj.getInt("unavailable_time_str");
-        Integer unavailable_time_end = obj.isNull("unavailable_time_end") ? null : obj.getInt("unavailable_time_end");
-        Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
+        Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+        Integer businessPurpose = obj.isNull("businessPurpose") ? null : obj.getInt("businessPurpose");
+        Integer unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null : obj.getInt("unavailableTimeStr");
+        Integer unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null : obj.getInt("unavailableTimeEnd");
+        Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
 
         if (false) {// agendaService.判斷時間是否重複(id)
             responseBody.put("success", false);
@@ -134,19 +134,19 @@ public class AgendaController {
 
         Agenda agenda = agendaService.findById(id);
         if (agenda != null) {
-            String unavailable_time_str = DatetimeConverter.toString(agenda.getUnavailableTimeStr(), "yyyy-MM-dd");
-            String unavailable_time_end = DatetimeConverter.toString(agenda.getUnavailableTimeEnd(), "yyyy-MM-dd");
-            String create_time = DatetimeConverter.toString(agenda.getCreateTime(), "yyyy-MM-dd");
-            String update_time = DatetimeConverter.toString(agenda.getUpdateTime(), "yyyy-MM-dd");
+            String unavailableTimeStr = DatetimeConverter.toString(agenda.getUnavailableTimeStr(), "yyyy-MM-dd");
+            String unavailableTimeEnd = DatetimeConverter.toString(agenda.getUnavailableTimeEnd(), "yyyy-MM-dd");
+            String createTime = DatetimeConverter.toString(agenda.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(agenda.getUpdateTime(), "yyyy-MM-dd");
             JSONObject item = new JSONObject()
                     .put("id", agenda.getId())
-                    .put("employee_id", agenda.getEmployee().getName())
-                    .put("business_purpose", agenda.getBusinessPurpose())
-                    .put("unavailable_time_str", unavailable_time_str)
-                    .put("unavailable_time_end", unavailable_time_end)
-                    .put("create_time", create_time)
-                    .put("update_time", update_time)
-                    .put("unavailable_status", agenda.getUnavailableStatus());
+                    .put("employeeId", agenda.getEmployee().getName())
+                    .put("businessPurpose", agenda.getBusinessPurpose())
+                    .put("unavailableTimeStr", unavailableTimeStr)
+                    .put("unavailableTimeEnd", unavailableTimeEnd)
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime)
+                    .put("unavailableStatus", agenda.getUnavailableStatus());
             array = array.put(item);
         }
 
