@@ -45,23 +45,23 @@ public class AgendaService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            String business_purpose = obj.isNull("business_purpose") ? null : obj.getString("business_purpose");
-            String unavailable_time_str = obj.isNull("unavailable_time_str") ? null
-                    : obj.getString("unavailable_time_str");
-            String unavailable_time_end = obj.isNull("unavailable_time_end") ? null
-                    : obj.getString("unavailable_time_end");
-            Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            String businessPurpose = obj.isNull("businessPurpose") ? null : obj.getString("businessPurpose");
+            String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                    : obj.getString("unavailableTimeStr");
+            String unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                    : obj.getString("unavailableTimeEnd");
+            Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
 
             Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isEmpty()) {
                 Agenda insert = new Agenda();
                 insert.setId(id);
-                insert.setEmployee(employeeService.findById(employee_id));
-                insert.setBusinessPurpose(business_purpose);
-                insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailable_time_str, "yyyy-MM-dd hh:mm:ss"));
-                insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailable_time_end, "yyyy-MM-dd hh:mm:ss"));
-                insert.setUnavailableStatus(unavailable_status);
+                insert.setEmployee(employeeService.findById(employeeId));
+                insert.setBusinessPurpose(businessPurpose);
+                insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+                insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+                insert.setUnavailableStatus(unavailableStatus);
 
                 return agendaRepo.save(insert);
             }
@@ -76,23 +76,23 @@ public class AgendaService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            String business_purpose = obj.isNull("business_purpose") ? null : obj.getString("business_purpose");
-            String unavailable_time_str = obj.isNull("unavailable_time_str") ? null
-                    : obj.getString("unavailable_time_str");
-            String unavailable_time_end = obj.isNull("unavailable_time_end") ? null
-                    : obj.getString("unavailable_time_end");
-            Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            String businessPurpose = obj.isNull("businessPurpose") ? null : obj.getString("businessPurpose");
+            String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                    : obj.getString("unavailableTimeStr");
+            String unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                    : obj.getString("unavailableTimeEnd");
+            Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
 
             Optional<Agenda> optional = agendaRepo.findById(id);
             if (optional.isPresent()) {
                 Agenda update = new Agenda();
                 update.setId(id);
-                update.setEmployee(employeeService.findById(employee_id));
-                update.setBusinessPurpose(business_purpose);
-                update.setUnavailableTimeStr(DatetimeConverter.parse(unavailable_time_str, "yyyy-MM-dd hh:mm:ss"));
-                update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailable_time_end, "yyyy-MM-dd hh:mm:ss"));
-                update.setUnavailableStatus(unavailable_status);
+                update.setEmployee(employeeService.findById(employeeId));
+                update.setBusinessPurpose(businessPurpose);
+                update.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+                update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+                update.setUnavailableStatus(unavailableStatus);
 
                 return agendaRepo.save(update);
             }
@@ -163,24 +163,24 @@ public class AgendaService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Employee employee = obj.isNull("employee_id") ? null : employeeService.findById(obj.getInt("employee_id"));
-            Date date_time_str = obj.isNull("unavailable_time_str") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailable_time_str"), "yyyy-MM-dd");
-            Date date_time_end = obj.isNull("unavailable_time_end") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailable_time_end"), "yyyy-MM-dd");
-            Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
-            Date date_create_time = obj.isNull("create_time") ? null
-                    : DatetimeConverter.parse(obj.getString("create_time"), "yyyy-MM-dd");
+            Employee employee = obj.isNull("employeeId") ? null : employeeService.findById(obj.getInt("employeeId"));
+            Date unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd");
+            Date unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd");
+            Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
+            Date createTime = obj.isNull("createTime") ? null
+                    : DatetimeConverter.parse(obj.getString("createTime"), "yyyy-MM-dd");
 
-            Integer is_page = obj.isNull("is_page") ? 0 : obj.getInt("is_page");
+            Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
             boolean dir = obj.isNull("dir") ? true : obj.getBoolean("dir");
             String order = obj.isNull("order") ? "id" : obj.getString("order");
             Sort sort = dir ? Sort.by(Sort.Direction.ASC, order) : Sort.by(Sort.Direction.DESC, order);
 
-            Pageable pgb = PageRequest.of(is_page.intValue(), max.intValue(), sort);
-            Page<Agenda> page = agendaRepo.find2(id, employee, date_time_str, date_create_time, date_time_end,
-                    unavailable_status, pgb);
+            Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
+            Page<Agenda> page = agendaRepo.findByHQL(id, employee, unavailableTimeStr, createTime, unavailableTimeEnd,
+                    unavailableStatus, pgb);
 
             return page;
 

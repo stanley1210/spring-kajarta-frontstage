@@ -164,19 +164,19 @@ public class AgendaController {
         if (agendas != null && !agendas.isEmpty()) {
             for (Agenda agenda : agendas) {
 
-                String unavailable_time_str = DatetimeConverter.toString(agenda.getUnavailableTimeStr(), "yyyy-MM-dd");
-                String unavailable_time_end = DatetimeConverter.toString(agenda.getUnavailableTimeEnd(), "yyyy-MM-dd");
-                String create_time = DatetimeConverter.toString(agenda.getCreateTime(), "yyyy-MM-dd");
-                String update_time = DatetimeConverter.toString(agenda.getUpdateTime(), "yyyy-MM-dd");
+                String unavailableTimeStr = DatetimeConverter.toString(agenda.getUnavailableTimeStr(), "yyyy-MM-dd");
+                String unavailableTimeEnd = DatetimeConverter.toString(agenda.getUnavailableTimeEnd(), "yyyy-MM-dd");
+                String createTime = DatetimeConverter.toString(agenda.getCreateTime(), "yyyy-MM-dd");
+                String updateTime = DatetimeConverter.toString(agenda.getUpdateTime(), "yyyy-MM-dd");
                 JSONObject item = new JSONObject()
                         .put("id", agenda.getId())
-                        .put("employee_id", agenda.getEmployee().getName())
-                        .put("business_purpose", agenda.getBusinessPurpose())
-                        .put("unavailable_time_str", unavailable_time_str)
-                        .put("unavailable_time_end", unavailable_time_end)
-                        .put("create_time", create_time)
-                        .put("update_time", update_time)
-                        .put("unavailable_status", agenda.getUnavailableStatus());
+                        .put("employeeId", agenda.getEmployee().getName())
+                        .put("businessPurpose", agenda.getBusinessPurpose())
+                        .put("unavailableTimeStr", unavailableTimeStr)
+                        .put("unavailableTimeEnd", unavailableTimeEnd)
+                        .put("createTime", createTime)
+                        .put("updateTime", updateTime)
+                        .put("unavailableStatus", agenda.getUnavailableStatus());
                 array = array.put(item);
             }
         }

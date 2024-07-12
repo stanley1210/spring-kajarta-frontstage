@@ -16,16 +16,16 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer>, Agenda
 
         @Query("SELECT agd FROM Agenda agd WHERE (:id IS NULL OR agd.id = :id) AND "
                         + "(:employee IS NULL OR agd.employee = :employee) AND "
-                        + "(:unavailable_time_str IS NULL OR agd.unavailableTimeStr > :unavailable_time_str) AND "
-                        + "(:create_time IS NULL OR agd.createTime > :create_time) AND "
-                        + "(:unavailable_time_end IS NULL OR agd.unavailableTimeEnd < :unavailable_time_end) AND "
-                        + "(:unavailable_status IS NULL OR agd.unavailableStatus = :unavailable_status)")
-        public Page<Agenda> find2(@Param("id") Integer id,
+                        + "(:unavailableTimeStr IS NULL OR agd.unavailableTimeStr > :unavailableTimeStr) AND "
+                        + "(:createTime IS NULL OR agd.createTime > :createTime) AND "
+                        + "(:unavailableTimeEnd IS NULL OR agd.unavailableTimeEnd < :unavailableTimeEnd) AND "
+                        + "(:unavailableStatus IS NULL OR agd.unavailableStatus = :unavailableStatus)")
+        public Page<Agenda> findByHQL(@Param("id") Integer id,
                         @Param("employee") Employee employee,
-                        @Param("unavailable_time_str") Date unavailable_time_str,
-                        @Param("create_time") Date create_time,
-                        @Param("unavailable_time_end") Date unavailable_time_end,
-                        @Param("unavailable_status") Integer unavailable_status,
+                        @Param("unavailableTimeStr") Date unavailableTimeStr,
+                        @Param("createTime") Date createTime,
+                        @Param("unavailableTimeEnd") Date unavailableTimeEnd,
+                        @Param("unavailableStatus") Integer unavailableStatus,
                         Pageable pageable);
 
 }
