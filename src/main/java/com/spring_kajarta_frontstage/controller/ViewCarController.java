@@ -43,7 +43,35 @@ private ViewCarService viewCarService;
                 }
         return responseBody.toString();
     }
-    //修改(空)
+
+    
+    //修改
+
+    @PutMapping("/update/{id}")
+    public String modify(@PathVariable Integer id, @RequestBody String body) {
+        JSONObject responseBody = new JSONObject();
+        if(id==null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "Id是必要欄位");
+        } else {
+            if(!viewCarService.exists(id)) {
+                responseBody.put("success", false);
+                responseBody.put("message", "Id不存在");
+            } else {
+                ViewCar product = viewCarService.modify(body);
+                if(product==null) {
+                    responseBody.put("success", false);
+                    responseBody.put("message", "修改失敗");
+                } else {
+                    responseBody.put("success", true);
+                    responseBody.put("message", "修改成功");
+                }
+            }
+        }
+        return responseBody.toString();
+    }
+
+
     //查一
  @GetMapping("/select/{pk}")
     public String findById(@PathVariable(name = "pk") Integer id) {
