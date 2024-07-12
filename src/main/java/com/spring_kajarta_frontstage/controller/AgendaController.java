@@ -230,11 +230,11 @@ public class AgendaController {
     // return responseBody.toString();
     // }
 
-    // 多件查詢 Spring版 + VO
+    // 多條件查詢 Spring版 + VO
     @Operation(summary = "時間排程列表-依據多條件查詢，含分頁查全部")
-    @PostMapping("/agenda/find2")
-    public Result<List<AgendaVO>> find2(@Parameter(description = "排程查詢條件") @RequestBody String body) {
-        // todo:依據多條件(JSON)後台登入用戶
+    @PostMapping("/agenda/findByHQL")
+    public Result<List<AgendaVO>> findByHQL(@Parameter(description = "排程查詢條件") @RequestBody String body) {
+        // todo:依據多條件(JSON)
         // 條件 - id, employee, date_time_str, date_create_time,
         // date_time_end, unavailable_status
         // 分頁 - is_page, max, dir, order
@@ -243,7 +243,7 @@ public class AgendaController {
         Result<List<AgendaVO>> result = new Result<List<AgendaVO>>();
         List<AgendaVO> agendaVOs = new ArrayList<>();
         try {
-            Page<Agenda> pageAgendas = agendaService.find2(body);
+            Page<Agenda> pageAgendas = agendaService.findByHQL(body);
             List<Agenda> agendas = pageAgendas.getContent();
 
             if (agendas != null && !agendas.isEmpty()) {

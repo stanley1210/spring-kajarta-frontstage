@@ -159,7 +159,7 @@ public class AgendaService {
     }
 
     // 查詢多筆 @Query 測試
-    public Page<Agenda> find2(String json) {
+    public Page<Agenda> findByHQL(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
@@ -188,7 +188,6 @@ public class AgendaService {
             e.printStackTrace();
         }
         return null;
-        //
     }
 
 }
