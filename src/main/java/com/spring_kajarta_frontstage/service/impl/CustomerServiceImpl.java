@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerVO create(CustomerVO customerVO){
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerVO, customer);
-        customer = customerRepo.save(customer);
+        customerRepo.save(customer);
         CustomerVO customerVONew = new CustomerVO();
         BeanUtils.copyProperties(customer, customerVONew);
         return customerVONew;

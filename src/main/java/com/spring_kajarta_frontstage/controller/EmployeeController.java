@@ -2,10 +2,8 @@ package com.spring_kajarta_frontstage.controller;
 
 
 import com.kajarta.demo.domian.Result;
-import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.utils.ResultUtil;
-import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +53,8 @@ public class EmployeeController {
         try {
             employeeVO = employeeService.create(employeeVO);
         } catch (Exception e) {
-            return ResultUtil.error("新增用戶出錯");
+            log.error("Error while creating employee", e);
+            return ResultUtil.error("新增員工出錯");
         }
         return ResultUtil.success(employeeVO);
     }

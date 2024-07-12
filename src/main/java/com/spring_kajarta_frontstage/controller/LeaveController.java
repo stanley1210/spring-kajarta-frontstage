@@ -14,9 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "管理後台-請假")
 @Slf4j
@@ -44,6 +42,21 @@ public class LeaveController {
             return ResultUtil.error("查詢出錯");
         }
 
+        return ResultUtil.success(leaveVO);
+    }
+
+    @Operation(summary = "請假資訊-新增假單")
+    @PostMapping(value = "/add")
+    public Result<LeaveVO> addLeave(@RequestBody LeaveVO leaveVO){
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-新增客戶資訊：{}", "到時候換成上一步拿到的管理員", leaveVO.toString());
+        try {
+            leaveVO = leaveService.create(leaveVO);
+        } catch (Exception e) {
+            log.error("Error while creating Leave", e);
+            return ResultUtil.error("新增假單出錯");
+        }
         return ResultUtil.success(leaveVO);
     }
 

@@ -32,11 +32,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeVO create(EmployeeVO employeeVO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeVO, employee);
-        employee = employeeRepo.save(employee);
+        employeeRepo.save(employee);
         EmployeeVO employeeVONew = new EmployeeVO();
         BeanUtils.copyProperties(employee, employeeVONew);
         return employeeVONew;
     }
-
-
 }
