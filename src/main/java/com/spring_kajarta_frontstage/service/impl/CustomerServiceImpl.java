@@ -46,13 +46,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     // 更新
-
+    @Transactional
     @Override
     public CustomerVO modify(CustomerVO customerVO) {
         Optional<Customer> optionalCustomer = customerRepo.findById(customerVO.getId());
         if (optionalCustomer.isPresent()) {
             Customer customer = optionalCustomer.get();
-            BeanUtils.copyProperties(customerVO, customer);
+            BeanUtils.copyProperties(customerVO, customer,"createTime", "updateTime");
             customerRepo.save(customer);
             CustomerVO updatedCustomerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, updatedCustomerVO);
