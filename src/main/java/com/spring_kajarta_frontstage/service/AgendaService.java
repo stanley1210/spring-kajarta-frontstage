@@ -159,7 +159,7 @@ public class AgendaService {
     }
 
     // 查詢多筆 @Query 測試
-    public List<Agenda> find2(String json) {
+    public Page<Agenda> find2(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
@@ -182,7 +182,7 @@ public class AgendaService {
             Page<Agenda> page = agendaRepo.find2(id, employee, date_time_str, date_create_time, date_time_end,
                     unavailable_status, pgb);
 
-            return page.getContent();
+            return page;
 
         } catch (JSONException e) {
             e.printStackTrace();
