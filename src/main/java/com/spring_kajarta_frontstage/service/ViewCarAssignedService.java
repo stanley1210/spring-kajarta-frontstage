@@ -43,13 +43,13 @@ public class ViewCarAssignedService {
                 insert.setViewCar(viewCarService.findById(view_car_id));
                 insert.setAssignedStatus(assigned_status);
 
-    // return viewCarAssignedRepo.save(insert);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return viewCarAssignedRepo.save(insert);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // 修改
     public ViewCarAssigned modify(String json) {
@@ -70,29 +70,28 @@ public class ViewCarAssignedService {
                 update.setViewCar(viewCarService.findById(view_car_id));
                 update.setAssignedStatus(assigned_status);
 
-    // return viewCarAssignedRepo.save(update);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return viewCarAssignedRepo.save(update);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    // // 查全部
-    // public List<ViewCarAssigned> select(ViewCarAssigned viewCarAssignedbean) {
-    // List<ViewCarAssigned> result = null;
-    // if (viewCarAssignedbean != null && viewCarAssignedbean.getId() != null) {
-    // Optional<ViewCarAssigned> optional =
-    // viewCarAssignedRepo.findById(viewCarAssignedbean.getId());
-    // if (optional.isPresent()) {
-    // result = new ArrayList<>();
-    // result.add(optional.get());
-    // }
-    // } else {
-    // result = viewCarAssignedRepo.findAll();
-    // }
-    // return result;
-    // }
+    // 查全部
+    public List<ViewCarAssigned> select(ViewCarAssigned viewCarAssignedbean) {
+        List<ViewCarAssigned> result = null;
+        if (viewCarAssignedbean != null && viewCarAssignedbean.getId() != null) {
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(viewCarAssignedbean.getId());
+            if (optional.isPresent()) {
+                result = new ArrayList<>();
+                result.add(optional.get());
+            }
+        } else {
+            result = viewCarAssignedRepo.findAll();
+        }
+        return result;
+    }
 
     // 查詢一筆
     public ViewCarAssigned findById(Integer id) {

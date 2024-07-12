@@ -39,13 +39,13 @@ public class KpiService {
                 insert.setSalesScore(sales_score);
                 insert.setEmployee(employeeService.findById(employee_id));
 
-    // return kpiRepo.save(insert);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return kpiRepo.save(insert);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // 修改
     public Kpi modify(String json) {
@@ -66,28 +66,28 @@ public class KpiService {
                 update.setSalesScore(sales_score);
                 update.setEmployee(employeeService.findById(employee_id));
 
-    // return kpiRepo.save(update);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return kpiRepo.save(update);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    // // 查全部
-    // public List<Kpi> select(Kpi kpibean) {
-    // List<Kpi> result = null;
-    // if (kpibean != null && kpibean.getId() != null) {
-    // Optional<Kpi> optional = kpiRepo.findById(kpibean.getId());
-    // if (optional.isPresent()) {
-    // result = new ArrayList<>();
-    // result.add(optional.get());
-    // }
-    // } else {
-    // result = kpiRepo.findAll();
-    // }
-    // return result;
-    // }
+    // 查全部
+    public List<Kpi> select(Kpi kpibean) {
+        List<Kpi> result = null;
+        if (kpibean != null && kpibean.getId() != null) {
+            Optional<Kpi> optional = kpiRepo.findById(kpibean.getId());
+            if (optional.isPresent()) {
+                result = new ArrayList<>();
+                result.add(optional.get());
+            }
+        } else {
+            result = kpiRepo.findAll();
+        }
+        return result;
+    }
 
     // 查詢一筆
     public Kpi findById(Integer id) {

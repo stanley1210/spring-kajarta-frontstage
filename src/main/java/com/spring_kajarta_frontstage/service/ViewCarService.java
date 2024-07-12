@@ -26,52 +26,50 @@ public class ViewCarService {
     private CustomerService customerService;
 
     public boolean exists(Integer id) {
-        if (id != null) {
-            return viewCarRepo.existsById(id);
-        }
-        return false;
-    }
+		if(id!=null) {
+			return viewCarRepo.existsById(id);
+		}
+		return false;
+	}
 
-    // // 新增
-    // public ViewCar create(String json) {
-    // try {
-    // JSONObject obj = new JSONObject(json);
+    // 新增
+    public ViewCar create(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
 
-    // Integer viewTimeSection = obj.isNull("viewTimeSection") ? null :
-    // obj.getInt("viewTimeSection");
-    // Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
-    // Integer salesScore = obj.isNull("salesScore") ? null :
-    // obj.getInt("salesScore");
-    // Integer factoryScore = obj.isNull("factoryScore") ? null :
-    // obj.getInt("factoryScore");
-    // String viewCarDate = obj.isNull("viewCarDate") ? null :
-    // obj.getString("viewCarDate");
-    // Integer carScore = obj.isNull("carScore") ? null : obj.getInt("carScore");
-    // Integer deal = obj.isNull("deal") ? null : obj.getInt("deal");
-    // Integer customerId = obj.isNull("customerId") ? null :
-    // obj.getInt("customerId");
-    // Integer viewCarStatus = obj.isNull("viewCarStatus") ? null :
-    // obj.getInt("viewCarStatus");
+            Integer viewTimeSection = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+            Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
+            Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
+            Integer factoryScore = obj.isNull("factoryScore") ? null : obj.getInt("factoryScore");
+            String viewCarDate = obj.isNull("viewCarDate") ? null : obj.getString("viewCarDate");
+            Integer carScore = obj.isNull("carScore") ? null : obj.getInt("carScore");
+            Integer deal = obj.isNull("deal") ? null : obj.getInt("deal");
+            Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
+            Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
-    Customer customer = customerService.findById(customerId);
-    Car car = carService.findById(carId);
+            Customer customer = customerService.findById(customerId);
+            Car car = carService.findById(carId);
 
-    ViewCar insert = new ViewCar();insert.setViewTimeSection(viewTimeSection);insert.setCar(car); // Set Car entity
-    insert.setSalesScore(salesScore);insert.setFactoryScore(factoryScore);insert.setViewCarDate(DatetimeConverter.parse(viewCarDate,"yyyy-MM-dd"));insert.setCarScore(carScore);insert.setDeal(deal);insert.setCustomer(customer); // Set
-                                                                                                                                                                                                                                   // Customer
-                                                                                                                                                                                                                                   // entity
-    insert.setViewCarStatus(viewCarStatus);
+                ViewCar insert = new ViewCar();
+                insert.setViewTimeSection(viewTimeSection);
+                insert.setCar(car); // Set Car entity
+                insert.setSalesScore(salesScore);
+                insert.setFactoryScore(factoryScore);
+                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
+                insert.setCarScore(carScore);
+                insert.setDeal(deal);
+                insert.setCustomer(customer); // Set Customer entity
+                insert.setViewCarStatus(viewCarStatus);
 
-    return viewCarRepo.save(insert);
-
-    }catch(
-    Exception e)
-    {
+                return viewCarRepo.save(insert);
+            
+        } catch (Exception e) {
             e.printStackTrace();
-        }return null;
+        }
+        return null;
     }
 
-    // 修改
+    //修改
 
     public ViewCar modify(String json) {
 		try {
@@ -112,9 +110,10 @@ public class ViewCarService {
 		return null;
 	}
 
+
     // 查詢一筆
 
-    public ViewCar findById(Integer id) {
+	public ViewCar findById(Integer id) {
 		if(id!=null) {
 			Optional<ViewCar> optional = viewCarRepo.findById(id);
 			if(optional.isPresent()) {
@@ -123,22 +122,20 @@ public class ViewCarService {
 		}
 		return null;
 	}
-
     // 查全
     public List<ViewCar> findAll() {
         return viewCarRepo.findAll();
     }
-
     // 刪除
-    public boolean remove(Integer id) {
-        if (id != null) {
-            Optional<ViewCar> optional = viewCarRepo.findById(id);
-            if (optional.isPresent()) {
-                viewCarRepo.deleteById(id);
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean remove(Integer id) {
+		if(id!=null) {
+			Optional<ViewCar> optional = viewCarRepo.findById(id);
+			if(optional.isPresent()) {
+				viewCarRepo.deleteById(id);
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

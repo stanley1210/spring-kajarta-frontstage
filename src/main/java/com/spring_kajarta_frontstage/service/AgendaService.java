@@ -63,13 +63,13 @@ public class AgendaService {
                 insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
                 insert.setUnavailableStatus(unavailableStatus);
 
-    // return agendaRepo.save(insert);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return agendaRepo.save(insert);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // 修改
     public Agenda modify(String json) {
@@ -94,28 +94,28 @@ public class AgendaService {
                 update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
                 update.setUnavailableStatus(unavailableStatus);
 
-    // return agendaRepo.save(update);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return agendaRepo.save(update);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    // // 查全部
-    // public List<Agenda> select(Agenda agendabean) {
-    // List<Agenda> result = null;
-    // if (agendabean != null && agendabean.getId() != null) {
-    // Optional<Agenda> optional = agendaRepo.findById(agendabean.getId());
-    // if (optional.isPresent()) {
-    // result = new ArrayList<>();
-    // result.add(optional.get());
-    // }
-    // } else {
-    // result = agendaRepo.findAll();
-    // }
-    // return result;
-    // }
+    // 查全部
+    public List<Agenda> select(Agenda agendabean) {
+        List<Agenda> result = null;
+        if (agendabean != null && agendabean.getId() != null) {
+            Optional<Agenda> optional = agendaRepo.findById(agendabean.getId());
+            if (optional.isPresent()) {
+                result = new ArrayList<>();
+                result.add(optional.get());
+            }
+        } else {
+            result = agendaRepo.findAll();
+        }
+        return result;
+    }
 
     // 查詢一筆
     public Agenda findById(Integer id) {

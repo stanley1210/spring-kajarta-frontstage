@@ -15,14 +15,14 @@ import com.spring_kajarta_frontstage.repository.CarAdjustRepository;
 @Service
 public class CarAdjustService {
 
-    // @Autowired
-    // private CarAdjustRepository carAdjustRepo;
+    @Autowired
+    private CarAdjustRepository carAdjustRepo;
 
-    // @Autowired
-    // private EmployeeService employeeService;
+    @Autowired
+    private EmployeeService employeeService;
 
-    // @Autowired
-    // private CarService carService;
+    @Autowired
+    private CarService carService;
 
     // 新增
     public CarAdjust create(String json) {
@@ -47,13 +47,13 @@ public class CarAdjustService {
                 insert.setApprovalType(approval_type);
                 insert.setFloatingAmount(floating_amount);
 
-    // return carAdjustRepo.save(insert);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return carAdjustRepo.save(insert);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // 修改
     public CarAdjust modify(String json) {
@@ -78,28 +78,28 @@ public class CarAdjustService {
                 update.setApprovalType(approval_type);
                 update.setFloatingAmount(floating_amount);
 
-    // return carAdjustRepo.save(update);
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+                return carAdjustRepo.save(update);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    // // 查全部
-    // public List<CarAdjust> select(CarAdjust carAdjustbean) {
-    // List<CarAdjust> result = null;
-    // if (carAdjustbean != null && carAdjustbean.getId() != null) {
-    // Optional<CarAdjust> optional = carAdjustRepo.findById(carAdjustbean.getId());
-    // if (optional.isPresent()) {
-    // result = new ArrayList<>();
-    // result.add(optional.get());
-    // }
-    // } else {
-    // result = carAdjustRepo.findAll();
-    // }
-    // return result;
-    // }
+    // 查全部
+    public List<CarAdjust> select(CarAdjust carAdjustbean) {
+        List<CarAdjust> result = null;
+        if (carAdjustbean != null && carAdjustbean.getId() != null) {
+            Optional<CarAdjust> optional = carAdjustRepo.findById(carAdjustbean.getId());
+            if (optional.isPresent()) {
+                result = new ArrayList<>();
+                result.add(optional.get());
+            }
+        } else {
+            result = carAdjustRepo.findAll();
+        }
+        return result;
+    }
 
     // 查詢一筆
     public CarAdjust findById(Integer id) {
