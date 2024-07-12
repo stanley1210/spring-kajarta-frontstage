@@ -24,34 +24,24 @@ public class ViewCarAssignedService {
     private ViewCarService viewCarService;
 
     // 新增
-    // public ViewCarAssigned create(String json) {
-    // try {
-    // JSONObject obj = new JSONObject(json);
-    // Integer id = obj.isNull("id") ? null : obj.getInt("id");
-    // Integer team_leader_id = obj.isNull("team_leader_id") ? null :
-    // obj.getInt("team_leader_id");
-    // Integer employee_id = obj.isNull("employee_id") ? null :
-    // obj.getInt("employee_id");
-    // Integer view_car_id = obj.isNull("view_car_id") ? null :
-    // obj.getInt("view_car_id");
-    // Integer assigned_status = obj.isNull("assigned_status") ? null :
-    // obj.getInt("assigned_status");
-    // String create_time = obj.isNull("create_time") ? null :
-    // obj.getString("create_time");
-    // String update_time = obj.isNull("update_time") ? null :
-    // obj.getString("update_time");
+    public ViewCarAssigned create(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
+            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+            Integer view_car_id = obj.isNull("view_car_id") ? null : obj.getInt("view_car_id");
+            Integer assigned_status = obj.isNull("assigned_status") ? null : obj.getInt("assigned_status");
 
-    // Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
-    // if (optional.isEmpty()) {
-    // ViewCarAssigned insert = new ViewCarAssigned();
-    // insert.setId(id);
-    // insert.setTeamLeaderId(team_leader_id);
-    // ;
-    // insert.setEmployee(null);
-    // insert.setViewCar(null);
-    // insert.setAssignedStatus(null);
-    // insert.setCreateTime(null);
-    // insert.setUpdateTime(null);
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
+            if (optional.isEmpty()) {
+                ViewCarAssigned insert = new ViewCarAssigned();
+                insert.setId(id);
+                insert.setTeamLeaderId(team_leader_id);
+                ;
+                insert.setEmployee(employeeService.findById(employee_id));
+                insert.setViewCar(viewCarService.findById(view_car_id));
+                insert.setAssignedStatus(assigned_status);
 
     // return viewCarAssignedRepo.save(insert);
     // }
@@ -61,34 +51,24 @@ public class ViewCarAssignedService {
     // return null;
     // }
 
-    // // 修改
-    // public ViewCarAssigned modify(String json) {
-    // try {
-    // JSONObject obj = new JSONObject(json);
-    // Integer id = obj.isNull("id") ? null : obj.getInt("id");
-    // Integer team_leader_id = obj.isNull("team_leader_id") ? null :
-    // obj.getInt("team_leader_id");
-    // Integer employee_id = obj.isNull("employee_id") ? null :
-    // obj.getInt("employee_id");
-    // Integer view_car_id = obj.isNull("view_car_id") ? null :
-    // obj.getInt("view_car_id");
-    // Integer assigned_status = obj.isNull("assigned_status") ? null :
-    // obj.getInt("assigned_status");
-    // String create_time = obj.isNull("create_time") ? null :
-    // obj.getString("create_time");
-    // String update_time = obj.isNull("update_time") ? null :
-    // obj.getString("update_time");
+    // 修改
+    public ViewCarAssigned modify(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
+            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+            Integer view_car_id = obj.isNull("view_car_id") ? null : obj.getInt("view_car_id");
+            Integer assigned_status = obj.isNull("assigned_status") ? null : obj.getInt("assigned_status");
 
-    // Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
-    // if (optional.isPresent()) {
-    // ViewCarAssigned update = optional.get();
-    // update.setId(id);
-    // update.setTeamLeaderId(team_leader_id);
-    // update.setEmployee(null);
-    // update.setViewCar(null);
-    // update.setAssignedStatus(null);
-    // update.setCreateTime(null);
-    // update.setUpdateTime(null);
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
+            if (optional.isPresent()) {
+                ViewCarAssigned update = optional.get();
+                update.setId(id);
+                update.setTeamLeaderId(team_leader_id);
+                update.setEmployee(employeeService.findById(employee_id));
+                update.setViewCar(viewCarService.findById(view_car_id));
+                update.setAssignedStatus(assigned_status);
 
     // return viewCarAssignedRepo.save(update);
     // }
@@ -114,16 +94,24 @@ public class ViewCarAssignedService {
     // return result;
     // }
 
-    // // 查詢一筆
-    // public ViewCarAssigned findById(Integer id) {
-    // if (id != null) {
-    // Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
-    // if (optional.isPresent()) {
-    // return optional.get();
-    // }
-    // }
-    // return null;
-    // }
+    // 查詢一筆
+    public ViewCarAssigned findById(Integer id) {
+        if (id != null) {
+            Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
+
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return viewCarAssignedRepo.existsById(id);
+        }
+        return false;
+    }
 
     // 查詢多筆
 }
