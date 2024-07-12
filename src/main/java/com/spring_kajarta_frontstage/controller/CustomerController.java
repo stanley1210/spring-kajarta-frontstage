@@ -26,8 +26,8 @@ public class CustomerController {
     private CustomerService customerService;
 
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
-    @GetMapping("/info")
-    public Result<CustomerVO> info(@Parameter(description = "會員id") Integer customerId){
+    @GetMapping("/info/{customerId}")
+    public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId){
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
@@ -57,6 +57,18 @@ public class CustomerController {
         }
         return ResultUtil.success(customerVO);
     }
+    @Operation(summary = "會員資訊-刪除會員")
+    @DeleteMapping("/delete/{customerId}")
+    public Result<Void> deleteCustomer(@Parameter(description = "會員id") @PathVariable Integer customerId) {
+        // todo:依據token獲取後台登入用戶
 
+        log.info("{}-刪除客戶資訊：{}", "到時候換成上一步拿到的管理員", customerId);
+        try {
+            customerService.remove(customerId);
+        } catch (Exception e) {
+            return ResultUtil.error("刪除用戶出錯");
+        }
+        return ResultUtil.success();
+    }
 
 }

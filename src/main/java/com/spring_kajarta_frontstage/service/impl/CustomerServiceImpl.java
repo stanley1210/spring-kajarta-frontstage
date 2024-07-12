@@ -43,5 +43,10 @@ public class CustomerServiceImpl implements CustomerService {
         return customerVONew;
     }
 
+    @Override
+    public void remove(Integer customerId) {
+        customerRepo.deleteById(customerId);
+    }
+
 
 }

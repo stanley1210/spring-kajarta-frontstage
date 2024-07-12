@@ -10,4 +10,8 @@ public interface CustomerService {
 
     // 新增
     CustomerVO create(CustomerVO customerVO);
+
+    // 刪除
+    void remove(Integer customerId);
+
 }

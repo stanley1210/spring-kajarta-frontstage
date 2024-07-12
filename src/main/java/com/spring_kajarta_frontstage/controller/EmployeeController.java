@@ -27,8 +27,8 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @Operation(summary = "員工資訊-依據員工id查詢單筆")
-    @GetMapping("/info")
-    public Result<EmployeeVO> info(@Parameter(description = "員工id") Integer employeeId) {
+    @GetMapping("/info/{employeeId}")
+    public Result<EmployeeVO> info(@Parameter(description = "員工id") @PathVariable Integer employeeId) {
         // 依據token獲取後台登入員工
 
         log.info("{}-後台查詢員工資訊-單筆：{}", "到時候換成上一步拿到的管理員", employeeId);

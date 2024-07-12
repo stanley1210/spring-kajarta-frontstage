@@ -27,8 +27,8 @@ public class LeaveController {
     @Autowired
     private LeaveService leaveService;
     @Operation(summary = "請假資訊-依據請假id查詢單筆")
-    @GetMapping("/info")
-    public Result<LeaveVO> info(@Parameter(description = "請假id") Integer leaveId){
+    @GetMapping("/info/{leaveId}")
+    public Result<LeaveVO> info(@Parameter(description = "請假id") @PathVariable Integer leaveId){
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢請假資訊-單筆：{}", "到時候換成上一步拿到的管理員", leaveId);
