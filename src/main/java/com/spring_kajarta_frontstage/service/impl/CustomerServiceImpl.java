@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     /**
      * 查詢單筆，依據用戶id查詢單一用戶資訊
+     *
      * @param customerId
      * @return Customer
      */
@@ -34,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     // 新增
     @Override
-    public CustomerVO create(CustomerVO customerVO){
+    public CustomerVO create(CustomerVO customerVO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerVO, customer);
         customerRepo.save(customer);
@@ -43,10 +45,20 @@ public class CustomerServiceImpl implements CustomerService {
         return customerVONew;
     }
 
+    // 更新
+
     @Override
-    public void remove(Integer customerId) {
-        customerRepo.deleteById(customerId);
+    public CustomerVO modify(CustomerVO customerVO) {
+        Optional<Customer> optionalCustomer = customerRepo.findById(customerVO.getId());
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            BeanUtils.copyProperties(customerVO, customer);
+            customerRepo.save(customer);
+            CustomerVO updatedCustomerVO = new CustomerVO();
+            BeanUtils.copyProperties(customer, updatedCustomerVO);
+            return updatedCustomerVO;
+        } else {
+            return null;
+        }
     }
-
-
 }

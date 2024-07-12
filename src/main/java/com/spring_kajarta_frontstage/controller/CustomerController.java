@@ -57,18 +57,27 @@ public class CustomerController {
         }
         return ResultUtil.success(customerVO);
     }
-    @Operation(summary = "會員資訊-刪除會員")
-    @DeleteMapping("/delete/{customerId}")
-    public Result<Void> deleteCustomer(@Parameter(description = "會員id") @PathVariable Integer customerId) {
+
+    @Operation(summary = "會員資訊-修改會員")
+    @PutMapping(value = "/modify/{customerId}")
+    public Result<CustomerVO> modifyCustomer(
+            @Parameter(description = "會員id") @PathVariable Integer customerId,
+            @RequestBody CustomerVO customerVO) {
         // todo:依據token獲取後台登入用戶
 
-        log.info("{}-刪除客戶資訊：{}", "到時候換成上一步拿到的管理員", customerId);
+        log.info("{}-修改客戶資訊：{}", "到時候換成上一步拿到的管理員", customerVO.toString());
+        customerVO.setId(customerId); // 確保傳入的客戶資料有正確的ID
         try {
-            customerService.remove(customerId);
+            CustomerVO updatedCustomer = customerService.modify(customerVO);
+            if (updatedCustomer == null) {
+                return ResultUtil.error("找不到會員ID: " + customerId);
+            }
+            return ResultUtil.success(updatedCustomer);
         } catch (Exception e) {
-            return ResultUtil.error("刪除用戶出錯");
+            return ResultUtil.error("修改用戶出錯");
         }
-        return ResultUtil.success();
     }
+
+
 
 }
