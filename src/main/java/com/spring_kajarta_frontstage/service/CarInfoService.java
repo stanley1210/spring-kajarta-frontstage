@@ -28,4 +28,8 @@ public class CarInfoService {
     public void remove(Integer id) { // 刪除單筆
         carinfoRepo.deleteById(id);
     }
+
+    public Carinfo create(Carinfo carinfo) { // 新增
+        return carinfoRepo.save(carinfo);
+    }
 }
