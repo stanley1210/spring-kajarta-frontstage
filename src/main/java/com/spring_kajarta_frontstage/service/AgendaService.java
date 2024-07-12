@@ -1,12 +1,17 @@
 package com.spring_kajarta_frontstage.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Agenda;
@@ -154,33 +159,36 @@ public class AgendaService {
     }
 
     // 查詢多筆 @Query 測試
-    public List<Agenda> find2(String json) {
+    public Page<Agenda> find2(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            String unavailable_time_str = obj.isNull("unavailable_time_str") ? null
-                    : obj.getString("unavailable_time_str");
-            String unavailable_time_end = obj.isNull("unavailable_time_end") ? null
-                    : obj.getString("unavailable_time_end");
+            Employee employee = obj.isNull("employee_id") ? null : employeeService.findById(obj.getInt("employee_id"));
+            Date date_time_str = obj.isNull("unavailable_time_str") ? null
+                    : DatetimeConverter.parse(obj.getString("unavailable_time_str"), "yyyy-MM-dd");
+            Date date_time_end = obj.isNull("unavailable_time_end") ? null
+                    : DatetimeConverter.parse(obj.getString("unavailable_time_end"), "yyyy-MM-dd");
             Integer unavailable_status = obj.isNull("unavailable_status") ? null : obj.getInt("unavailable_status");
-            String create_time = obj.isNull("create_time") ? null : obj.getString("create_time");
+            Date date_create_time = obj.isNull("create_time") ? null
+                    : DatetimeConverter.parse(obj.getString("create_time"), "yyyy-MM-dd");
 
-            java.util.Date date_time_str = DatetimeConverter.parse(unavailable_time_str,
-                    "yyyy-MM-dd");
-            java.util.Date date_time_end = DatetimeConverter.parse(unavailable_time_end,
-                    "yyyy-MM-dd");
-            java.util.Date date_create_time = DatetimeConverter.parse(create_time,
-                    "yyyy-MM-dd");
-            Employee employee = employeeService.findById(employee_id);
+            Integer is_page = obj.isNull("is_page") ? 0 : obj.getInt("is_page");
+            Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
+            boolean dir = obj.isNull("dir") ? true : obj.getBoolean("dir");
+            String order = obj.isNull("order") ? "id" : obj.getString("order");
+            Sort sort = dir ? Sort.by(Sort.Direction.ASC, order) : Sort.by(Sort.Direction.DESC, order);
 
-            return agendaRepo.find2(id, employee, date_time_str, date_time_end,
-                    date_create_time,
-                    unavailable_status);
+            Pageable pgb = PageRequest.of(is_page.intValue(), max.intValue(), sort);
+            Page<Agenda> page = agendaRepo.find2(id, employee, date_time_str, date_create_time, date_time_end,
+                    unavailable_status, pgb);
+
+            return page;
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
+        //
     }
 
 }
