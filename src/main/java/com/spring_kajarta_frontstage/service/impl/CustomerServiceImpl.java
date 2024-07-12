@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerVONew;
     }
 
-    // 更新
+    // 修改
     @Transactional
     @Override
     public CustomerVO modify(CustomerVO customerVO) {

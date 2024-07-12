@@ -9,6 +9,7 @@ import com.spring_kajarta_frontstage.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,8 +17,10 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepo;
+
     /**
      * 查詢單筆，依據員工id查詢單一員工資訊
+     *
      * @param employeeId
      * @return CustomerVO
      */
@@ -36,5 +39,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmployeeVO employeeVONew = new EmployeeVO();
         BeanUtils.copyProperties(employee, employeeVONew);
         return employeeVONew;
+    }
+
+    // 修改
+    @Transactional
+    @Override
+    public EmployeeVO modify(EmployeeVO employeeVO) {
+        Optional<Employee> optionalEmployee = employeeRepo.findById(employeeVO.getId());
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            BeanUtils.copyProperties(employeeVO, employee,"createTime", "updateTime");
+            employeeRepo.save(employee);
+            EmployeeVO updateEmployeeVO = new EmployeeVO();
+            BeanUtils.copyProperties(employee, updateEmployeeVO);
+            return updateEmployeeVO;
+        } else {
+            return null;
+        }
     }
 }

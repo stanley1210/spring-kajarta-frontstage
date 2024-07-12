@@ -4,6 +4,7 @@ package com.spring_kajarta_frontstage.controller;
 import com.kajarta.demo.domian.Result;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.utils.ResultUtil;
+import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,6 +58,26 @@ public class EmployeeController {
             return ResultUtil.error("新增員工出錯");
         }
         return ResultUtil.success(employeeVO);
+    }
+
+    @Operation(summary = "員工資訊-修改員工")
+    @PutMapping(value = "/modify/{employeeId}")
+    public Result<EmployeeVO> modifyEmployee( @Parameter(description = "員工id") @PathVariable Integer employeeId, @RequestBody EmployeeVO employeeVO) {
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-修改員工資訊：{}", "到時候換成上一步拿到的管理員", employeeVO.toString());
+        employeeVO.setId(employeeId);  // 確保傳入的客戶資料有正確的ID
+        try {
+            Employee updateEmployee = employeeService.findById(employeeId);
+            if (updateEmployee == null) {
+                return ResultUtil.error("找不到員工ID: " + employeeId);
+            }
+            return ResultUtil.success(updateEmployee);
+
+        } catch (Exception e){
+            return ResultUtil.error("修改員工出錯");
+        }
+
     }
 
 }

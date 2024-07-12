@@ -10,7 +10,8 @@ public interface EmployeeService {
     // 新增
     EmployeeVO create(EmployeeVO employeeVO);
 
-    // 刪除
+    // 修改
+    EmployeeVO modify(EmployeeVO employeeVO);
 
 
 }

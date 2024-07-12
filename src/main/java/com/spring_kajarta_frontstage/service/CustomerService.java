@@ -2,7 +2,6 @@ package com.spring_kajarta_frontstage.service;
 
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.vo.CustomerVO;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface CustomerService {
 
@@ -12,8 +11,7 @@ public interface CustomerService {
     // 新增
     CustomerVO create(CustomerVO customerVO);
 
-    // 更新
-    @Transactional
+    // 修改
     CustomerVO modify(CustomerVO customerVO);
 
 
