@@ -33,16 +33,12 @@ public class KpiService {
     public Kpi create(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-            String season_str_day = obj.isNull("season_str_day") ? null : obj.getString("season_str_day");
-            Integer team_leader_rating = obj.isNull("team_leader_rating") ? null : obj.getInt("team_leader_rating");
-            Integer sales_score = obj.isNull("sales_score") ? null : obj.getInt("sales_score");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+            String seasonStrDay = obj.isNull("seasonStrDay") ? null : obj.getString("seasonStrDay");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
 
             Kpi insert = new Kpi();
-            insert.setSeasonStrDay(DatetimeConverter.parse(season_str_day, "yyyy-MM-dd hh:mm:ss"));
-            insert.setTeamLeaderRating(team_leader_rating);
-            insert.setSalesScore(sales_score);
-            insert.setEmployee(employeeService.findById(employee_id));
+            insert.setSeasonStrDay(DatetimeConverter.parse(seasonStrDay, "yyyy-MM-dd"));
+            insert.setEmployee(employeeService.findById(employeeId));
 
             return kpiRepo.save(insert);
 
@@ -57,19 +53,19 @@ public class KpiService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            String season_str_day = obj.isNull("season_str_day") ? null : obj.getString("season_str_day");
-            Integer team_leader_rating = obj.isNull("team_leader_rating") ? null : obj.getInt("team_leader_rating");
-            Integer sales_score = obj.isNull("sales_score") ? null : obj.getInt("sales_score");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
+            String selectStrDay = obj.isNull("selectStrDay") ? null : obj.getString("selectStrDay");
+            Integer teamLeaderRating = obj.isNull("teamLeaderRating") ? null : obj.getInt("teamLeaderRating");
+            Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
 
             Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isPresent()) {
                 Kpi update = optional.get();
                 update.setId(id);
-                update.setSeasonStrDay(DatetimeConverter.parse(season_str_day, "yyyy-MM-dd hh:mm:ss"));
-                update.setTeamLeaderRating(team_leader_rating);
-                update.setSalesScore(sales_score);
-                update.setEmployee(employeeService.findById(employee_id));
+                update.setSeasonStrDay(DatetimeConverter.parse(selectStrDay, "yyyy-MM-dd hh:mm:ss"));
+                update.setTeamLeaderRating(teamLeaderRating);
+                update.setSalesScore(salesScore);
+                update.setEmployee(employeeService.findById(employeeId));
 
                 return kpiRepo.save(update);
             }
@@ -158,10 +154,13 @@ public class KpiService {
         BeanUtils.copyProperties(kpi, kpiVO);
 
         // 主管 teamleader
-        Employee teamleader = kpi.getEmployee().getTeamLeader();
-        kpiVO.setTeamLeaderName(teamleader.getName());
+        if (kpi.getEmployee().getTeamLeader() != null) {
+            Employee teamleader = kpi.getEmployee().getTeamLeader();
+            kpiVO.setTeamLeaderName(teamleader.getName());
+        } else {
+            kpiVO.setTeamLeaderName("此員工無主管");
+        }
         kpiVO.setEmployeeName(kpi.getEmployee().getName());
-
         return kpiVO;
     }
 }

@@ -47,17 +47,16 @@ public class ViewCarAssignedService {
     public ViewCarAssigned create(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            Integer view_car_id = obj.isNull("view_car_id") ? null : obj.getInt("view_car_id");
-            Integer assigned_status = obj.isNull("assigned_status") ? null : obj.getInt("assigned_status");
+            Integer teamLeaderId = obj.isNull("teamLeaderId") ? null : obj.getInt("teamLeaderId");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer viewCarId = obj.isNull("viewCarId") ? null : obj.getInt("viewCarId");
+            Integer assignedStatus = obj.isNull("assignedStatus") ? null : obj.getInt("assignedStatus");
 
             ViewCarAssigned insert = new ViewCarAssigned();
-            insert.setTeamLeaderId(team_leader_id);
-            ;
-            insert.setEmployee(employeeService.findById(employee_id));
-            insert.setViewCar(viewCarService.findById(view_car_id));
-            insert.setAssignedStatus(assigned_status);
+            insert.setTeamLeaderId(teamLeaderId);
+            insert.setEmployee(employeeService.findById(employeeId));
+            insert.setViewCar(viewCarService.findById(viewCarId));
+            insert.setAssignedStatus(assignedStatus);
 
             return viewCarAssignedRepo.save(insert);
 
@@ -72,19 +71,19 @@ public class ViewCarAssignedService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            Integer view_car_id = obj.isNull("view_car_id") ? null : obj.getInt("view_car_id");
-            Integer assigned_status = obj.isNull("assigned_status") ? null : obj.getInt("assigned_status");
+            Integer teamLeaderId = obj.isNull("teamLeaderId") ? null : obj.getInt("teamLeaderId");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer viewCarId = obj.isNull("viewCarId") ? null : obj.getInt("viewCarId");
+            Integer assignedStatus = obj.isNull("assignedStatus") ? null : obj.getInt("assignedStatus");
 
             Optional<ViewCarAssigned> optional = viewCarAssignedRepo.findById(id);
             if (optional.isPresent()) {
                 ViewCarAssigned update = optional.get();
                 update.setId(id);
-                update.setTeamLeaderId(team_leader_id);
-                update.setEmployee(employeeService.findById(employee_id));
-                update.setViewCar(viewCarService.findById(view_car_id));
-                update.setAssignedStatus(assigned_status);
+                update.setTeamLeaderId(teamLeaderId);
+                update.setEmployee(employeeService.findById(employeeId));
+                update.setViewCar(viewCarService.findById(viewCarId));
+                update.setAssignedStatus(assignedStatus);
 
                 return viewCarAssignedRepo.save(update);
             }

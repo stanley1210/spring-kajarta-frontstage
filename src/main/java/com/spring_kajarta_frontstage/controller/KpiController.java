@@ -2,6 +2,8 @@ package com.spring_kajarta_frontstage.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.model.Agenda;
+import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.model.Kpi;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.KpiVO;
@@ -96,6 +100,40 @@ public class KpiController {
         }
 
         return result;
+    }
+
+    // 新增一筆
+    @Operation(summary = "KPI-新增一筆 / 檢查Employee 的SeasonStrDay 是否有建過")
+    @PostMapping("")
+    public String create(@Parameter(description = "新增KPI") @RequestBody String body) {
+        JSONObject responseBody = new JSONObject();
+
+        JSONObject obj = new JSONObject(body);
+        Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+        String seasonStrDay = obj.isNull("seasonStrDay") ? null : obj.getString("seasonStrDay");
+
+        // 檢查Employee 的SeasonStrDay 是否有建過
+        String checkEmpSeasonStrDay = "{\"employeeId\":" + employeeId + ","
+                + "\"selectStrDay\":\"" + seasonStrDay + "\","
+                + "\"selectEndDay\":\"" + seasonStrDay + "\"}";
+        System.out.println(checkEmpSeasonStrDay);
+        Page<Kpi> pageKpi = kpiService.findByHQL(checkEmpSeasonStrDay);
+        System.out.println(pageKpi.getTotalElements());
+
+        if (pageKpi.getTotalElements() != 0) {
+            responseBody.put("success", false);
+            responseBody.put("message", "員工ID : " + employeeId + " 季度開始日 : " + seasonStrDay + " -> 無法新增,已有資料");
+        } else {
+            Kpi kpi = kpiService.create(body);
+            if (kpi == null) {
+                responseBody.put("success", false);
+                responseBody.put("message", "KPI新增失敗");
+            } else {
+                responseBody.put("success", true);
+                responseBody.put("message", "KPI新增成功");
+            }
+        }
+        return responseBody.toString();
     }
 
 }

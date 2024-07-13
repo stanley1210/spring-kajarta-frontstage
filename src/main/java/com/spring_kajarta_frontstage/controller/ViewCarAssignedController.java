@@ -3,6 +3,7 @@ package com.spring_kajarta_frontstage.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.kajarta.demo.domian.Result;
 import com.kajarta.demo.model.CarAdjust;
+import com.kajarta.demo.model.Kpi;
 import com.kajarta.demo.model.ViewCarAssigned;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CarAdjustVO;
@@ -63,16 +65,16 @@ public class ViewCarAssignedController {
     }
 
     // 多條件查詢 Spring版 + VO
-    @Operation(summary = "調整簽核列表-依據多條件查詢，含分頁查全部")
+    @Operation(summary = "賞車指派表-依據多條件查詢，含分頁查全部")
     @PostMapping("/findByHQL")
-    public Result<List<ViewCarAssignedVO>> findByHQL(@Parameter(description = "調整簽核查詢條件") @RequestBody String body) {
+    public Result<List<ViewCarAssignedVO>> findByHQL(@Parameter(description = "賞車指派表查詢條件") @RequestBody String body) {
         // todo:依據多條件(JSON)
         // 條件 - id, viewCarDateStr, viewCarDateEnd, employeeId, teamLeaderId, viewCarId,
         // carId,
         // - carinfoId, modelid, assignedStatus
         // 分頁 - is_page, max, dir, order
 
-        log.info("{}-後台查詢調整簽核列表資訊-多條件JSONE：{}", "到時候換成上一步拿到的管理員", body);
+        log.info("{}-後台查詢賞車指派表表資訊-多條件JSONE：{}", "到時候換成上一步拿到的管理員", body);
         Result<List<ViewCarAssignedVO>> result = new Result<List<ViewCarAssignedVO>>();
         List<ViewCarAssignedVO> viewCarAssignedVOs = new ArrayList<>();
         try {
@@ -103,5 +105,37 @@ public class ViewCarAssignedController {
         }
 
         return result;
+    }
+
+    // 新增一筆
+    @Operation(summary = "賞車指派表-新增一筆 / 檢查viewCarId 的assignedStatus 有一張\"未指派(assignedStatus=0)\"就不可新建")
+    @PostMapping("")
+    public String create(@Parameter(description = "新增賞車指派表") @RequestBody String body) {
+        JSONObject responseBody = new JSONObject();
+
+        JSONObject obj = new JSONObject(body);
+        Integer viewCarId = obj.isNull("viewCarId") ? null : obj.getInt("viewCarId");
+
+        // 檢查viewCarId 的assignedStatus 有一張"未指派(assignedStatus=0)"就不可新建
+        String checkViewCarIdAssignedStatusy = "{\"viewCarId\":" + viewCarId + ","
+                + "\"assignedStatus\":\"0\"}";
+        System.out.println(checkViewCarIdAssignedStatusy);
+        Page<ViewCarAssigned> pageViewCarAssigned = viewCarAssignedService.findByHQL(checkViewCarIdAssignedStatusy);
+        System.out.println(pageViewCarAssigned.getTotalElements());
+
+        if (pageViewCarAssigned.getTotalElements() != 0) {
+            responseBody.put("success", false);
+            responseBody.put("message", "賞車ID : " + viewCarId + " 已有 [一張未排程] 資料 無法新增");
+        } else {
+            ViewCarAssigned viewCarAssigned = viewCarAssignedService.create(body);
+            if (viewCarAssigned == null) {
+                responseBody.put("success", false);
+                responseBody.put("message", "賞車指派表新增失敗");
+            } else {
+                responseBody.put("success", true);
+                responseBody.put("message", "賞車指派表新增成功");
+            }
+        }
+        return responseBody.toString();
     }
 }
