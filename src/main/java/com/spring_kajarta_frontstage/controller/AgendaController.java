@@ -21,6 +21,7 @@ import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.AgendaVO;
 import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.service.AgendaService;
+import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,30 +47,47 @@ public class AgendaController {
     @Autowired
     private AgendaService agendaService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     // 新增一筆
+    @Operation(summary = "時間排程列表-新增一筆 / 檢查Employee 的UavailableTime 是否有其他安排")
     @PostMapping("/agenda")
-    public String create(@RequestBody String body) {
+    public String create(@Parameter(description = "新增排程資料") @RequestBody String body) {
         JSONObject responseBody = new JSONObject();
 
         JSONObject obj = new JSONObject(body);
-        // Integer id = obj.isNull("id") ? null : obj.getInt("id");
         Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
-        Integer businessPurpose = obj.isNull("businessPurpose") ? null : obj.getInt("businessPurpose");
-        Integer unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null : obj.getInt("unavailableTimeStr");
-        Integer unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null : obj.getInt("unavailableTimeEnd");
-        Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
+        String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null : obj.getString("unavailableTimeStr");
+        String unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null : obj.getString("unavailableTimeEnd");
 
-        if (false) {// agendaService.判斷時間是否重複(id)
+        // 檢查Employee 的UavailableTime 是否有安排
+        String checkEmpUavailableTime = "{\"employeeId\":" + employeeId + ","
+                + "\"ckeckavailableTimeStr\":\"" + unavailableTimeStr + "\","
+                + "\"ckeckavailableTimeEnd\":\"" + unavailableTimeEnd + "\"}";
+        System.out.println(checkEmpUavailableTime);
+        Page<Agenda> pageAgendas = agendaService.findByHQL(checkEmpUavailableTime);
+        System.out.println(pageAgendas.getTotalElements());
+
+        if (pageAgendas.getTotalElements() != 0) {
             responseBody.put("success", false);
-            responseBody.put("message", "XX已存在");
+            // 回傳重複時段資訊
+            JSONObject message = new JSONObject();
+            message.put("Employee", employeeService.findById(employeeId).getName());
+            message.put("EmployeeID", employeeId);
+            message.put("unavailableTimeStr", unavailableTimeStr);
+            message.put("unavailableTimeEnd", unavailableTimeEnd);
+            message.put("errorMSG", "時段內有排程");
+
+            responseBody.put("message", message);
         } else {
             Agenda agenda = agendaService.create(body);
             if (agenda == null) {
                 responseBody.put("success", false);
-                responseBody.put("message", "XX新增失敗");
+                responseBody.put("message", "排程新增失敗");
             } else {
                 responseBody.put("success", true);
-                responseBody.put("message", "XX新增成功");
+                responseBody.put("message", "排程新增成功");
             }
         }
         return responseBody.toString();

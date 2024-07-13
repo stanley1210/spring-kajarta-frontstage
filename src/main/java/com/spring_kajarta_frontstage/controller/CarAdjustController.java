@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.model.Agenda;
 import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CarAdjustVO;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
@@ -38,8 +41,8 @@ public class CarAdjustController {
     @Autowired
     private CarAdjustService carAdjustService;
 
-    @Autowired
-    private EmployeeService employeeService;
+    // @Autowired
+    // private EmployeeService employeeService;
 
     // @Autowired
     // private CarAdjustBeanToVO carAdjustBeanToVO;
@@ -102,5 +105,27 @@ public class CarAdjustController {
         }
 
         return result;
+    }
+
+    // 新增一筆
+    @Operation(summary = "調整簽核列表-新增一筆 / 不做檢查")
+    @PostMapping("")
+    public String create(@Parameter(description = "新增調整簽核") @RequestBody String body) {
+        JSONObject responseBody = new JSONObject();
+
+        if (body.length() == 0 || body.isEmpty()) {
+            responseBody.put("success", false);
+            responseBody.put("message", "排程調整簽核失敗(資料導入失敗)");
+        } else {
+            CarAdjust carAdjust = carAdjustService.create(body);
+            if (carAdjust == null) {
+                responseBody.put("success", false);
+                responseBody.put("message", "排程調整簽核失敗");
+            } else {
+                responseBody.put("success", true);
+                responseBody.put("message", "排程調整簽核成功");
+            }
+        }
+        return responseBody.toString();
     }
 }

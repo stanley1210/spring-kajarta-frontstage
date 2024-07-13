@@ -1,16 +1,24 @@
 package com.spring_kajarta_frontstage.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.model.ViewCarAssigned;
 import com.kajarta.demo.utils.ResultUtil;
+import com.kajarta.demo.vo.CarAdjustVO;
 import com.kajarta.demo.vo.ViewCarAssignedVO;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.ViewCarAssignedService;
@@ -45,32 +53,55 @@ public class ViewCarAssignedController {
         try {
             ViewCarAssigned viewCarAssigned = viewCarAssignedService.findById(id);
 
-            viewCarAssignedVO = new ViewCarAssignedVO();
-            BeanUtils.copyProperties(viewCarAssigned, viewCarAssignedVO);
+            viewCarAssignedVO = viewCarAssignedService.vOChange(viewCarAssigned);
 
-            switch (viewCarAssigned.getAssignedStatus()) {
-                case 0:
-                    viewCarAssignedVO.setAssignedStatusName("未指派");
-                    break;
-                case 1:
-                    viewCarAssignedVO.setAssignedStatusName("已指派");
-                    break;
-                case 2:
-                    viewCarAssignedVO.setAssignedStatusName("註銷");
-                    break;
-
-                default:
-                    viewCarAssignedVO.setAssignedStatusName(
-                            "簽核狀態錯誤 viewCarAssigned = " + viewCarAssigned.getAssignedStatus().toString());
-            }
-
-            viewCarAssignedVO.setViewCarId(viewCarAssigned.getViewCar().getId());
-            viewCarAssignedVO.setTeamLeaderName(employeeService.findById(viewCarAssigned.getTeamLeaderId()).getName());
-            viewCarAssignedVO.setEmployeeName(viewCarAssigned.getEmployee().getName());
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
 
         return ResultUtil.success(viewCarAssignedVO);
+    }
+
+    // 多條件查詢 Spring版 + VO
+    @Operation(summary = "調整簽核列表-依據多條件查詢，含分頁查全部")
+    @PostMapping("/findByHQL")
+    public Result<List<ViewCarAssignedVO>> findByHQL(@Parameter(description = "調整簽核查詢條件") @RequestBody String body) {
+        // todo:依據多條件(JSON)
+        // 條件 - id, viewCarDateStr, viewCarDateEnd, employeeId, teamLeaderId, viewCarId,
+        // carId,
+        // - carinfoId, modelid, assignedStatus
+        // 分頁 - is_page, max, dir, order
+
+        log.info("{}-後台查詢調整簽核列表資訊-多條件JSONE：{}", "到時候換成上一步拿到的管理員", body);
+        Result<List<ViewCarAssignedVO>> result = new Result<List<ViewCarAssignedVO>>();
+        List<ViewCarAssignedVO> viewCarAssignedVOs = new ArrayList<>();
+        try {
+            Page<ViewCarAssigned> pageViewCarAssigned = viewCarAssignedService.findByHQL(body);
+            List<ViewCarAssigned> viewCarAssigneds = pageViewCarAssigned.getContent();
+
+            if (viewCarAssigneds != null && !viewCarAssigneds.isEmpty()) {
+                for (ViewCarAssigned viewCarAssigned : viewCarAssigneds) {
+
+                    ViewCarAssignedVO viewCarAssignedVO = viewCarAssignedService.vOChange(viewCarAssigned);
+                    viewCarAssignedVOs.add(viewCarAssignedVO);
+                }
+            }
+
+            result.setData(viewCarAssignedVOs);
+            result.setSuccess(true);
+            result.setTotalPage(pageViewCarAssigned.getTotalPages());
+            result.setTotalElement(pageViewCarAssigned.getTotalElements());
+            result.setPageNumber(pageViewCarAssigned.getNumber());
+            result.setNumberOfElementsOnPage(pageViewCarAssigned.getNumberOfElements());
+            result.setHasNext(pageViewCarAssigned.hasNext());
+            result.setHasPrevious(pageViewCarAssigned.hasPrevious());
+            result.setFirstPageOrNot(pageViewCarAssigned.isFirst());
+            result.setLastPageOrNot(pageViewCarAssigned.isLast());
+
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+
+        return result;
     }
 }

@@ -40,27 +40,23 @@ public class CarAdjustService {
     public CarAdjust create(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-            Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            Integer car_id = obj.isNull("car_id") ? null : obj.getInt("car_id");
-            Integer approval_status = obj.isNull("approval_status") ? null : obj.getInt("approval_status");
-            Integer approval_type = obj.isNull("approval_type") ? null : obj.getInt("approval_type");
-            BigDecimal floating_amount = obj.isNull("floating_amount") ? null : obj.getBigDecimal("floating_amount");
+            Integer teamLeaderId = obj.isNull("teamLeaderId") ? null : obj.getInt("teamLeaderId");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
+            Integer approvalStatus = obj.isNull("approvalStatus") ? null : obj.getInt("approvalStatus");
+            Integer approvalType = obj.isNull("approvalType") ? null : obj.getInt("approvalType");
+            BigDecimal floatingAmount = obj.isNull("floatingAmount") ? null : obj.getBigDecimal("floatingAmount");
 
-            Optional<CarAdjust> optional = carAdjustRepo.findById(id);
-            if (optional.isEmpty()) {
-                CarAdjust insert = new CarAdjust();
-                insert.setId(id);
-                insert.setTeamLeaderId(team_leader_id);
-                insert.setEmployee(employeeService.findById(employee_id));
-                insert.setCar(carService.findById(car_id));
-                insert.setApprovalStatus(approval_status);
-                insert.setApprovalType(approval_type);
-                insert.setFloatingAmount(floating_amount);
+            CarAdjust insert = new CarAdjust();
+            insert.setTeamLeaderId(teamLeaderId);
+            insert.setEmployee(employeeService.findById(employeeId));
+            insert.setCar(carService.findById(carId));
+            insert.setApprovalStatus(approvalStatus);
+            insert.setApprovalType(approvalType);
+            insert.setFloatingAmount(floatingAmount);
 
-                return carAdjustRepo.save(insert);
-            }
+            return carAdjustRepo.save(insert);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,23 +68,23 @@ public class CarAdjustService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer team_leader_id = obj.isNull("team_leader_id") ? null : obj.getInt("team_leader_id");
-            Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
-            Integer car_id = obj.isNull("car_id") ? null : obj.getInt("car_id");
-            Integer approval_status = obj.isNull("approval_status") ? null : obj.getInt("approval_status");
-            Integer approval_type = obj.isNull("approval_type") ? null : obj.getInt("approval_type");
-            BigDecimal floating_amount = obj.isNull("floating_amount") ? null : obj.getBigDecimal("floating_amount");
+            Integer teamLeaderId = obj.isNull("teamLeaderId") ? null : obj.getInt("teamLeaderId");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
+            Integer approvalStatus = obj.isNull("approvalStatus") ? null : obj.getInt("approvalStatus");
+            Integer approvalType = obj.isNull("approvalType") ? null : obj.getInt("approvalType");
+            BigDecimal floatingAmount = obj.isNull("floatingAmount") ? null : obj.getBigDecimal("floatingAmount");
 
             Optional<CarAdjust> optional = carAdjustRepo.findById(id);
             if (optional.isPresent()) {
                 CarAdjust update = optional.get();
                 update.setId(id);
-                update.setTeamLeaderId(team_leader_id);
-                update.setEmployee(employeeService.findById(employee_id));
-                update.setCar(carService.findById(car_id));
-                update.setApprovalStatus(approval_status);
-                update.setApprovalType(approval_type);
-                update.setFloatingAmount(floating_amount);
+                update.setTeamLeaderId(teamLeaderId);
+                update.setEmployee(employeeService.findById(employeeId));
+                update.setCar(carService.findById(carId));
+                update.setApprovalStatus(approvalStatus);
+                update.setApprovalType(approvalType);
+                update.setFloatingAmount(floatingAmount);
 
                 return carAdjustRepo.save(update);
             }

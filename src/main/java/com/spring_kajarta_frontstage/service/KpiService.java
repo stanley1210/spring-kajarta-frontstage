@@ -33,23 +33,19 @@ public class KpiService {
     public Kpi create(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-            Integer id = obj.isNull("id") ? null : obj.getInt("id");
             String season_str_day = obj.isNull("season_str_day") ? null : obj.getString("season_str_day");
             Integer team_leader_rating = obj.isNull("team_leader_rating") ? null : obj.getInt("team_leader_rating");
             Integer sales_score = obj.isNull("sales_score") ? null : obj.getInt("sales_score");
             Integer employee_id = obj.isNull("employee_id") ? null : obj.getInt("employee_id");
 
-            Optional<Kpi> optional = kpiRepo.findById(id);
-            if (optional.isEmpty()) {
-                Kpi insert = new Kpi();
-                insert.setId(id);
-                insert.setSeasonStrDay(DatetimeConverter.parse(season_str_day, "yyyy-MM-dd hh:mm:ss"));
-                insert.setTeamLeaderRating(team_leader_rating);
-                insert.setSalesScore(sales_score);
-                insert.setEmployee(employeeService.findById(employee_id));
+            Kpi insert = new Kpi();
+            insert.setSeasonStrDay(DatetimeConverter.parse(season_str_day, "yyyy-MM-dd hh:mm:ss"));
+            insert.setTeamLeaderRating(team_leader_rating);
+            insert.setSalesScore(sales_score);
+            insert.setEmployee(employeeService.findById(employee_id));
 
-                return kpiRepo.save(insert);
-            }
+            return kpiRepo.save(insert);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

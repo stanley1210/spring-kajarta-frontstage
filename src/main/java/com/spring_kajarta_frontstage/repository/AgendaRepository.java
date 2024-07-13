@@ -16,16 +16,19 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer>, Agenda
 
         @Query("SELECT agd FROM Agenda agd WHERE (:id IS NULL OR agd.id = :id) AND "
                         + "(:employee IS NULL OR agd.employee = :employee) AND "
-                        + "(:unavailableTimeStr IS NULL OR agd.unavailableTimeStr > :unavailableTimeStr) AND "
-                        + "(:createTime IS NULL OR agd.createTime > :createTime) AND "
+                        + "(:unavailableTimeStr IS NULL OR agd.unavailableTimeStr >= :unavailableTimeStr) AND "
+                        + "(:createTime IS NULL OR agd.createTime >= :createTime) AND "
                         + "(:unavailableTimeEnd IS NULL OR agd.unavailableTimeEnd < :unavailableTimeEnd) AND "
-                        + "(:unavailableStatus IS NULL OR agd.unavailableStatus = :unavailableStatus)")
+                        + "(:unavailableStatus IS NULL OR agd.unavailableStatus = :unavailableStatus) AND "
+                        + "(:ckeckavailableTimeStr IS NULL OR :ckeckavailableTimeEnd IS NULL OR (agd.unavailableTimeStr BETWEEN :ckeckavailableTimeStr AND :ckeckavailableTimeEnd) OR (agd.unavailableTimeEnd BETWEEN :ckeckavailableTimeStr AND :ckeckavailableTimeEnd))")
         public Page<Agenda> findByHQL(@Param("id") Integer id,
                         @Param("employee") Employee employee,
                         @Param("unavailableTimeStr") Date unavailableTimeStr,
                         @Param("createTime") Date createTime,
                         @Param("unavailableTimeEnd") Date unavailableTimeEnd,
                         @Param("unavailableStatus") Integer unavailableStatus,
+                        @Param("ckeckavailableTimeStr") Date ckeckavailableTimeStr,
+                        @Param("ckeckavailableTimeEnd") Date ckeckavailableTimeEnd,
                         Pageable pageable);
 
 }

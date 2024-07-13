@@ -44,7 +44,6 @@ public class AgendaService {
     public Agenda create(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-            Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
             String businessPurpose = obj.isNull("businessPurpose") ? null : obj.getString("businessPurpose");
             String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
@@ -53,18 +52,15 @@ public class AgendaService {
                     : obj.getString("unavailableTimeEnd");
             Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
 
-            Optional<Agenda> optional = agendaRepo.findById(id);
-            if (optional.isEmpty()) {
-                Agenda insert = new Agenda();
-                insert.setId(id);
-                insert.setEmployee(employeeService.findById(employeeId));
-                insert.setBusinessPurpose(businessPurpose);
-                insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
-                insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
-                insert.setUnavailableStatus(unavailableStatus);
+            Agenda insert = new Agenda();
+            insert.setEmployee(employeeService.findById(employeeId));
+            insert.setBusinessPurpose(businessPurpose);
+            insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+            insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+            insert.setUnavailableStatus(unavailableStatus);
 
-                return agendaRepo.save(insert);
-            }
+            return agendaRepo.save(insert);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,12 +161,16 @@ public class AgendaService {
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Employee employee = obj.isNull("employeeId") ? null : employeeService.findById(obj.getInt("employeeId"));
             Date unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd");
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
             Date unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd");
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
             Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
             Date createTime = obj.isNull("createTime") ? null
                     : DatetimeConverter.parse(obj.getString("createTime"), "yyyy-MM-dd");
+            Date ckeckavailableTimeStr = obj.isNull("ckeckavailableTimeStr") ? null
+                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
+            Date ckeckavailableTimeEnd = obj.isNull("ckeckavailableTimeEnd") ? null
+                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
@@ -180,7 +180,7 @@ public class AgendaService {
 
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<Agenda> page = agendaRepo.findByHQL(id, employee, unavailableTimeStr, createTime, unavailableTimeEnd,
-                    unavailableStatus, pgb);
+                    unavailableStatus, ckeckavailableTimeStr, ckeckavailableTimeEnd, pgb);
 
             return page;
 
