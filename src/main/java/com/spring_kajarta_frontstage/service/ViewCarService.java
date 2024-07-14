@@ -20,7 +20,7 @@ public class ViewCarService {
     @Autowired
     private ViewCarRepository viewCarRepo;
     @Autowired
-    private CarService carService;
+    private CarService1 carService;
     @Autowired
     private CustomerService customerService;
 
@@ -39,24 +39,22 @@ public class ViewCarService {
             Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
             Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
 
-
             Customer customer = customerService.findById(customerId);
             Car car = carService.findById(carId);
 
+            ViewCar insert = new ViewCar();
+            insert.setViewTimeSection(viewTimeSection);
+            insert.setCar(car); // Set Car entity
+            insert.setSalesScore(salesScore);
+            insert.setFactoryScore(factoryScore);
+            insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
+            insert.setCarScore(carScore);
+            insert.setDeal(deal);
+            insert.setCustomer(customer); // Set Customer entity
+            insert.setViewCarStatus(viewCarStatus);
 
-                ViewCar insert = new ViewCar();
-                insert.setViewTimeSection(viewTimeSection);
-                insert.setCar(car); // Set Car entity
-                insert.setSalesScore(salesScore);
-                insert.setFactoryScore(factoryScore);
-                insert.setViewCarDate(DatetimeConverter.parse(viewCarDate, "yyyy-MM-dd"));
-                insert.setCarScore(carScore);
-                insert.setDeal(deal);
-                insert.setCustomer(customer); // Set Customer entity
-                insert.setViewCarStatus(viewCarStatus);
+            return viewCarRepo.save(insert);
 
-                return viewCarRepo.save(insert);
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,15 +64,15 @@ public class ViewCarService {
 
     // 查詢一筆
 
-	public ViewCar findById(Integer id) {
-		if(id!=null) {
-			Optional<ViewCar> optional = viewCarRepo.findById(id);
-			if(optional.isPresent()) {
-				return optional.get();
-			}
-		}
-		return null;
-	}
+    public ViewCar findById(Integer id) {
+        if (id != null) {
+            Optional<ViewCar> optional = viewCarRepo.findById(id);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
 
     // 查詢多筆
 
