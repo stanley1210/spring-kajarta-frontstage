@@ -60,6 +60,27 @@ public class LeaveController {
         return ResultUtil.success(leaveVO);
     }
 
+    @Operation(summary = "請假資訊-修改假單")
+    @PutMapping(value = "/modify/{leaveId}")
+    public Result<LeaveVO> modifyLeave(
+            @Parameter(description = "假單Id") @PathVariable Integer leaveId,
+            @RequestBody LeaveVO leaveVO){
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-修改假單資訊：{}", "到時候換成上一步拿到的管理員", leaveVO.toString());
+        try {
+            LeaveVO updateLeave = leaveService.modify(leaveVO);
+            if(updateLeave == null){
+                return ResultUtil.error("找不到假單Id: " + leaveId);
+            }
+            return ResultUtil.success(updateLeave);
+        } catch (Exception e){
+            return  ResultUtil.error("修改假單出錯");
+        }
+
+
+    }
+
 }
 
 

@@ -10,4 +10,7 @@ public interface LeaveService {
 
     // 新增
     LeaveVO create(LeaveVO leaveVO);
+
+    // 修改
+    LeaveVO modify(LeaveVO leaveVO);
 }

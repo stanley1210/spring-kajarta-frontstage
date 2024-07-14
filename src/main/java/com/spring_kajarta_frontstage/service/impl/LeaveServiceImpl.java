@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 @Service
 public class LeaveServiceImpl implements LeaveService {
     @Autowired
@@ -19,8 +20,10 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Autowired
     private EmployeeRepository employeeRepo;
+
     /**
      * 查詢單筆，依據請假id查詢單一請假資訊
+     *
      * @param leaveId
      * @return LeaveVO
      */
@@ -30,6 +33,7 @@ public class LeaveServiceImpl implements LeaveService {
         return leave.orElse(null);
     }
 
+    // 新增
     @Override
     public LeaveVO create(LeaveVO leaveVO) {
         Leave leave = new Leave();
@@ -44,5 +48,22 @@ public class LeaveServiceImpl implements LeaveService {
         LeaveVO leaveVONew = new LeaveVO();
         BeanUtils.copyProperties(leaveVO, leaveVONew);
         return leaveVONew;
+    }
+
+    // 修改
+    @Override
+    public LeaveVO modify(LeaveVO leaveVO) {
+        Optional<Leave> optionalLeave = leaveRepo.findById(leaveVO.getId());
+        if (optionalLeave.isPresent()) {
+            Leave leave = optionalLeave.get();
+            BeanUtils.copyProperties(leaveVO, leave, "createTime", "updateTime");
+            leaveRepo.save(leave);
+            LeaveVO updateLeaveVO = new LeaveVO();
+            BeanUtils.copyProperties(leave, updateLeaveVO);
+            return updateLeaveVO;
+        } else {
+            return null;
+        }
+
     }
 }
