@@ -53,18 +53,19 @@ public class KpiService {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            String selectStrDay = obj.isNull("selectStrDay") ? null : obj.getString("selectStrDay");
             Integer teamLeaderRating = obj.isNull("teamLeaderRating") ? null : obj.getInt("teamLeaderRating");
             Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
+            BigDecimal totalScore = obj.isNull("totalScore") ? null : obj.getBigDecimal("totalScore");
             Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
 
             Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isPresent()) {
                 Kpi update = optional.get();
                 update.setId(id);
-                update.setSeasonStrDay(DatetimeConverter.parse(selectStrDay, "yyyy-MM-dd hh:mm:ss"));
+                update.setSeasonStrDay(kpiRepo.findById(id).get().getSeasonStrDay());
                 update.setTeamLeaderRating(teamLeaderRating);
                 update.setSalesScore(salesScore);
+                update.setTotalScore(totalScore);
                 update.setEmployee(employeeService.findById(employeeId));
 
                 return kpiRepo.save(update);

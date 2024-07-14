@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.domian.Result;
-import com.kajarta.demo.model.Agenda;
-import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.model.Kpi;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.KpiVO;
@@ -136,4 +135,28 @@ public class KpiController {
         return responseBody.toString();
     }
 
+    // 修改一筆
+    @Operation(summary = "KPI-修改一筆 / 不做檢查")
+    @PutMapping("/{id}")
+    public Result<KpiVO> modify(@Parameter(description = "修改KPI ID") @PathVariable Integer id,
+            @Parameter(description = "修改KPI資料") @RequestBody String body) {
+
+        if (id == null) {
+            return ResultUtil.error("KPI Id是必要欄位");
+        } else {
+            if (!kpiService.exists(id)) {
+                return ResultUtil.error("KPI Id不存在");
+            } else {
+                Kpi kpi = kpiService.modify(body);
+                if (kpi == null) {
+                    return ResultUtil.error("KPI 修改失敗");
+                } else {
+
+                    KpiVO kpiVO = kpiService.vOChange(kpi);
+
+                    return ResultUtil.success(kpiVO);
+                }
+            }
+        }
+    }
 }

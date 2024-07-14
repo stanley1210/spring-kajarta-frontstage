@@ -5,8 +5,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +17,6 @@ import com.kajarta.demo.domian.Result;
 import com.kajarta.demo.model.Agenda;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.AgendaVO;
-import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.service.AgendaService;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
@@ -32,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -53,8 +49,7 @@ public class AgendaController {
     // 新增一筆
     @Operation(summary = "時間排程列表-新增一筆 / 檢查Employee 的UavailableTime 是否有其他安排")
     @PostMapping("/agenda")
-    public String create(@Parameter(description = "新增排程資料") @RequestBody String body) {
-        JSONObject responseBody = new JSONObject();
+    public Result<AgendaVO> create(@Parameter(description = "新增排程資料") @RequestBody String body) {
 
         JSONObject obj = new JSONObject(body);
         Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
@@ -70,27 +65,25 @@ public class AgendaController {
         System.out.println(pageAgendas.getTotalElements());
 
         if (pageAgendas.getTotalElements() != 0) {
-            responseBody.put("success", false);
+            AgendaVO message = new AgendaVO();
             // 回傳重複時段資訊
-            JSONObject message = new JSONObject();
-            message.put("Employee", employeeService.findById(employeeId).getName());
-            message.put("EmployeeID", employeeId);
-            message.put("unavailableTimeStr", unavailableTimeStr);
-            message.put("unavailableTimeEnd", unavailableTimeEnd);
-            message.put("errorMSG", "時段內有排程");
+            message.setEmployeeName(employeeService.findById(employeeId).getName());
+            message.setEmployeeId(employeeId);
+            message.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+            message.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
 
-            responseBody.put("message", message);
+            Result<AgendaVO> timeError = ResultUtil.error("時段內有排程");
+            timeError.setData(message);
+
+            return timeError;
         } else {
             Agenda agenda = agendaService.create(body);
             if (agenda == null) {
-                responseBody.put("success", false);
-                responseBody.put("message", "排程新增失敗");
+                return ResultUtil.error("排程新增失敗");
             } else {
-                responseBody.put("success", true);
-                responseBody.put("message", "排程新增成功");
+                return ResultUtil.success();
             }
         }
-        return responseBody.toString();
     }
 
     // 修改一筆

@@ -1,13 +1,10 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
-import com.kajarta.demo.model.Agenda;
 import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.utils.ResultUtil;
-import com.kajarta.demo.vo.AgendaVO;
 import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.service.CarAdjustService;
-import com.spring_kajarta_frontstage.service.EmployeeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
