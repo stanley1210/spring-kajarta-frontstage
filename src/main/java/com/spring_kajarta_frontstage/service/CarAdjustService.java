@@ -15,8 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import com.kajarta.demo.model.Agenda;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.model.Employee;

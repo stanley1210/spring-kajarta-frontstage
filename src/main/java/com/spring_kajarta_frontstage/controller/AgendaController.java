@@ -152,26 +152,20 @@ public class AgendaController {
 
     // 刪除一筆
     @DeleteMapping("/agenda/{id}")
-    public String remove(@PathVariable Integer id) {
-        JSONObject responseBody = new JSONObject();
+    public Result<AgendaVO> remove(@PathVariable Integer id) {
         if (id == null) {
-            responseBody.put("success", false);
-            responseBody.put("message", "排程Id是必要欄位");
+            return ResultUtil.error("排程Id是必要欄位");
         } else {
             if (!agendaService.exists(id)) {
-                responseBody.put("success", false);
-                responseBody.put("message", "排程Id不存在");
+                return ResultUtil.error("排程Id不存在");
             } else {
                 if (!agendaService.remove(id)) {
-                    responseBody.put("success", false);
-                    responseBody.put("message", "排程刪除失敗");
+                    return ResultUtil.error("排程刪除失敗");
                 } else {
-                    responseBody.put("success", true);
-                    responseBody.put("message", "排程刪除成功");
+                    return ResultUtil.success();
                 }
             }
         }
-        return responseBody.toString();
     }
 
     // 單筆查詢

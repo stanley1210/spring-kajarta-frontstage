@@ -1,6 +1,5 @@
 package com.spring_kajarta_frontstage.repository;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import org.springframework.data.domain.Page;

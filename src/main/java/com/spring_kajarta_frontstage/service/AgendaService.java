@@ -16,10 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Agenda;
-import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.vo.AgendaVO;
-import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.repository.AgendaRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
