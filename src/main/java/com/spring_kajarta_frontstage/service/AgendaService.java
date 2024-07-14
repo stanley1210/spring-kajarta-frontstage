@@ -1,24 +1,194 @@
 package com.spring_kajarta_frontstage.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.kajarta.demo.model.Agenda;
+import com.kajarta.demo.model.Employee;
 import com.spring_kajarta_frontstage.repository.AgendaRepository;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @Service
 public class AgendaService {
 
     @Autowired
-    private AgendaRepository agendaRepository;
+    private AgendaRepository agendaRepo;
 
-    // 新增
+    @Autowired
+    private EmployeeService employeeService;
 
     // 刪除
+    public boolean remove(Integer id) {
+        if (id != null) {
+            Optional<Agenda> optional = agendaRepo.findById(id);
+            if (optional.isPresent()) {
+                agendaRepo.deleteById(id);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 新增
+    public Agenda create(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            String businessPurpose = obj.isNull("businessPurpose") ? null : obj.getString("businessPurpose");
+            String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                    : obj.getString("unavailableTimeStr");
+            String unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                    : obj.getString("unavailableTimeEnd");
+            Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
+
+            Optional<Agenda> optional = agendaRepo.findById(id);
+            if (optional.isEmpty()) {
+                Agenda insert = new Agenda();
+                insert.setId(id);
+                insert.setEmployee(employeeService.findById(employeeId));
+                insert.setBusinessPurpose(businessPurpose);
+                insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+                insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+                insert.setUnavailableStatus(unavailableStatus);
+
+                return agendaRepo.save(insert);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // 修改
+    public Agenda modify(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            String businessPurpose = obj.isNull("businessPurpose") ? null : obj.getString("businessPurpose");
+            String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                    : obj.getString("unavailableTimeStr");
+            String unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                    : obj.getString("unavailableTimeEnd");
+            Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
+
+            Optional<Agenda> optional = agendaRepo.findById(id);
+            if (optional.isPresent()) {
+                Agenda update = new Agenda();
+                update.setId(id);
+                update.setEmployee(employeeService.findById(employeeId));
+                update.setBusinessPurpose(businessPurpose);
+                update.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+                update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+                update.setUnavailableStatus(unavailableStatus);
+
+                return agendaRepo.save(update);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 查全部
+    public List<Agenda> select(Agenda agendabean) {
+        List<Agenda> result = null;
+        if (agendabean != null && agendabean.getId() != null) {
+            Optional<Agenda> optional = agendaRepo.findById(agendabean.getId());
+            if (optional.isPresent()) {
+                result = new ArrayList<>();
+                result.add(optional.get());
+            }
+        } else {
+            result = agendaRepo.findAll();
+        }
+        return result;
+    }
 
     // 查詢一筆
+    public Agenda findById(Integer id) {
+        if (id != null) {
+            Optional<Agenda> optional = agendaRepo.findById(id);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
+
+    // 判斷id是否存在
+    public boolean exists(Integer id) {
+        if (id != null) {
+            return agendaRepo.existsById(id);
+        }
+        return false;
+    }
+
+    // 計算數量
+    public long count(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return agendaRepo.count(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     // 查詢多筆
+    public List<Agenda> find(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return agendaRepo.find(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 查詢多筆 @Query 測試
+    public Page<Agenda> find2(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            Employee employee = obj.isNull("employeeId") ? null : employeeService.findById(obj.getInt("employeeId"));
+            Date unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd");
+            Date unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd");
+            Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
+            Date createTime = obj.isNull("createTime") ? null
+                    : DatetimeConverter.parse(obj.getString("createTime"), "yyyy-MM-dd");
+
+            Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
+            Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
+            boolean dir = obj.isNull("dir") ? true : obj.getBoolean("dir");
+            String order = obj.isNull("order") ? "id" : obj.getString("order");
+            Sort sort = dir ? Sort.by(Sort.Direction.ASC, order) : Sort.by(Sort.Direction.DESC, order);
+
+            Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
+            Page<Agenda> page = agendaRepo.findByHQL(id, employee, unavailableTimeStr, createTime, unavailableTimeEnd,
+                    unavailableStatus, pgb);
+
+            return page;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+        //
+    }
 
 }
