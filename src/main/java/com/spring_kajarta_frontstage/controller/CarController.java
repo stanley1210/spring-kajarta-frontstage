@@ -78,22 +78,21 @@ public class CarController {
 
         car.setId(0);
         return carService.save(car);
-        // JSONObject reponseBody = new JSONObject();
-        // JSONObject obj = new JSONObject(body);
-        // System.out.println("----------------");
-        // // Integer id = obj.isNull("id") ? null : obj.getInt("id");
 
-        // Car car = carService.create(body);
-        // if (car == null) {
-        // reponseBody.put("success", false);
-        // reponseBody.put("message", "新增失敗");
-        // } else {
-        // reponseBody.put("success", true);
-        // reponseBody.put("message", "新增成功");
+    }
 
-        // }
-
-        // return reponseBody.toString();
+    @PostMapping("/create2")
+    public String jsonCreate(@RequestBody String body) {
+        JSONObject reponseBody = new JSONObject();
+        Car car = carService.create(body);
+        if (car == null) {
+            reponseBody.put("success", false);
+            reponseBody.put("message", "新增失敗");
+        } else {
+            reponseBody.put("success", true);
+            reponseBody.put("message", "新增成功");
+        }
+        return reponseBody.toString();
     }
 
     @DeleteMapping("/delete/{id}") // 刪除
@@ -131,10 +130,7 @@ public class CarController {
                 responseBody.put("success", true);
                 responseBody.put("message", "修改成功");
             }
-
         }
-
         return responseBody.toString();
     }
-
 }
