@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Agenda;
+import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.model.Employee;
+import com.kajarta.demo.vo.AgendaVO;
+import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.repository.AgendaRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
@@ -89,6 +93,8 @@ public class AgendaService {
                 update.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
                 update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
                 update.setUnavailableStatus(unavailableStatus);
+                update.setCreateTime(agendaRepo.findById(id).get().getCreateTime());
+                update.setCreateTime(agendaRepo.findById(id).get().getUpdateTime());
 
                 return agendaRepo.save(update);
             }
@@ -171,6 +177,7 @@ public class AgendaService {
                     : DatetimeConverter.parse(obj.getString("ckeckavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
             Date ckeckavailableTimeEnd = obj.isNull("ckeckavailableTimeEnd") ? null
                     : DatetimeConverter.parse(obj.getString("ckeckavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
+            Integer exceptid = obj.isNull("exceptid") ? null : obj.getInt("exceptid");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
@@ -180,7 +187,7 @@ public class AgendaService {
 
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<Agenda> page = agendaRepo.findByHQL(id, employee, unavailableTimeStr, createTime, unavailableTimeEnd,
-                    unavailableStatus, ckeckavailableTimeStr, ckeckavailableTimeEnd, pgb);
+                    unavailableStatus, ckeckavailableTimeStr, ckeckavailableTimeEnd, exceptid, pgb);
 
             return page;
 
@@ -190,4 +197,31 @@ public class AgendaService {
         return null;
     }
 
+    // Bean 轉 VO
+    public AgendaVO vOChange(Agenda agenda) {
+        AgendaVO agendaVO = new AgendaVO();
+
+        BeanUtils.copyProperties(agenda, agendaVO);
+
+        // 排程分類 UnavailableStatu
+        switch (agenda.getUnavailableStatus()) {
+            case 1:
+                agendaVO.setUnavailableStatusName("請假");
+                break;
+            case 2:
+                agendaVO.setUnavailableStatusName("賞車");
+                break;
+            case 3:
+                agendaVO.setUnavailableStatusName("公事安排");
+                break;
+
+            default:
+                agendaVO.setUnavailableStatusName(
+                        "排程分類錯誤 UnavailableStatus = " + agenda.getUnavailableStatus().toString());
+        }
+        agendaVO.setEmployeeName(agenda.getEmployee().getName());
+        agendaVO.setEmployeeId(agenda.getEmployee().getId());
+
+        return agendaVO;
+    }
 }

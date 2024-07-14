@@ -94,28 +94,67 @@ public class AgendaController {
     }
 
     // 修改一筆
+    @Operation(summary = "時間排程列表-修改一筆 / 檢查ID / 檢查Employee 的UavailableTime 是否有其他安排 / 檢查(setUnavailableStatus != 3)是否為自行排程")
     @PutMapping("/agenda/{id}")
-    public String modify(@PathVariable Integer id, @RequestBody String body) {
-        JSONObject responseBody = new JSONObject();
+    public Result<AgendaVO> modify(@Parameter(description = "新增排程ID") @PathVariable Integer id,
+            @Parameter(description = "修改排程資料") @RequestBody String body) {
+
         if (id == null) {
-            responseBody.put("success", false);
-            responseBody.put("message", "排程Id是必要欄位");
+            return ResultUtil.error("排程Id是必要欄位");
         } else {
             if (!agendaService.exists(id)) {
-                responseBody.put("success", false);
-                responseBody.put("message", "排程Id不存在");
+                return ResultUtil.error("排程Id不存在");
             } else {
-                Agenda agenda = agendaService.modify(body);
-                if (agenda == null) {
-                    responseBody.put("success", false);
-                    responseBody.put("message", "排程修改失敗");
+                JSONObject obj = new JSONObject(body);
+                Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+                String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
+                        : obj.getString("unavailableTimeStr");
+                String unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
+                        : obj.getString("unavailableTimeEnd");
+                // Integer unavailableStatus =
+                // agendaService.findById(id).getUnavailableStatus();
+
+                // 檢查Employee 的UavailableTime 是否有安排
+                String checkEmpUavailableTime = "{\"employeeId\":" + employeeId + ","
+                        + "\"ckeckavailableTimeStr\":\"" + unavailableTimeStr + "\","
+                        + "\"ckeckavailableTimeEnd\":\"" + unavailableTimeEnd + "\","
+                        + "\"exceptid\":\"" + id + "\"}";
+                System.out.println(checkEmpUavailableTime);
+                Page<Agenda> pageAgendas = agendaService.findByHQL(checkEmpUavailableTime);
+                System.out.println(pageAgendas.getTotalElements());
+                // if (unavailableStatus != 3) {
+                // return ResultUtil.error("請假&賞車排程無法直接修改");
+                // } else {
+
+                if (pageAgendas.getTotalElements() != 0) {
+
+                    // 回傳重複時段資訊
+                    AgendaVO message = new AgendaVO();
+                    message.setEmployeeName(employeeService.findById(employeeId).getName());
+                    message.setEmployeeId(employeeId);
+                    message.setUnavailableTimeStr(
+                            DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+                    message.setUnavailableTimeEnd(
+                            DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+
+                    Result<AgendaVO> timeError = ResultUtil.error("時段內有排程");
+                    timeError.setData(message);
+
+                    return timeError;
                 } else {
-                    responseBody.put("success", true);
-                    responseBody.put("message", "排程修改成功");
+                    Agenda agenda = agendaService.modify(body);
+                    if (agenda == null) {
+                        return ResultUtil.error("排程修改失敗");
+                    } else {
+
+                        AgendaVO agendaVO = agendaService.vOChange(agenda);
+
+                        return ResultUtil.success(agendaVO);
+                    }
                 }
+                // }
             }
         }
-        return responseBody.toString();
     }
 
     // 刪除一筆
@@ -267,26 +306,7 @@ public class AgendaController {
             if (agendas != null && !agendas.isEmpty()) {
                 for (Agenda agenda : agendas) {
 
-                    AgendaVO agendaVO = new AgendaVO();
-                    BeanUtils.copyProperties(agenda, agendaVO);
-
-                    // 排程分類 UnavailableStatu
-                    switch (agenda.getUnavailableStatus()) {
-                        case 1:
-                            agendaVO.setUnavailableStatusName("請假");
-                            break;
-                        case 2:
-                            agendaVO.setUnavailableStatusName("賞車");
-                            break;
-                        case 3:
-                            agendaVO.setUnavailableStatusName("公事安排");
-                            break;
-
-                        default:
-                            agendaVO.setUnavailableStatusName(
-                                    "排程分類錯誤 UnavailableStatus = " + agenda.getUnavailableStatus().toString());
-                    }
-                    agendaVO.setEmployeeName(agenda.getEmployee().getName());
+                    AgendaVO agendaVO = agendaService.vOChange(agenda);
 
                     agendaVOs.add(agendaVO);
                 }
