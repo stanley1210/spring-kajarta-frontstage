@@ -96,7 +96,7 @@ public class AgendaController {
     // 修改一筆
     @Operation(summary = "時間排程列表-修改一筆 / 檢查ID / 檢查Employee 的UavailableTime 是否有其他安排 / 檢查(setUnavailableStatus != 3)是否為自行排程")
     @PutMapping("/agenda/{id}")
-    public Result<AgendaVO> modify(@Parameter(description = "新增排程ID") @PathVariable Integer id,
+    public Result<AgendaVO> modify(@Parameter(description = "修改排程ID") @PathVariable Integer id,
             @Parameter(description = "修改排程資料") @RequestBody String body) {
 
         if (id == null) {

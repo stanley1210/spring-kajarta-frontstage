@@ -4,6 +4,7 @@ import com.kajarta.demo.domian.Result;
 import com.kajarta.demo.model.Agenda;
 import com.kajarta.demo.model.CarAdjust;
 import com.kajarta.demo.utils.ResultUtil;
+import com.kajarta.demo.vo.AgendaVO;
 import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.service.CarAdjustService;
 import com.spring_kajarta_frontstage.service.EmployeeService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -128,4 +130,30 @@ public class CarAdjustController {
         }
         return responseBody.toString();
     }
+
+    // 修改一筆
+    @Operation(summary = "調整簽核列表-修改一筆 / 不做檢查")
+    @PutMapping("/{id}")
+    public Result<CarAdjustVO> modify(@Parameter(description = "修改調整簽核ID") @PathVariable Integer id,
+            @Parameter(description = "修改調整簽核資料") @RequestBody String body) {
+
+        if (id == null) {
+            return ResultUtil.error("調整簽核Id是必要欄位");
+        } else {
+            if (!carAdjustService.exists(id)) {
+                return ResultUtil.error("調整簽核Id不存在");
+            } else {
+                CarAdjust carAdjust = carAdjustService.modify(body);
+                if (carAdjust == null) {
+                    return ResultUtil.error("調整簽核修改失敗");
+                } else {
+
+                    CarAdjustVO carAdjustVO = carAdjustService.vOChange(carAdjust);
+
+                    return ResultUtil.success(carAdjustVO);
+                }
+            }
+        }
+    }
+
 }
