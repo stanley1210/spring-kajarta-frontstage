@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "管理後台-會員")
 @Slf4j
 @Validated
@@ -42,6 +44,26 @@ public class CustomerController {
 
         return ResultUtil.success(customerVO);
     }
+
+
+    @Operation(summary = "會員資訊-查詢多筆")
+    @GetMapping("/list")
+    public Result<List<CustomerVO>> info(@Parameter(description = "sex") Character sex,
+                                   @Parameter(description = "account id") Integer accountType){
+        // todo:依據token獲取後台登入用戶
+
+//        log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
+        List<CustomerVO> customerVOList;
+        try {
+            customerVOList = customerService.findAll(sex, accountType);
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+
+        return ResultUtil.success(customerVOList);
+    }
+
+
 
     @Operation(summary = "會員資訊-新增會員")
     @PostMapping(value = "/add")

@@ -2,6 +2,7 @@ package com.spring_kajarta_frontstage.controller;
 
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CustomerVO;
@@ -38,6 +39,9 @@ public class EmployeeController {
             Employee employee = employeeService.findById(employeeId);
             employeeVO = new EmployeeVO();
             BeanUtils.copyProperties(employee, employeeVO);
+            employeeVO.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
+            employeeVO.setBranchAddress(BranchEnum.getByCode(employee.getBranch()).getAddress());
+            employeeVO.setBranchName(BranchEnum.getByCode(employee.getBranch()).getBranchName());
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
