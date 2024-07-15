@@ -37,8 +37,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     // 多條件查詢，依據用戶性別、帳號、城市、姓名
-    public List<CustomerVO> multiConditionQuery(Character sex, Integer accountType, Integer city, String name) {
-        List<Customer> customers = customerRepo.findByMultipleConditions(sex, accountType, city, name);
+    public List<CustomerVO> multiConditionQuery(Character sex, Integer accountType, Integer city, String name, String phone) {
+        List<Customer> customers = customerRepo.findByMultipleConditions(sex, accountType, city, name, phone);
         List<CustomerVO> customerVOList = new ArrayList<>();
         for (Customer customer : customers) {
             CustomerVO customerVO = new CustomerVO();

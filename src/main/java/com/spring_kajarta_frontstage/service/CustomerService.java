@@ -11,7 +11,7 @@ public interface CustomerService {
     Customer findById(Integer customerId);
 
     // 多條件查詢，依據用戶性別、帳號、城市、姓名
-    List<CustomerVO> multiConditionQuery(Character sex, Integer accountType, Integer city, String name);
+    List<CustomerVO> multiConditionQuery(Character sex, Integer accountType, Integer city, String name, String phone);
 
     // 新增
     CustomerVO create(CustomerVO customerVO);

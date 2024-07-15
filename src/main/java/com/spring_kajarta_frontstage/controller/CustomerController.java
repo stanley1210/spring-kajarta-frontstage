@@ -53,13 +53,14 @@ public class CustomerController {
         Integer accountType = customerVO.getAccountType();
         Integer city = customerVO.getCity();
         String name = customerVO.getName();
+        String phone = customerVO.getPhone();
 
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢客戶資訊-多筆：{}", "到時候換成上一步拿到的管理員", "sex: " + sex + " accountType: " + accountType + " city: " + city + " name: " + name);
 
         try {
-            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, city, name);
+            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, city, name, phone);
             return ResultUtil.success(customerVOList);
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
