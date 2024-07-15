@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Tag(name = "管理後台-員工")
 @Slf4j
 @Validated
@@ -47,6 +50,35 @@ public class EmployeeController {
         }
         return ResultUtil.success(employeeVO);
     }
+
+//    @Operation(summary = "員工資訊-查詢多筆，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日")
+//    @PostMapping("/multi")
+//    public Result<List<EmployeeVO>> multiConditionQuery(@RequestBody EmployeeVO employeeVO) {
+//        Character sex = employeeVO.getSex();
+//        Integer accountType = employeeVO.getAccountType();
+//        String account = employeeVO.getAccount();
+//        String name = employeeVO.getName();
+//        String phone = employeeVO.getPhone();
+//        String email = employeeVO.getEmail();
+//        Integer branchId = employeeVO.getBranch();
+//        Integer teamLeaderId = employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null;
+//        LocalDate startDateFrom = employeeVO.getStartDate();
+//        LocalDate startDateTo = employeeVO.getEndDate(); // Assuming end date as the end of the range
+//        LocalDate endDateFrom = employeeVO.getStartDate(); // Adjust if you have different fields for these ranges
+//        LocalDate endDateTo = employeeVO.getEndDate();
+//
+//        log.info("後台查詢員工資訊-多筆：sex: {} accountType: {} account: {} name: {} phone: {} email: {} branchId: {} teamLeaderId: {} startDateFrom: {} startDateTo: {} endDateFrom: {} endDateTo: {}",
+//                sex, accountType, account, name, phone, email, branchId, teamLeaderId, startDateFrom, startDateTo, endDateFrom, endDateTo);
+//
+//        try {
+//            List<EmployeeVO> employeeVOList = employeeService.multiConditionQuery(
+//                    sex, accountType, account, name, phone, email, branchId, teamLeaderId, startDateFrom, startDateTo, endDateFrom, endDateTo);
+//            return ResultUtil.success(employeeVOList);
+//        } catch (Exception e) {
+//            log.error("查詢出錯", e);
+//            return ResultUtil.error("查詢出錯");
+//        }
+//    }
 
     @Operation(summary = "員工資訊-新增員工")
     @PostMapping(value = "/add")

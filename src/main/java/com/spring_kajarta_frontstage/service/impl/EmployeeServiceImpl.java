@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +32,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> employee = employeeRepo.findById(employeeId);
         return employee.orElse(null);
     }
+
+//    @Override
+//    public List<EmployeeVO> multiConditionQuery(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branchId, Integer teamLeaderId, LocalDate startDateFrom, LocalDate startDateTo, LocalDate endDateFrom, LocalDate endDateTo) {
+//        List<Employee> employees = employeeRepo.findByMultipleConditions(
+//                sex, accountType, account, name, phone, email, branchId, teamLeaderId,
+//                startDateFrom, startDateTo, endDateFrom, endDateTo);
+//
+//        List<EmployeeVO> employeeVOList = new ArrayList<>();
+//        for (Employee employee : employees) {
+//            EmployeeVO employeeVO = new EmployeeVO();
+//            BeanUtils.copyProperties(employee, employeeVO);
+//            employeeVOList.add(employeeVO);
+//        }
+//        return employeeVOList;
+//    }
+
 
     // 新增
     @Override

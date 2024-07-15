@@ -46,21 +46,23 @@ public class CustomerController {
     }
 
 
-    @Operation(summary = "會員資訊-查詢多筆，依據用戶性別、帳號、城市、姓名")
+    @Operation(summary = "會員資訊-查詢多筆，依據用戶性別、帳號分類、帳號、城市、姓名、手機、電子信箱")
     @PostMapping("/multi")
     public Result<List<CustomerVO>> multiConditionQuery(@RequestBody CustomerVO customerVO) {
         Character sex = customerVO.getSex();
         Integer accountType = customerVO.getAccountType();
+        String account = customerVO.getAccount();
         Integer city = customerVO.getCity();
         String name = customerVO.getName();
         String phone = customerVO.getPhone();
+        String email = customerVO.getEmail();
 
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢客戶資訊-多筆：{}", "到時候換成上一步拿到的管理員", "sex: " + sex + " accountType: " + accountType + " city: " + city + " name: " + name);
 
         try {
-            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, city, name, phone);
+            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, account, city, name, phone , email);
             return ResultUtil.success(customerVOList);
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
