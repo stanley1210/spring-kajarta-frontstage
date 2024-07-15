@@ -59,7 +59,8 @@ public class CustomerController {
 
         // todo:依據token獲取後台登入用戶
 
-        log.info("{}-後台查詢客戶資訊-多筆：{}", "到時候換成上一步拿到的管理員", "sex: " + sex + " accountType: " + accountType + " city: " + city + " name: " + name);
+        log.info("{}-後台查詢客戶資訊-多筆：sex: {} accountType: {} account: {} city: {} name: {} phone: {} email: {}",
+                "到時候換成上一步拿到的管理員", sex, accountType, account, city, name, phone, email);
 
         try {
             List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, account, city, name, phone , email);

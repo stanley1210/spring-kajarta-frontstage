@@ -33,20 +33,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee.orElse(null);
     }
 
-//    @Override
-//    public List<EmployeeVO> multiConditionQuery(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branchId, Integer teamLeaderId, LocalDate startDateFrom, LocalDate startDateTo, LocalDate endDateFrom, LocalDate endDateTo) {
-//        List<Employee> employees = employeeRepo.findByMultipleConditions(
-//                sex, accountType, account, name, phone, email, branchId, teamLeaderId,
-//                startDateFrom, startDateTo, endDateFrom, endDateTo);
-//
-//        List<EmployeeVO> employeeVOList = new ArrayList<>();
-//        for (Employee employee : employees) {
-//            EmployeeVO employeeVO = new EmployeeVO();
-//            BeanUtils.copyProperties(employee, employeeVO);
-//            employeeVOList.add(employeeVO);
-//        }
-//        return employeeVOList;
-//    }
+    // 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
+    @Override
+    public List<EmployeeVO> multiConditionQuery(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branch, Integer teamLeaderId, LocalDate startDate, LocalDate endDate) {
+        List<Employee> employees = employeeRepo.findByMultipleConditions(
+                sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
+
+        List<EmployeeVO> employeeVOList = new ArrayList<>();
+        for (Employee employee : employees) {
+            EmployeeVO employeeVO = new EmployeeVO();
+            BeanUtils.copyProperties(employee, employeeVO);
+            employeeVOList.add(employeeVO);
+        }
+        return employeeVOList;
+    }
 
 
     // 新增
