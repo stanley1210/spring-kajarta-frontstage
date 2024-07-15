@@ -5,6 +5,7 @@ import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CustomerVO;
 import com.spring_kajarta_frontstage.service.CustomerService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Tag(name = "管理後台-會員")
@@ -38,6 +40,8 @@ public class CustomerController {
             Customer customer = customerService.findById(customerId);
             customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }

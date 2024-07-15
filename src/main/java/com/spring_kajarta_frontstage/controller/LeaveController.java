@@ -5,6 +5,7 @@ import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.service.LeaveService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +43,13 @@ public class LeaveController {
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
             leaveVO.setEmployeeId(leave.getEmployee().getId());
+            leaveVO.setCreateTime(DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            leaveVO.setUpdateTime(DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            leaveVO.setStartTime(DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            leaveVO.setEndTime(DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            leaveVO.setAuditTime(DatetimeConverter.toString(new Date(leave.getAuditTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            leaveVO.setValidityPeriodStart(DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            leaveVO.setValidityPeriodEnd(DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
@@ -53,14 +61,14 @@ public class LeaveController {
     @PostMapping("/multi")
     public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO){
         Integer leaveStatus = leaveVO.getLeaveStatus();
-        Date startTime = leaveVO.getStartTime();
-        Date endTime = leaveVO.getEndTime();
+        String startTime = leaveVO.getStartTime();
+        String endTime = leaveVO.getEndTime();
         Integer leaveType = leaveVO.getLeaveType();
         Integer employee = leaveVO.getEmployeeId();
         Integer teamLeaderId = leaveVO.getTeamLeaderId();
         Integer permisionStatus = leaveVO.getPermisionStatus();
-        Date validityPeriodStart = leaveVO.getValidityPeriodStart();
-        Date validityPeriodEnd = leaveVO.getValidityPeriodEnd();
+        String validityPeriodStart = leaveVO.getValidityPeriodStart();
+        String validityPeriodEnd = leaveVO.getValidityPeriodEnd();
 
         log.info("後台查詢員工資訊-多筆：leaveStatus: {} startTime: {} endTime: {} leaveType: {} employee: {} teamLeaderId: {} permisionStatus: {} validityPeriodStart: {} validityPeriodEnd: {}",
                 leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);

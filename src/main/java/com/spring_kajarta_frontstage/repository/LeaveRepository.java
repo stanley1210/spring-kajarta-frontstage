@@ -24,13 +24,13 @@ public interface LeaveRepository extends JpaRepository<Leave,Integer> {
             + "(:validityPeriodEnd IS NULL OR l.validityPeriodEnd = :validityPeriodEnd)")
     List<Leave> findByMultipleConditions(
             @Param("leaveStatus") Integer leaveStatus,
-            @Param("startTime") Date startTime,
-            @Param("endTime") Date endTime,
+            @Param("startTime") String startTime,
+            @Param("endTime") String endTime,
             @Param("leaveType") Integer leaveType,
             @Param("employee") Integer employee,
             @Param("teamLeaderId") Integer teamLeaderId,
             @Param("permisionStatus") Integer permisionStatus,
-            @Param("validityPeriodStart") Date validityPeriodStart,
-            @Param("validityPeriodEnd") Date validityPeriodEnd);
+            @Param("validityPeriodStart") String validityPeriodStart,
+            @Param("validityPeriodEnd") String validityPeriodEnd);
 
 }

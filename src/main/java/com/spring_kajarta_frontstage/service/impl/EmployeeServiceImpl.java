@@ -34,16 +34,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee findById(Integer employeeId) {
-        Optional<Employee> employeeOptional = employeeRepo.findById(employeeId);
-        if (employeeOptional.isPresent()) {
-            Employee employee = employeeOptional.get();
-            // 将创建时间和更新时间转换为字符串格式
-            employee.setCreateTimeString(DatetimeConverter.toString(employee.getCreateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            employee.setUpdateTimeString(DatetimeConverter.toString(employee.getUpdateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            return employee;
-        } else {
-            return null;
-        }
+        Optional<Employee> employee = employeeRepo.findById(employeeId);
+        return employee.orElse(null);
     }
 
     // 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
@@ -72,6 +64,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepo.save(employee);
         EmployeeVO employeeVONew = new EmployeeVO();
         BeanUtils.copyProperties(employee, employeeVONew);
+        employeeVO.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+        employeeVO.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         return employeeVONew;
     }
 

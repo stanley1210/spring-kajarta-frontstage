@@ -38,7 +38,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
     @Override
-    public List<LeaveVO> multiConditionQuery(Integer leaveStatus, Date startTime, Date endTime, Integer leaveType, Integer employee, Integer teamLeaderId, Integer permisionStatus, Date validityPeriodStart, Date validityPeriodEnd) {
+    public List<LeaveVO> multiConditionQuery(Integer leaveStatus, String startTime, String endTime, Integer leaveType, Integer employee, Integer teamLeaderId, Integer permisionStatus, String validityPeriodStart, String validityPeriodEnd) {
         List<Leave> leaves = leaveRepo.findByMultipleConditions(
                 leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
         List<LeaveVO> leaveVOList = new ArrayList<>();
