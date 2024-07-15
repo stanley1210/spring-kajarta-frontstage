@@ -65,7 +65,7 @@ public class EmployeeController {
         LocalDate startDate = employeeVO.getStartDate();
         LocalDate endDate = employeeVO.getEndDate();
 
-        log.info("後台查詢員工資訊-多筆：sex: {} accountType: {} account: {} name: {} phone: {} email: {} branch: {} teamLeaderId: {} startDateFrom: {} startDateTo: {} endDateFrom: {} endDateTo: {}",
+        log.info("後台查詢員工資訊-多筆：sex: {} accountType: {} account: {} name: {} phone: {} email: {} branch: {} teamLeaderId: {} startDate: {} endDate: {} ",
                 sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
 
         try {

@@ -8,6 +8,7 @@ import com.spring_kajarta_frontstage.service.LeaveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
 
 @Tag(name = "管理後台-請假")
 @Slf4j
@@ -44,6 +48,31 @@ public class LeaveController {
 
         return ResultUtil.success(leaveVO);
     }
+
+    @Operation(summary = "請假資訊-查詢多筆，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)")
+    @PostMapping("/multi")
+    public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO){
+        Integer leaveStatus = leaveVO.getLeaveStatus();
+        Date startTime = leaveVO.getStartTime();
+        Date endTime = leaveVO.getEndTime();
+        Integer leaveType = leaveVO.getLeaveType();
+        Integer employee = leaveVO.getEmployeeId();
+        Integer teamLeaderId = leaveVO.getTeamLeaderId();
+        Integer permisionStatus = leaveVO.getPermisionStatus();
+        Date validityPeriodStart = leaveVO.getValidityPeriodStart();
+        Date validityPeriodEnd = leaveVO.getValidityPeriodEnd();
+
+        log.info("後台查詢員工資訊-多筆：leaveStatus: {} startTime: {} endTime: {} leaveType: {} employee: {} teamLeaderId: {} permisionStatus: {} validityPeriodStart: {} validityPeriodEnd: {}",
+                leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
+        try{
+            List<LeaveVO> leaveVOList = leaveService.multiConditionQuery(leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
+            return ResultUtil.success(leaveVOList);
+        } catch (Exception e) {
+            log.error("查詢出錯", e);
+            return ResultUtil.error("查詢出錯");
+        }
+    }
+
 
     @Operation(summary = "請假資訊-新增假單")
     @PostMapping(value = "/add")

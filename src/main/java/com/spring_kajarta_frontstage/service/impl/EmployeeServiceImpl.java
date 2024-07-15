@@ -6,15 +6,20 @@ import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
 import com.spring_kajarta_frontstage.service.EmployeeService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.spring_kajarta_frontstage.util.DatetimeConverter.YYYY_MM_DD_HH_MM_SS;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -43,6 +48,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         for (Employee employee : employees) {
             EmployeeVO employeeVO = new EmployeeVO();
             BeanUtils.copyProperties(employee, employeeVO);
+//            employeeVO.setCreateTime(new Timestamp(employee.getCreateTime().getTime()));
+            employeeVO.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            employeeVO.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+
+//            employeeVO.setCreateTime(DatetimeConverter.parse(String.valueOf(employee.getCreateTime()), YYYY_MM_DD_HH_MM_SS));
+
             employeeVOList.add(employeeVO);
         }
         return employeeVOList;

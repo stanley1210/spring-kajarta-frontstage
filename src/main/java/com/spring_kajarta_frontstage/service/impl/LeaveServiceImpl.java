@@ -11,6 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +34,20 @@ public class LeaveServiceImpl implements LeaveService {
     public Leave findById(Integer leaveId) {
         Optional<Leave> leave = leaveRepo.findById(leaveId);
         return leave.orElse(null);
+    }
+
+    // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
+    @Override
+    public List<LeaveVO> multiConditionQuery(Integer leaveStatus, Date startTime, Date endTime, Integer leaveType, Integer employee, Integer teamLeaderId, Integer permisionStatus, Date validityPeriodStart, Date validityPeriodEnd) {
+        List<Leave> leaves = leaveRepo.findByMultipleConditions(
+                leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
+        List<LeaveVO> leaveVOList = new ArrayList<>();
+        for (Leave leave : leaves) {
+            LeaveVO leaveVO = new LeaveVO();
+            BeanUtils.copyProperties(leave, leaveVO);
+            leaveVOList.add(leaveVO);
+        }
+        return leaveVOList;
     }
 
     // 新增
