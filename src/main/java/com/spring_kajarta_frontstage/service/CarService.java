@@ -32,7 +32,7 @@ public class CarService {
     private CarInfoService carInfoService;
 
     // 查全部
-    public List<Car> findAll(String json) {
+    public List<Car> findAll() {
         return carRepo.findAll();
     }
 

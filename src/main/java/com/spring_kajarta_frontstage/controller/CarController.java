@@ -1,5 +1,8 @@
 package com.spring_kajarta_frontstage.controller;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +42,13 @@ public class CarController {
     @Autowired
     private CarInfoService carInfoService;
 
-    @GetMapping("/find/{Id}")
-    @ResponseBody
-    public String findDataById(@PathVariable(name = "Id") Integer Id) {
+    // 查全部
+    @GetMapping("/findAll")
+    public String findAll() {
+        List<Car> carList = carService.findAll();
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        Car car = carService.findById(Id).get();
-        if (car != null) {
+        for (Car car : carList) {
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
@@ -61,9 +64,47 @@ public class CarController {
                     .put("carinfoId", car.getCarinfo().getId())
                     .put("color", car.getColor())
                     .put("remark", car.getRemark());
-            array = array.put(item);
+            array.put(item);
         }
-        responseBody.put("list", array);
+        return responseBody.put("list", array).toString();
+    }
+
+    // 查詢單筆
+    @GetMapping("/find/{Id}")
+    @ResponseBody
+    public String findDataById(@PathVariable(name = "Id") Integer Id) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        if (Id == null) {
+            responseBody.put("false", false);
+            responseBody.put("message", "ID不得為空");
+        } else {
+            Optional<Car> carOptional = carService.findById(Id);
+            if (carOptional != null) {
+                Car carModel = carOptional.get();
+                JSONObject item = new JSONObject()
+                        .put("id", carModel.getId())
+                        .put("productionYear", carModel.getProductionYear())
+                        .put("milage", carModel.getMilage())
+                        .put("customerId", carModel.getCustomer().getId())
+                        .put("employeeId", carModel.getEmployee().getId())
+                        .put("negotiable", carModel.getNegotiable())
+                        .put("conditionScore", carModel.getConditionScore())
+                        .put("branch", carModel.getBranch())
+                        .put("state", carModel.getState())
+                        .put("price", carModel.getPrice())
+                        .put("launchDate", carModel.getLaunchDate())
+                        .put("carinfoId", carModel.getCarinfo().getId())
+                        .put("color", carModel.getColor())
+                        .put("remark", carModel.getRemark());
+                array = array.put(item);
+                responseBody.put("list", array);
+                return responseBody.toString();
+            } else {
+                responseBody.put("false", false);
+                responseBody.put("message", "ID不存在");
+            }
+        }
         return responseBody.toString();
     }
 
@@ -95,7 +136,8 @@ public class CarController {
         return reponseBody.toString();
     }
 
-    @DeleteMapping("/delete/{id}") // 刪除
+    // 刪除
+    @DeleteMapping("/delete/{id}")
     public String remove(@PathVariable Integer id) {
         JSONObject responseBody = new JSONObject();
 
@@ -115,7 +157,8 @@ public class CarController {
         return responseBody.toString();
     }
 
-    @PutMapping("/modify/{id}") // 修改
+    // 修改
+    @PutMapping("/modify/{id}")
     public String modify(@RequestBody String body, @PathVariable(name = "id") Integer Id) {
         JSONObject responseBody = new JSONObject();
         if (!carService.exists(Id)) {
