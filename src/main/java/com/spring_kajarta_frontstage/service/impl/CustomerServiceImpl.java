@@ -36,11 +36,11 @@ public class CustomerServiceImpl implements CustomerService {
         return customer.orElse(null);
     }
 
-    @Override
-    public List<CustomerVO> findAll(Character sex, Integer accountType) {
-        List<Customer> customerList = customerRepo.findBySexAndAccountType(sex, accountType);
+    // 多條件查詢，依據用戶性別、帳號、城市、姓名
+    public List<CustomerVO> multiConditionQuery(Character sex, Integer accountType, Integer city, String name) {
+        List<Customer> customers = customerRepo.findByMultipleConditions(sex, accountType, city, name);
         List<CustomerVO> customerVOList = new ArrayList<>();
-        for (Customer customer : customerList) {
+        for (Customer customer : customers) {
             CustomerVO customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
             customerVOList.add(customerVO);

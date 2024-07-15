@@ -29,7 +29,7 @@ public class CustomerController {
 
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
     @GetMapping("/info/{customerId}")
-    public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId){
+    public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
@@ -46,23 +46,25 @@ public class CustomerController {
     }
 
 
-    @Operation(summary = "會員資訊-查詢多筆")
-    @GetMapping("/list")
-    public Result<List<CustomerVO>> info(@Parameter(description = "sex") Character sex,
-                                   @Parameter(description = "account id") Integer accountType){
+    @Operation(summary = "會員資訊-查詢多筆，依據用戶性別、帳號、城市、姓名")
+    @PostMapping("/multi")
+    public Result<List<CustomerVO>> multiConditionQuery(@RequestBody CustomerVO customerVO) {
+        Character sex = customerVO.getSex();
+        Integer accountType = customerVO.getAccountType();
+        Integer city = customerVO.getCity();
+        String name = customerVO.getName();
+
         // todo:依據token獲取後台登入用戶
 
-//        log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
-        List<CustomerVO> customerVOList;
+        log.info("{}-後台查詢客戶資訊-多筆：{}", "到時候換成上一步拿到的管理員", "sex: " + sex + " accountType: " + accountType + " city: " + city + " name: " + name);
+
         try {
-            customerVOList = customerService.findAll(sex, accountType);
+            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, city, name);
+            return ResultUtil.success(customerVOList);
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
-
-        return ResultUtil.success(customerVOList);
     }
-
 
 
     @Operation(summary = "會員資訊-新增會員")
@@ -99,7 +101,6 @@ public class CustomerController {
             return ResultUtil.error("修改用戶出錯");
         }
     }
-
 
 
 }
