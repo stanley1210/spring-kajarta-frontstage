@@ -69,8 +69,8 @@ public class AgendaController {
             // 回傳重複時段資訊
             message.setEmployeeName(employeeService.findById(employeeId).getName());
             message.setEmployeeId(employeeId);
-            message.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
-            message.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+            message.setUnavailableTimeStrString(unavailableTimeStr);
+            message.setUnavailableTimeEndString(unavailableTimeEnd);
 
             Result<AgendaVO> timeError = ResultUtil.error("時段內有排程");
             timeError.setData(message);
@@ -125,10 +125,8 @@ public class AgendaController {
                     AgendaVO message = new AgendaVO();
                     message.setEmployeeName(employeeService.findById(employeeId).getName());
                     message.setEmployeeId(employeeId);
-                    message.setUnavailableTimeStr(
-                            DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
-                    message.setUnavailableTimeEnd(
-                            DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+                    message.setUnavailableTimeStrString(unavailableTimeStr);
+                    message.setUnavailableTimeEndString(unavailableTimeEnd);
 
                     Result<AgendaVO> timeError = ResultUtil.error("時段內有排程");
                     timeError.setData(message);

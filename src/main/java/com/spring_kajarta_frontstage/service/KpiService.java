@@ -162,6 +162,10 @@ public class KpiService {
             kpiVO.setTeamLeaderName("此員工無主管");
         }
         kpiVO.setEmployeeName(kpi.getEmployee().getName());
+        kpiVO.setSeasonStrDayString(DatetimeConverter.toString(kpi.getSeasonStrDay(), "yyyy-MM-dd"));
+        kpiVO.setCreateTimeString(DatetimeConverter.toString(kpi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        kpiVO.setUpdateTimeString(DatetimeConverter.toString(kpi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+
         return kpiVO;
     }
 }
