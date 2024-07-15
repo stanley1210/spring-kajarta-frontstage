@@ -28,6 +28,12 @@ public class ViewCarController {
     @Autowired
     private ViewCarService viewCarService;
 
+    // 計算數量
+    @GetMapping("/count")
+    public long count() {
+        return viewCarService.count();
+    }
+
     //新增
      @PostMapping("/create")
     public String create(@RequestBody String body) {
@@ -128,6 +134,8 @@ public class ViewCarController {
                     .put("viewCarStatus", viewCar.getViewCarStatus());
             array.put(item);
         }
+        long count = viewCarService.count();
+        responseBody.put("count", count);
         responseBody.put("list", array);
         return responseBody.toString();
     }
