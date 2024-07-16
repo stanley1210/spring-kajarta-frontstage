@@ -32,6 +32,14 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    // 統計員工數量
+    @Operation(summary = "統計員工數量")
+    @GetMapping("/count")
+    public Result<Long> countEmployees() {
+        long count = employeeService.countEmployees();
+        return ResultUtil.success(count);
+    }
+
     @Operation(summary = "員工資訊-查詢全部")
     @GetMapping("/all")
     public Result<List<EmployeeVO>> findAll() {
@@ -133,7 +141,6 @@ public class EmployeeController {
         } catch (Exception e){
             return ResultUtil.error("修改員工出錯");
         }
-
     }
 
 }

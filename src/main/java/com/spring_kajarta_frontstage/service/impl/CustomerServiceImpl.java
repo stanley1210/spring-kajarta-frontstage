@@ -26,6 +26,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepo;
 
+    @Override
+    public long countCustomers() {
+        return customerRepo.count();
+    }
+
     // 查詢全部
     @Override
     public List<CustomerVO> findAll() {

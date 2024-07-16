@@ -23,6 +23,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepo;
 
+    @Override
+    public long countEmployees() {
+        return employeeRepo.count();
+    }
+
     // 查詢全部
     @Override
     public List<EmployeeVO> findAll() {

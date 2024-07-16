@@ -29,6 +29,13 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Operation(summary = "統計會員數量")
+    @GetMapping("/count")
+    public Result<Long> countCustomers() {
+        long count = customerService.countCustomers();
+        return ResultUtil.success(count);
+    }
+
     @Operation(summary = "會員資訊-查詢全部")
     @GetMapping("/all")
     public Result<List<CustomerVO>> findAll() {
