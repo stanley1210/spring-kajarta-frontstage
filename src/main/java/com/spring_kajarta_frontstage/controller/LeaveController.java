@@ -3,6 +3,7 @@ package com.spring_kajarta_frontstage.controller;
 import com.kajarta.demo.domian.Result;
 import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.utils.ResultUtil;
+import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.service.LeaveService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -89,29 +91,63 @@ public class LeaveController {
 
         return ResultUtil.success(leaveVO);
     }
-    @Operation(summary = "請假資訊-查詢多筆，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)")
-    @PostMapping("/multi")
-    public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO) {
-        Integer leaveStatus = leaveVO.getLeaveStatus();
-        String startTime = leaveVO.getStartTime();
-        String endTime = leaveVO.getEndTime();
-        Integer leaveType = leaveVO.getLeaveType();
-        Integer employee = leaveVO.getEmployeeId();
-        Integer teamLeaderId = leaveVO.getTeamLeaderId();
-        Integer permisionStatus = leaveVO.getPermisionStatus();
-        String validityPeriodStart = leaveVO.getValidityPeriodStart();
-        String validityPeriodEnd = leaveVO.getValidityPeriodEnd();
 
-        log.info("後台查詢員工資訊-多筆：leaveStatus: {} startTime: {} endTime: {} leaveType: {} employee: {} teamLeaderId: {} permisionStatus: {} validityPeriodStart: {} validityPeriodEnd: {}",
-                leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
-        try {
-            List<LeaveVO> leaveVOList = leaveService.multiConditionQuery(leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
-            return ResultUtil.success(leaveVOList);
-        } catch (Exception e) {
-            log.error("查詢出錯", e);
-            return ResultUtil.error("查詢出錯");
-        }
+//    @PostMapping("/multi")
+//    public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO) {
+//        Integer leaveStatus = leaveVO.getLeaveStatus();
+//        String startTime = leaveVO.getStartTime();
+//        String endTime = leaveVO.getEndTime();
+//        Integer leaveType = leaveVO.getLeaveType();
+//        Integer employee = leaveVO.getEmployeeId();
+//        Integer teamLeaderId = leaveVO.getTeamLeaderId();
+//        Integer permisionStatus = leaveVO.getPermisionStatus();
+//        String validityPeriodStart = leaveVO.getValidityPeriodStart();
+//        String validityPeriodEnd = leaveVO.getValidityPeriodEnd();
+//
+//        log.info("後台查詢員工資訊-多筆：leaveStatus: {} startTime: {} endTime: {} leaveType: {} employee: {} teamLeaderId: {} permisionStatus: {} validityPeriodStart: {} validityPeriodEnd: {}",
+//                leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
+//        try {
+//            List<LeaveVO> leaveVOList = leaveService.multiConditionQuery(leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
+//            return ResultUtil.success(leaveVOList);
+//        } catch (Exception e) {
+//            log.error("查詢出錯", e);
+//            return ResultUtil.error("查詢出錯");
+//        }
+//    }
+    @Operation(summary = "假單資訊-依多條件查詢(分頁)")
+    @PostMapping("/query")
+    public Result<Page<LeaveVO>> query(
+            @RequestBody LeaveVO leaveVO,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "true") boolean dir) {
+
+        log.info("{}-後台查詢假單資訊-多條件查詢(分頁)", "到時候換成上一步拿到的管理員");
+        Page<LeaveVO> leavePage = leaveService.findByConditionsWithPagination(
+                leaveVO.getLeaveStatus(), leaveVO.getStartTime(), leaveVO.getEndTime(),
+                leaveVO.getLeaveType(), leaveVO.getEmployeeId(), leaveVO.getTeamLeaderId(),
+                leaveVO.getPermisionStatus(), leaveVO.getValidityPeriodStart(), leaveVO.getValidityPeriodEnd(),
+                page, size, sort, dir);
+
+        Result<Page<LeaveVO>> result = new Result<>();
+
+        result.setCode(200);
+        result.setMsg("查詢成功");
+        result.setData(leavePage);
+        result.setSuccess(true);
+        result.setTotalPage(leavePage.getTotalPages());
+        result.setTotalElement(leavePage.getTotalElements());
+        result.setPageNumber(leavePage.getNumber());
+        result.setNumberOfElementsOnPage(leavePage.getNumberOfElements());
+        result.setHasNext(leavePage.hasNext());
+        result.setHasPrevious(leavePage.hasPrevious());
+        result.setFirstPageOrNot(leavePage.isFirst());
+        result.setLastPageOrNot(leavePage.isLast());
+
+        return result;
     }
+
 
 
     @Operation(summary = "請假資訊-新增假單")

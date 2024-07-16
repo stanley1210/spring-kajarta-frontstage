@@ -1,6 +1,8 @@
 package com.spring_kajarta_frontstage.repository;
 
 import com.kajarta.demo.model.Leave;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,7 @@ import java.util.List;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave,Integer> {
     // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
+
     @Query("SELECT l FROM Leave l WHERE "
             + "(:leaveStatus IS NULL OR l.leaveStatus = :leaveStatus) AND "
             + "(:startTime IS NULL OR l.startTime = :startTime) AND "
@@ -22,7 +25,7 @@ public interface LeaveRepository extends JpaRepository<Leave,Integer> {
             + "(:permisionStatus IS NULL OR l.permisionStatus = :permisionStatus) AND "
             + "(:validityPeriodStart IS NULL OR l.validityPeriodStart = :validityPeriodStart) AND "
             + "(:validityPeriodEnd IS NULL OR l.validityPeriodEnd = :validityPeriodEnd)")
-    List<Leave> findByMultipleConditions(
+    Page<Leave> findAllByMultipleConditions(
             @Param("leaveStatus") Integer leaveStatus,
             @Param("startTime") String startTime,
             @Param("endTime") String endTime,
@@ -31,6 +34,17 @@ public interface LeaveRepository extends JpaRepository<Leave,Integer> {
             @Param("teamLeaderId") Integer teamLeaderId,
             @Param("permisionStatus") Integer permisionStatus,
             @Param("validityPeriodStart") String validityPeriodStart,
-            @Param("validityPeriodEnd") String validityPeriodEnd);
+            @Param("validityPeriodEnd") String validityPeriodEnd,
+            Pageable pageable);
+//    List<Leave> findByMultipleConditions(
+//            @Param("leaveStatus") Integer leaveStatus,
+//            @Param("startTime") String startTime,
+//            @Param("endTime") String endTime,
+//            @Param("leaveType") Integer leaveType,
+//            @Param("employee") Integer employee,
+//            @Param("teamLeaderId") Integer teamLeaderId,
+//            @Param("permisionStatus") Integer permisionStatus,
+//            @Param("validityPeriodStart") String validityPeriodStart,
+//            @Param("validityPeriodEnd") String validityPeriodEnd);
 
 }

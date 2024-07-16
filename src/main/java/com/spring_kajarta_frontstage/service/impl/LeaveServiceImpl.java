@@ -11,6 +11,10 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -73,19 +77,71 @@ public class LeaveServiceImpl implements LeaveService {
         return leave.orElse(null);
     }
 
+
+
     // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
-    @Override
-    public List<LeaveVO> multiConditionQuery(Integer leaveStatus, String startTime, String endTime, Integer leaveType,
-                                             Integer employee, Integer teamLeaderId, Integer permisionStatus, String validityPeriodStart,
-                                             String validityPeriodEnd) {
-        List<Leave> leaves = leaveRepo.findByMultipleConditions(leaveStatus, startTime, endTime, leaveType, employee,
-                teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
-        List<LeaveVO> leaveVOList = new ArrayList<>();
-        for (Leave leave : leaves) {
+//    @Override
+//    public List<LeaveVO> multiConditionQuery(Integer leaveStatus, String startTime, String endTime, Integer leaveType,
+//                                             Integer employee, Integer teamLeaderId, Integer permisionStatus, String validityPeriodStart,
+//                                             String validityPeriodEnd) {
+//        List<Leave> leaves = leaveRepo.findByMultipleConditions(leaveStatus, startTime, endTime, leaveType, employee,
+//                teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
+//        List<LeaveVO> leaveVOList = new ArrayList<>();
+//        for (Leave leave : leaves) {
+//            LeaveVO leaveVO = new LeaveVO();
+//            BeanUtils.copyProperties(leave, leaveVO);
+//
+//            // 设置时间字段，先进行空值判断
+//            leaveVO.setStartTime(leave.getStartTime() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//            leaveVO.setEndTime(leave.getEndTime() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//            leaveVO.setCreateTime(leave.getCreateTime() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//            leaveVO.setUpdateTime(leave.getUpdateTime() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//            leaveVO.setAuditTime(leave.getAuditTime() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getAuditTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//            leaveVO.setValidityPeriodStart(leave.getValidityPeriodStart() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//            leaveVO.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null
+//                    ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+//                    : null);
+//
+//            leaveVO.setEmployeeId(leave.getEmployee().getId());
+//            leaveVOList.add(leaveVO);
+//        }
+//        return leaveVOList;
+//    }
+    public Page<LeaveVO> findByConditionsWithPagination(
+            Integer leaveStatus,
+            String startTime,
+            String endTime,
+            Integer leaveType,
+            Integer employeeId,
+            Integer teamLeaderId,
+            Integer permisionStatus,
+            String validityPeriodStart,
+            String validityPeriodEnd,
+            int page,
+            int size,
+            String sort,
+            boolean dir) {
+
+        Sort sortOrder = dir ? Sort.by(Sort.Direction.ASC, sort) : Sort.by(Sort.Direction.DESC, sort);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Leave> leavePage = leaveRepo.findAllByMultipleConditions(leaveStatus, startTime, endTime, leaveType,
+                employeeId, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd, pageable);
+
+        return leavePage.map(leave -> {
             LeaveVO leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
-
-            // 设置时间字段，先进行空值判断
             leaveVO.setStartTime(leave.getStartTime() != null
                     ? DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
                     : null);
@@ -107,11 +163,9 @@ public class LeaveServiceImpl implements LeaveService {
             leaveVO.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null
                     ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
                     : null);
-
             leaveVO.setEmployeeId(leave.getEmployee().getId());
-            leaveVOList.add(leaveVO);
-        }
-        return leaveVOList;
+            return leaveVO;
+        });
     }
 
 
