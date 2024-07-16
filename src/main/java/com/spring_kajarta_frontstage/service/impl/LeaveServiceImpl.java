@@ -7,6 +7,8 @@ import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
 import com.spring_kajarta_frontstage.repository.LeaveRepository;
 import com.spring_kajarta_frontstage.service.LeaveService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class LeaveServiceImpl implements LeaveService {
     @Autowired
@@ -23,6 +26,31 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Autowired
     private EmployeeRepository employeeRepo;
+
+    // 查詢全部
+    @Override
+    public List<LeaveVO> findAll() {
+         List<Leave> leaves = leaveRepo.findAll();
+         log.info("查詢到 {} 條員工數據", leaves.size());
+         List<LeaveVO> leaveVOList = new ArrayList<>();
+         for (Leave leave : leaves) {
+             LeaveVO leaveVO = new LeaveVO();
+             BeanUtils.copyProperties(leave, leaveVO);
+             leaveVO.setCreateTime(
+                     leaveVO.getCreateTime() != null ?
+                             DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) :
+                             null
+             );
+             leaveVO.setUpdateTime(
+                     leaveVO.getUpdateTime() != null ?
+                             DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) :
+                             null
+             );
+             leaveVOList.add(leaveVO);
+         }
+        log.info("轉換後的 LeaveVO 數量為 {}", leaveVOList.size());
+        return leaveVOList;
+    }
 
     /**
      * 查詢單筆，依據請假id查詢單一請假資訊

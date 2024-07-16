@@ -31,9 +31,28 @@ import java.util.List;
 public class LeaveController {
     @Autowired
     private LeaveService leaveService;
+
+    @Operation(summary = "請假資訊-查詢全部")
+    @GetMapping("/all")
+    public Result<List<LeaveVO>> findAll() {
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-後台查詢請假資訊-全部", "到時候換成上一步拿到的管理員");
+        List<LeaveVO> leaveVOList;
+        try {
+            leaveVOList = leaveService.findAll();
+            log.info("查詢到 {} 條請假數據", leaveVOList.size());
+        } catch (Exception e) {
+            log.error("查詢出錯", e);
+            return ResultUtil.error("查詢出錯");
+        }
+        return ResultUtil.success(leaveVOList);
+    }
+
+
     @Operation(summary = "請假資訊-依據請假id查詢單筆")
     @GetMapping("/info/{leaveId}")
-    public Result<LeaveVO> info(@Parameter(description = "請假id") @PathVariable Integer leaveId){
+    public Result<LeaveVO> info(@Parameter(description = "請假id") @PathVariable Integer leaveId) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢請假資訊-單筆：{}", "到時候換成上一步拿到的管理員", leaveId);
@@ -59,7 +78,7 @@ public class LeaveController {
 
     @Operation(summary = "請假資訊-查詢多筆，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)")
     @PostMapping("/multi")
-    public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO){
+    public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO) {
         Integer leaveStatus = leaveVO.getLeaveStatus();
         String startTime = leaveVO.getStartTime();
         String endTime = leaveVO.getEndTime();
@@ -72,7 +91,7 @@ public class LeaveController {
 
         log.info("後台查詢員工資訊-多筆：leaveStatus: {} startTime: {} endTime: {} leaveType: {} employee: {} teamLeaderId: {} permisionStatus: {} validityPeriodStart: {} validityPeriodEnd: {}",
                 leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
-        try{
+        try {
             List<LeaveVO> leaveVOList = leaveService.multiConditionQuery(leaveStatus, startTime, endTime, leaveType, employee, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
             return ResultUtil.success(leaveVOList);
         } catch (Exception e) {
@@ -84,7 +103,7 @@ public class LeaveController {
 
     @Operation(summary = "請假資訊-新增假單")
     @PostMapping(value = "/add")
-    public Result<LeaveVO> addLeave(@RequestBody LeaveVO leaveVO){
+    public Result<LeaveVO> addLeave(@RequestBody LeaveVO leaveVO) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-新增客戶資訊：{}", "到時候換成上一步拿到的管理員", leaveVO.toString());
@@ -101,18 +120,18 @@ public class LeaveController {
     @PutMapping(value = "/modify/{leaveId}")
     public Result<LeaveVO> modifyLeave(
             @Parameter(description = "假單Id") @PathVariable Integer leaveId,
-            @RequestBody LeaveVO leaveVO){
+            @RequestBody LeaveVO leaveVO) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-修改假單資訊：{}", "到時候換成上一步拿到的管理員", leaveVO.toString());
         try {
             LeaveVO updateLeave = leaveService.modify(leaveVO);
-            if(updateLeave == null){
+            if (updateLeave == null) {
                 return ResultUtil.error("找不到假單Id: " + leaveId);
             }
             return ResultUtil.success(updateLeave);
-        } catch (Exception e){
-            return  ResultUtil.error("修改假單出錯");
+        } catch (Exception e) {
+            return ResultUtil.error("修改假單出錯");
         }
 
 

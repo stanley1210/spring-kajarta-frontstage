@@ -1,30 +1,52 @@
 package com.spring_kajarta_frontstage.service.impl;
 
-import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Employee;
-import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static com.spring_kajarta_frontstage.util.DatetimeConverter.YYYY_MM_DD_HH_MM_SS;
-
+@Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepo;
+
+    // 查詢全部
+    @Override
+    public List<EmployeeVO> findAll() {
+        List<Employee> employees = employeeRepo.findAll();
+        log.info("查詢到 {} 條員工數據", employees.size());
+        List<EmployeeVO> employeeVOList = new ArrayList<>();
+        for (Employee employee : employees) {
+            EmployeeVO employeeVO = new EmployeeVO();
+            BeanUtils.copyProperties(employee, employeeVO);
+            employeeVO.setCreateTime(
+                    employee.getCreateTime() != null ?
+                            DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) :
+                            null
+            );
+            employeeVO.setUpdateTime(
+                    employee.getUpdateTime() != null ?
+                            DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) :
+                            null
+            );
+            employeeVOList.add(employeeVO);
+        }
+        log.info("轉換後的 EmployeeVO 數量為 {}", employeeVOList.size());
+        return employeeVOList;
+    }
 
     /**
      * 查詢單筆，依據員工id查詢單一員工資訊

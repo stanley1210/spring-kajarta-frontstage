@@ -26,6 +26,21 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepo;
 
+    // 查詢全部
+    @Override
+    public List<CustomerVO> findAll() {
+        List<Customer> customers = customerRepo.findAll();
+        List<CustomerVO> customerVOList = new ArrayList<>();
+        for (Customer customer : customers) {
+            CustomerVO customerVO = new CustomerVO();
+            BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVOList.add(customerVO);
+        }
+        return customerVOList;
+    }
+
     /**
      * 查詢單筆，依據用戶id查詢單一用戶資訊
      *

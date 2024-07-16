@@ -29,6 +29,22 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Operation(summary = "會員資訊-查詢全部")
+    @GetMapping("/all")
+    public Result<List<CustomerVO>> findAll() {
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-後台查詢客戶資訊-全部", "到時候換成上一步拿到的管理員");
+        List<CustomerVO> customerVOList;
+        try {
+            customerVOList = customerService.findAll();
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+        return ResultUtil.success(customerVOList);
+    }
+
+
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
     @GetMapping("/info/{customerId}")
     public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId) {
