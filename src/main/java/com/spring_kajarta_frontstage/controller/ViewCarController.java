@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kajarta.demo.enums.ViewTimeSectionEnum;
 import com.kajarta.demo.model.ViewCar;
 import com.spring_kajarta_frontstage.service.ViewCarService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
@@ -89,10 +90,12 @@ public class ViewCarController {
             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
             String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
-            JSONObject item = new JSONObject()
+
+            JSONObject obj = new JSONObject()
 
                     .put("id", viewCar.getId())
-                    .put("viewTimeSection", viewCar.getViewTimeSection())
+                    // .put("viewTimeSection", viewCar.getViewTimeSection())
+                    .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
                     .put("car", viewCar.getCar().getId())
                     .put("salesScore", viewCar.getSalesScore())
                     .put("factoryScore", viewCar.getFactoryScore())
@@ -103,7 +106,7 @@ public class ViewCarController {
                     .put("createTime", createTime)
                     .put("updateTime", updateTime)
                     .put("viewCarStatus", viewCar.getViewCarStatus());
-            array = array.put(item);
+            array = array.put(obj);
         }
 
         responseBody.put("list", array);
@@ -119,9 +122,10 @@ public class ViewCarController {
             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
             String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
-            JSONObject item = new JSONObject()
+            JSONObject obj = new JSONObject()
                     .put("id", viewCar.getId())
-                    .put("viewTimeSection", viewCar.getViewTimeSection())
+                    // .put("viewTimeSection", viewCar.getViewTimeSection())
+                    .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
                     .put("car", viewCar.getCar().getId())
                     .put("salesScore", viewCar.getSalesScore())
                     .put("factoryScore", viewCar.getFactoryScore())
@@ -132,7 +136,7 @@ public class ViewCarController {
                     .put("createTime", createTime)
                     .put("updateTime", updateTime)
                     .put("viewCarStatus", viewCar.getViewCarStatus());
-            array.put(item);
+            array.put(obj);
         }
         long count = viewCarService.count();
         responseBody.put("count", count);
