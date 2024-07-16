@@ -70,9 +70,6 @@ public class ViewCarService {
             insert.setViewCarStatus(viewCarStatus);
 
             return viewCarRepo.save(insert);
-
-            return viewCarRepo.save(insert);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,15 +120,6 @@ public class ViewCarService {
 
     // 查詢一筆
 
-    public ViewCar findById(Integer id) {
-        if (id != null) {
-            Optional<ViewCar> optional = viewCarRepo.findById(id);
-            if (optional.isPresent()) {
-                return optional.get();
-            }
-        }
-        return null;
-    }
     public ViewCar findById(Integer id) {
         if (id != null) {
             Optional<ViewCar> optional = viewCarRepo.findById(id);
