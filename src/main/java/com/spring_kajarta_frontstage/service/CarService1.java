@@ -1,20 +1,18 @@
 package com.spring_kajarta_frontstage.service;
 
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.kajarta.demo.model.Carinfo;
-import com.spring_kajarta_frontstage.repository.CarInfoRepository;
+import com.kajarta.demo.model.Car;
+import com.spring_kajarta_frontstage.repository.CarRepository;
 
 @Service
-public class CarInfoService {
+public class CarService1 {
     @Autowired
-    private CarInfoRepository carinfoRepo;
+    private CarRepository carRepo;
 
-    public Carinfo findById(Integer id) { // 查單筆ID
-        Optional<Carinfo> optional = carinfoRepo.findById(id);
+    public Car findById(Integer id) {
+        Optional<Car> optional = carRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }

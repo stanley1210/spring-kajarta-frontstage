@@ -1,10 +1,14 @@
 package com.spring_kajarta_frontstage.service;
+
+import org.springframework.stereotype.Service;
+
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.vo.EmployeeVO;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public interface EmployeeService {
     // 查詢全部
     List<EmployeeVO> findAll();
