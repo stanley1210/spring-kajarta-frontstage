@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.enums.ViewTimeSectionEnum;
@@ -114,10 +116,11 @@ public class ViewCarController {
     }
     //查全
     @GetMapping("/selectAll")
-    public String findAll() {
+    public String findAll(@RequestParam Integer pageNumber) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        List<ViewCar> viewCars = viewCarService.findAll();
+        Page<ViewCar> page = viewCarService.findByPage(pageNumber);
+        List<ViewCar> viewCars = page.getContent();
         for (ViewCar viewCar : viewCars) {
             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
             String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
@@ -141,6 +144,9 @@ public class ViewCarController {
         long count = viewCarService.count();
         responseBody.put("count", count);
         responseBody.put("list", array);
+        responseBody.put("totalPages", page.getTotalPages());
+        responseBody.put("totalElements", page.getTotalElements());
+        responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
         return responseBody.toString();
     }
 
