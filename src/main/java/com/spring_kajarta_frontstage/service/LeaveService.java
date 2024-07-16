@@ -2,13 +2,13 @@ package com.spring_kajarta_frontstage.service;
 
 import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.vo.LeaveVO;
-import org.springframework.data.repository.query.Param;
-
-import java.util.Date;
 import java.util.List;
 
 
 public interface LeaveService {
+    // 查詢全部
+    List<LeaveVO> findAll();
+
     // 單筆查詢，依據請假id查詢單一請假資訊
     Leave findById(Integer leaveId);
 

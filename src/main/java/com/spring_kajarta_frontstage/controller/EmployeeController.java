@@ -32,6 +32,23 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @Operation(summary = "員工資訊-查詢全部")
+    @GetMapping("/all")
+    public Result<List<EmployeeVO>> findAll() {
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-後台查詢員工資訊-全部", "到時候換成上一步拿到的管理員");
+        List<EmployeeVO> employeeVOList;
+        try {
+            employeeVOList = employeeService.findAll();
+            log.info("查詢到 {} 條員工數據", employeeVOList.size());
+        } catch (Exception e) {
+            log.error("查詢出錯", e);
+            return ResultUtil.error("查詢出錯");
+        }
+        return ResultUtil.success(employeeVOList);
+    }
+
     @Operation(summary = "員工資訊-依據員工id查詢單筆")
     @GetMapping("/info/{employeeId}")
     public Result<EmployeeVO> info(@Parameter(description = "員工id") @PathVariable Integer employeeId) {
