@@ -137,7 +137,7 @@ public class ViewCarAssignedService {
             ViewCar viewCar = obj.isNull("viewCarId") ? null : viewCarService.findById(obj.getInt("viewCarId"));
             Car car = obj.isNull("carId") ? null : carService.findById(obj.getInt("carId"));
             Carinfo carinfo = obj.isNull("carinfoId") ? null : null; // carInfoService.findById(obj.getInt("carinfoId"))
-            Integer model = obj.isNull("modelid") ? null : obj.getInt("modelid");
+            Integer suspension = obj.isNull("suspensionid") ? null : obj.getInt("suspensionid");
             Integer assignedStatus = obj.isNull("assignedStatus") ? null : obj.getInt("assignedStatus");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
@@ -148,7 +148,7 @@ public class ViewCarAssignedService {
 
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<ViewCarAssigned> page = viewCarAssignedRepo.findByHQL(id, viewCarDateStr, viewCarDateEnd, employee,
-                    teamLeaderId, viewCar, car, carinfo, model, assignedStatus, pgb);
+                    teamLeaderId, viewCar, car, carinfo, suspension, assignedStatus, pgb);
 
             return page;
 
@@ -183,6 +183,10 @@ public class ViewCarAssignedService {
         viewCarAssignedVO.setViewCarId(viewCarAssigned.getViewCar().getId());
         viewCarAssignedVO.setTeamLeaderName(employeeService.findById(viewCarAssigned.getTeamLeaderId()).getName());
         viewCarAssignedVO.setEmployeeName(viewCarAssigned.getEmployee().getName());
+        viewCarAssignedVO.setCreateTimeString(
+                DatetimeConverter.toString(viewCarAssigned.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        viewCarAssignedVO.setUpdateTimeString(
+                DatetimeConverter.toString(viewCarAssigned.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
 
         return viewCarAssignedVO;
     }
