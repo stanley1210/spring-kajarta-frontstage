@@ -206,6 +206,8 @@ public class CarAdjustService {
         carAdjustVO.setTeamLeaderName(teamleader.getName());
         carAdjustVO.setEmployeeName(carAdjust.getEmployee().getName());
         carAdjustVO.setCarId(carAdjust.getCar().getId());
+        carAdjustVO.setCreateTimeString(DatetimeConverter.toString(carAdjust.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        carAdjustVO.setUpdateTimeString(DatetimeConverter.toString(carAdjust.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
 
         return carAdjustVO;
     }

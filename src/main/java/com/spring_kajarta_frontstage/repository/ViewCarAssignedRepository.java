@@ -24,7 +24,7 @@ public interface ViewCarAssignedRepository extends JpaRepository<ViewCarAssigned
                         + "(:viewCar IS NULL OR vca.viewCar = :viewCar) AND "
                         + "(:car IS NULL OR vca.viewCar.car = :car) AND "
                         + "(:carinfo IS NULL OR vca.viewCar.car.carinfo = :carinfo) AND "
-                        + "(:model IS NULL OR vca.viewCar.car.carinfo.model = :model) AND "
+                        + "(:suspension IS NULL OR vca.viewCar.car.carinfo.suspension = :suspension) AND "
                         + "(:assignedStatus IS NULL OR vca.assignedStatus = :assignedStatus) ")
         public Page<ViewCarAssigned> findByHQL(@Param("id") Integer id,
                         @Param("viewCarDateStr") Date viewCarDateStr,
@@ -34,7 +34,7 @@ public interface ViewCarAssignedRepository extends JpaRepository<ViewCarAssigned
                         @Param("viewCar") ViewCar viewCar,
                         @Param("car") Car car,
                         @Param("carinfo") Carinfo carinfo,
-                        @Param("model") Integer model,
+                        @Param("suspension") Integer suspension,
                         @Param("assignedStatus") Integer assignedStatus,
                         Pageable pageable);
 }

@@ -57,10 +57,9 @@ public class AgendaService {
             Agenda insert = new Agenda();
             insert.setEmployee(employeeService.findById(employeeId));
             insert.setBusinessPurpose(businessPurpose);
-            insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
-            insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+            insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd HH:mm:ss"));
+            insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd HH:mm:ss"));
             insert.setUnavailableStatus(unavailableStatus);
-
             return agendaRepo.save(insert);
 
         } catch (Exception e) {
@@ -88,8 +87,8 @@ public class AgendaService {
                 update.setId(id);
                 update.setEmployee(employeeService.findById(employeeId));
                 update.setBusinessPurpose(businessPurpose);
-                update.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
-                update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+                update.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd HH:mm:ss"));
+                update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd HH:mm:ss"));
                 update.setUnavailableStatus(unavailableStatus);
                 update.setCreateTime(agendaRepo.findById(id).get().getCreateTime());
                 update.setCreateTime(agendaRepo.findById(id).get().getUpdateTime());
@@ -165,16 +164,16 @@ public class AgendaService {
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Employee employee = obj.isNull("employeeId") ? null : employeeService.findById(obj.getInt("employeeId"));
             Date unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd HH:mm:ss");
             Date unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd HH:mm:ss");
             Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
             Date createTime = obj.isNull("createTime") ? null
                     : DatetimeConverter.parse(obj.getString("createTime"), "yyyy-MM-dd");
             Date ckeckavailableTimeStr = obj.isNull("ckeckavailableTimeStr") ? null
-                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
+                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeStr"), "yyyy-MM-dd HH:mm:ss");
             Date ckeckavailableTimeEnd = obj.isNull("ckeckavailableTimeEnd") ? null
-                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
+                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeEnd"), "yyyy-MM-dd HH:mm:ss");
             Integer exceptid = obj.isNull("exceptid") ? null : obj.getInt("exceptid");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
@@ -219,6 +218,12 @@ public class AgendaService {
         }
         agendaVO.setEmployeeName(agenda.getEmployee().getName());
         agendaVO.setEmployeeId(agenda.getEmployee().getId());
+        agendaVO.setUnavailableTimeEndString(
+                DatetimeConverter.toString(agenda.getUnavailableTimeEnd(), "yyyy-MM-dd HH:mm:ss"));
+        agendaVO.setUnavailableTimeStrString(
+                DatetimeConverter.toString(agenda.getUnavailableTimeStr(), "yyyy-MM-dd HH:mm:ss"));
+        agendaVO.setCreateTimeString(DatetimeConverter.toString(agenda.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        agendaVO.setUpdateTimeString(DatetimeConverter.toString(agenda.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
 
         return agendaVO;
     }
