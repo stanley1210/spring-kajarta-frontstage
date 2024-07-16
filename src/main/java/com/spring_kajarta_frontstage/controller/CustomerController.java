@@ -5,6 +5,7 @@ import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CustomerVO;
 import com.spring_kajarta_frontstage.service.CustomerService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
 
 @Tag(name = "管理後台-會員")
 @Slf4j
@@ -26,8 +30,8 @@ public class CustomerController {
     private CustomerService customerService;
 
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
-    @GetMapping("/info")
-    public Result<CustomerVO> info(@Parameter(description = "會員id") Integer customerId){
+    @GetMapping("/info/{customerId}")
+    public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId) {
         // todo:依據token獲取後台登入用戶
 
         log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
@@ -36,12 +40,40 @@ public class CustomerController {
             Customer customer = customerService.findById(customerId);
             customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         } catch (Exception e) {
             return ResultUtil.error("查詢出錯");
         }
 
         return ResultUtil.success(customerVO);
     }
+
+
+    @Operation(summary = "會員資訊-查詢多筆，依據用戶性別、帳號分類、帳號、城市、姓名、手機、電子信箱")
+    @PostMapping("/multi")
+    public Result<List<CustomerVO>> multiConditionQuery(@RequestBody CustomerVO customerVO) {
+        Character sex = customerVO.getSex();
+        Integer accountType = customerVO.getAccountType();
+        String account = customerVO.getAccount();
+        Integer city = customerVO.getCity();
+        String name = customerVO.getName();
+        String phone = customerVO.getPhone();
+        String email = customerVO.getEmail();
+
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-後台查詢客戶資訊-多筆：sex: {} accountType: {} account: {} city: {} name: {} phone: {} email: {}",
+                "到時候換成上一步拿到的管理員", sex, accountType, account, city, name, phone, email);
+
+        try {
+            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, account, city, name, phone , email);
+            return ResultUtil.success(customerVOList);
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+    }
+
 
     @Operation(summary = "會員資訊-新增會員")
     @PostMapping(value = "/add")
@@ -56,6 +88,26 @@ public class CustomerController {
             return ResultUtil.error("新增用戶出錯");
         }
         return ResultUtil.success(customerVO);
+    }
+
+    @Operation(summary = "會員資訊-修改會員")
+    @PutMapping(value = "/modify/{customerId}")
+    public Result<CustomerVO> modifyCustomer(
+            @Parameter(description = "會員id") @PathVariable Integer customerId,
+            @RequestBody CustomerVO customerVO) {
+        // todo:依據token獲取後台登入用戶
+
+        log.info("{}-修改客戶資訊：{}", "到時候換成上一步拿到的管理員", customerVO.toString());
+        customerVO.setId(customerId); // 確保傳入的客戶資料有正確的ID
+        try {
+            CustomerVO updatedCustomer = customerService.modify(customerVO);
+            if (updatedCustomer == null) {
+                return ResultUtil.error("找不到會員ID: " + customerId);
+            }
+            return ResultUtil.success(updatedCustomer);
+        } catch (Exception e) {
+            return ResultUtil.error("修改用戶出錯");
+        }
     }
 
 
