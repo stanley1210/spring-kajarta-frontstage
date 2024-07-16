@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kajarta.demo.enums.ViewTimeSectionEnum;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.ViewCar;
@@ -43,7 +44,8 @@ public class ViewCarService {
         try {
             JSONObject obj = new JSONObject(json);
 
-            Integer viewTimeSection = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+            Integer viewTimeSectionCode  = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+            ViewTimeSectionEnum viewTimeSection = ViewTimeSectionEnum.getByCode(viewTimeSectionCode);
             Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
             Integer salesScore = obj.isNull("salesScore") ? -1 : obj.getInt("salesScore");
             Integer factoryScore = obj.isNull("factoryScore") ? -1 : obj.getInt("factoryScore");
@@ -57,7 +59,7 @@ public class ViewCarService {
             Car car = carService.findById(carId);
 
             ViewCar insert = new ViewCar();
-            insert.setViewTimeSection(viewTimeSection);
+            insert.setViewTimeSection(viewTimeSection.getCode());
             insert.setCar(car); // Set Car entity
             insert.setSalesScore(salesScore);
             insert.setFactoryScore(factoryScore);
@@ -82,7 +84,8 @@ public class ViewCarService {
             JSONObject obj = new JSONObject(json);
 
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer viewTimeSection = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+            Integer viewTimeSectionCode = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+            ViewTimeSectionEnum viewTimeSection = ViewTimeSectionEnum.getByCode(viewTimeSectionCode);
             Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
             Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
             Integer factoryScore = obj.isNull("factoryScore") ? null : obj.getInt("factoryScore");
@@ -98,7 +101,7 @@ public class ViewCarService {
             Optional<ViewCar> optional = viewCarRepo.findById(id);
             if (optional.isPresent()) {
                 ViewCar update = optional.get();
-                update.setViewTimeSection(viewTimeSection);
+                update.setViewTimeSection(viewTimeSection.getCode());
                 update.setCar(car); // Set Car entity
                 update.setSalesScore(salesScore);
                 update.setFactoryScore(factoryScore);
