@@ -59,23 +59,29 @@ public class LeaveController {
         LeaveVO leaveVO;
         try {
             Leave leave = leaveService.findById(leaveId);
+            if (leave == null) {
+                return ResultUtil.error("查無此請假資訊");
+            }
+
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
             leaveVO.setEmployeeId(leave.getEmployee().getId());
-            leaveVO.setCreateTime(DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            leaveVO.setUpdateTime(DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            leaveVO.setStartTime(DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            leaveVO.setEndTime(DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            leaveVO.setAuditTime(DatetimeConverter.toString(new Date(leave.getAuditTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            leaveVO.setValidityPeriodStart(DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            leaveVO.setValidityPeriodEnd(DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+
+            // 设置时间字段，先进行空值判断
+            leaveVO.setCreateTime(leave.getCreateTime() != null ? DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
+            leaveVO.setUpdateTime(leave.getUpdateTime() != null ? DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
+            leaveVO.setStartTime(leave.getStartTime() != null ? DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
+            leaveVO.setEndTime(leave.getEndTime() != null ? DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
+            leaveVO.setAuditTime(leave.getAuditTime() != null ? DatetimeConverter.toString(new Date(leave.getAuditTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
+            leaveVO.setValidityPeriodStart(leave.getValidityPeriodStart() != null ? DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
+            leaveVO.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
         } catch (Exception e) {
+            log.error("查詢出錯", e);
             return ResultUtil.error("查詢出錯");
         }
 
         return ResultUtil.success(leaveVO);
     }
-
     @Operation(summary = "請假資訊-查詢多筆，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)")
     @PostMapping("/multi")
     public Result<List<LeaveVO>> multiConditionQuery(@RequestBody LeaveVO leaveVO) {
