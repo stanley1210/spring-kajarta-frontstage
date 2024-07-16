@@ -10,6 +10,9 @@ import java.util.List;
 
 @Service
 public interface EmployeeService {
+    // 計算數量
+    long countEmployees();
+
     // 查詢全部
     List<EmployeeVO> findAll();
 

@@ -37,10 +37,10 @@ public class CarService {
     }
 
     // 查ID
-    public Optional<Car> findById(Integer Id) {
+    public Car findById(Integer Id) {
         Optional<Car> optional = carRepo.findById(Id);
         if (optional.isPresent()) {
-            return optional;
+            return optional.get();
         }
         return null;
     }

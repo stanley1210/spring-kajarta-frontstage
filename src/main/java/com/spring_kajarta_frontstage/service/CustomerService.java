@@ -6,6 +6,9 @@ import com.kajarta.demo.vo.CustomerVO;
 import java.util.List;
 
 public interface CustomerService {
+    // 計算數量
+    long countCustomers();
+
     // 查詢全部
     List<CustomerVO> findAll();
 
