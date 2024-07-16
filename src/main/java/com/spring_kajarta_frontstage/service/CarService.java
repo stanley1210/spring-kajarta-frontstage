@@ -111,10 +111,10 @@ public class CarService {
         return false;
     }
 
-    public Car modify(String json) { // 修改
+    // 修改
+    public Car modify(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Integer productionYear = obj.isNull("productionYear") ? null : obj.getInt("productionYear");
             Integer milage = obj.isNull("milage") ? null : obj.getInt("milage");
@@ -126,7 +126,6 @@ public class CarService {
             String launchDate = obj.isNull("launchDate") ? null : obj.getString("launchDate");
             String color = obj.isNull("color") ? null : obj.getString("color");
             Integer remark = obj.isNull("remark") ? null : obj.getInt("remark");
-
             Customer c = customerService.findById(id);
             Employee e = employeeService.findById(id);
             Carinfo carinfo = carInfoService.findById(id);

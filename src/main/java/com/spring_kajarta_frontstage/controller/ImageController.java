@@ -60,7 +60,7 @@ public class ImageController {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
         if (Id == null) {
-            responseBody.put("false", false);
+            responseBody.put("success", false);
             responseBody.put("message", "ID不得為空");
         } else {
             if (!imageService.exists(Id)) {
@@ -150,7 +150,7 @@ public class ImageController {
             @RequestParam("isMainPic") Integer isMainPic) {
         JSONObject responseBody = new JSONObject();
         if (Id == null) {
-            responseBody.put("false", false);
+            responseBody.put("success", false);
             responseBody.put("message", "ID不得為空");
         } else {
             if (!imageService.exists(Id)) {

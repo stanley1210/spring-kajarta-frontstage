@@ -18,13 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.model.Car;
-import com.kajarta.demo.model.Carinfo;
-import com.kajarta.demo.model.Customer;
-import com.kajarta.demo.model.Employee;
-import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.CustomerService;
-import com.spring_kajarta_frontstage.service.EmployeeService;
 
 @RestController
 @RequestMapping("/car")
@@ -32,15 +26,6 @@ import com.spring_kajarta_frontstage.service.EmployeeService;
 public class CarController {
     @Autowired
     private CarService carService;
-
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private CarInfoService carInfoService;
 
     // 查全部
     @GetMapping("/findAll")
@@ -76,7 +61,7 @@ public class CarController {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
         if (Id == null) {
-            responseBody.put("false", false);
+            responseBody.put("success", false);
             responseBody.put("message", "ID不得為空");
         } else {
             Optional<Car> carOptional = carService.findById(Id);
@@ -101,28 +86,15 @@ public class CarController {
                 responseBody.put("list", array);
                 return responseBody.toString();
             } else {
-                responseBody.put("false", false);
+                responseBody.put("success", false);
                 responseBody.put("message", "ID不存在");
             }
         }
         return responseBody.toString();
     }
 
+    // 新增單筆
     @PostMapping("/create")
-    public Car create(@RequestBody Car car) {
-        Customer c = customerService.findById(1);
-        Employee e = employeeService.findById(1);
-        Carinfo carinfo = carInfoService.findById(1);
-        car.setCustomer(c);
-        car.setEmployee(e);
-        car.setCarinfo(carinfo);
-
-        car.setId(0);
-        return carService.save(car);
-
-    }
-
-    @PostMapping("/create2")
     public String jsonCreate(@RequestBody String body) {
         JSONObject reponseBody = new JSONObject();
         Car car = carService.create(body);
@@ -140,7 +112,6 @@ public class CarController {
     @DeleteMapping("/delete/{id}")
     public String remove(@PathVariable Integer id) {
         JSONObject responseBody = new JSONObject();
-
         if (!carService.exists(id)) {
             responseBody.put("success", false);
             responseBody.put("message", "Id不存在");
@@ -153,7 +124,6 @@ public class CarController {
                 responseBody.put("message", "刪除成功");
             }
         }
-
         return responseBody.toString();
     }
 
