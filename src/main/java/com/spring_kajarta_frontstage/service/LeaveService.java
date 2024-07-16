@@ -6,6 +6,9 @@ import java.util.List;
 
 
 public interface LeaveService {
+    // 計算數量
+    long countLeaves();
+
     // 查詢全部
     List<LeaveVO> findAll();
 

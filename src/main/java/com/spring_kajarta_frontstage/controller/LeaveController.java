@@ -32,6 +32,13 @@ public class LeaveController {
     @Autowired
     private LeaveService leaveService;
 
+    @Operation(summary = "統計會員數量")
+    @GetMapping("/count")
+    public Result<Long> countLeaves() {
+        long count = leaveService.countLeaves();
+        return ResultUtil.success(count);
+    }
+
     @Operation(summary = "請假資訊-查詢全部")
     @GetMapping("/all")
     public Result<List<LeaveVO>> findAll() {

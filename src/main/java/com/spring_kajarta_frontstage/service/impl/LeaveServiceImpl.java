@@ -3,11 +3,9 @@ package com.spring_kajarta_frontstage.service.impl;
 
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
-import com.kajarta.demo.vo.EmployeeVO;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
 import com.spring_kajarta_frontstage.repository.LeaveRepository;
-import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.LeaveService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +27,11 @@ public class LeaveServiceImpl implements LeaveService {
     @Autowired
     private EmployeeRepository employeeRepo;
 
-    @Autowired
-    private EmployeeService employeeService;
+
+    @Override
+    public long countLeaves() {
+        return leaveRepo.count();
+    }
 
     // 查詢全部
     @Override
