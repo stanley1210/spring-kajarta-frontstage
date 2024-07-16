@@ -136,7 +136,7 @@ public class ViewCarAssignedService {
             Integer teamLeaderId = obj.isNull("teamLeaderId") ? null : obj.getInt("teamLeaderId");
             ViewCar viewCar = obj.isNull("viewCarId") ? null : viewCarService.findById(obj.getInt("viewCarId"));
             Car car = obj.isNull("carId") ? null : carService.findById(obj.getInt("carId"));
-            Carinfo carinfo = obj.isNull("carinfoId") ? null : null; // carInfoService.findById(obj.getInt("carinfoId"))
+            Carinfo carinfo = obj.isNull("carinfoId") ? null : carInfoService.findById(obj.getInt("carinfoId"));
             Integer suspension = obj.isNull("suspensionid") ? null : obj.getInt("suspensionid");
             Integer assignedStatus = obj.isNull("assignedStatus") ? null : obj.getInt("assignedStatus");
 
