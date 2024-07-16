@@ -59,7 +59,7 @@ public class ImageService {
             // Optional<Car> optional = carRepo.findById(ID);
             // if (optional.isEmpty()) {
             Image imageModel = new Image();
-            Car car = carService.findById(carId).get();
+            Car car = carService.findById(carId);
             imageModel.setImage(image);
             imageModel.setCar(car);
             imageModel.setIsListPic(isListPic);
@@ -88,7 +88,7 @@ public class ImageService {
             Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
             Integer isListPic = obj.isNull("isListPic") ? null : obj.getInt("isListPic");
             Integer isMainPic = obj.isNull("isMainPic") ? null : obj.getInt("isMainPic");
-            Car car = carService.findById(id).get();
+            Car car = carService.findById(id);
 
             Optional<Image> optional = imageRepo.findById(carId);
             if (optional.isPresent()) {
