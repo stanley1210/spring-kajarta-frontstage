@@ -64,9 +64,9 @@ public class CarController {
             responseBody.put("success", false);
             responseBody.put("message", "ID不得為空");
         } else {
-            Optional<Car> carOptional = carService.findById(Id);
+            Car carOptional = carService.findById(Id);
             if (carOptional != null) {
-                Car carModel = carOptional.get();
+                Car carModel = carOptional;
                 JSONObject item = new JSONObject()
                         .put("id", carModel.getId())
                         .put("productionYear", carModel.getProductionYear())

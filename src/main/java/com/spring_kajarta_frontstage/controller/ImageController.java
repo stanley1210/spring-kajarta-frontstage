@@ -89,7 +89,7 @@ public class ImageController {
     // 顯示單張圖片
     @GetMapping(path = "/getImage/{Id}", produces = { MediaType.IMAGE_JPEG_VALUE })
     public @ResponseBody byte[] getImage(@PathVariable(name = "Id") Integer photoid) {
-        Image image = imageService.findById(photoid).get();
+        Image image = imageService.findById(photoid);
         byte[] result = image.getImage();
         return result;
     }
@@ -103,7 +103,7 @@ public class ImageController {
         JSONObject responseBody = new JSONObject();
         try {
             byte[] imageByte = imageFile.getBytes();
-            Car car = carService.findById(carId).get();
+            Car car = carService.findById(carId);
             Image image = new Image();
             image.setImage(imageByte);
             image.setCar(car);
