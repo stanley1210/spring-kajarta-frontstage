@@ -22,7 +22,7 @@ public class ViewCarService {
     @Autowired
     private ViewCarRepository viewCarRepo;
     @Autowired
-    private CarService carService;
+    private CarService1 carService;
     @Autowired
     private CustomerService customerService;
 
@@ -68,6 +68,8 @@ public class ViewCarService {
             insert.setDeal(deal);
             insert.setCustomer(customer); // Set Customer entity
             insert.setViewCarStatus(viewCarStatus);
+
+            return viewCarRepo.save(insert);
 
             return viewCarRepo.save(insert);
 
@@ -121,6 +123,15 @@ public class ViewCarService {
 
     // 查詢一筆
 
+    public ViewCar findById(Integer id) {
+        if (id != null) {
+            Optional<ViewCar> optional = viewCarRepo.findById(id);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
     public ViewCar findById(Integer id) {
         if (id != null) {
             Optional<ViewCar> optional = viewCarRepo.findById(id);
