@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Agenda;
 import com.kajarta.demo.model.Employee;
+import com.kajarta.demo.vo.AgendaVO;
 import com.spring_kajarta_frontstage.repository.AgendaRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
@@ -44,7 +46,6 @@ public class AgendaService {
     public Agenda create(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-            Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
             String businessPurpose = obj.isNull("businessPurpose") ? null : obj.getString("businessPurpose");
             String unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
@@ -53,18 +54,15 @@ public class AgendaService {
                     : obj.getString("unavailableTimeEnd");
             Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
 
-            Optional<Agenda> optional = agendaRepo.findById(id);
-            if (optional.isEmpty()) {
-                Agenda insert = new Agenda();
-                insert.setId(id);
-                insert.setEmployee(employeeService.findById(employeeId));
-                insert.setBusinessPurpose(businessPurpose);
-                insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
-                insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
-                insert.setUnavailableStatus(unavailableStatus);
+            Agenda insert = new Agenda();
+            insert.setEmployee(employeeService.findById(employeeId));
+            insert.setBusinessPurpose(businessPurpose);
+            insert.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
+            insert.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
+            insert.setUnavailableStatus(unavailableStatus);
 
-                return agendaRepo.save(insert);
-            }
+            return agendaRepo.save(insert);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,6 +91,8 @@ public class AgendaService {
                 update.setUnavailableTimeStr(DatetimeConverter.parse(unavailableTimeStr, "yyyy-MM-dd hh:mm:ss"));
                 update.setUnavailableTimeEnd(DatetimeConverter.parse(unavailableTimeEnd, "yyyy-MM-dd hh:mm:ss"));
                 update.setUnavailableStatus(unavailableStatus);
+                update.setCreateTime(agendaRepo.findById(id).get().getCreateTime());
+                update.setCreateTime(agendaRepo.findById(id).get().getUpdateTime());
 
                 return agendaRepo.save(update);
             }
@@ -159,18 +159,23 @@ public class AgendaService {
     }
 
     // 查詢多筆 @Query 測試
-    public Page<Agenda> find2(String json) {
+    public Page<Agenda> findByHQL(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Employee employee = obj.isNull("employeeId") ? null : employeeService.findById(obj.getInt("employeeId"));
             Date unavailableTimeStr = obj.isNull("unavailableTimeStr") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd");
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
             Date unavailableTimeEnd = obj.isNull("unavailableTimeEnd") ? null
-                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd");
+                    : DatetimeConverter.parse(obj.getString("unavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
             Integer unavailableStatus = obj.isNull("unavailableStatus") ? null : obj.getInt("unavailableStatus");
             Date createTime = obj.isNull("createTime") ? null
                     : DatetimeConverter.parse(obj.getString("createTime"), "yyyy-MM-dd");
+            Date ckeckavailableTimeStr = obj.isNull("ckeckavailableTimeStr") ? null
+                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeStr"), "yyyy-MM-dd hh:mm:ss");
+            Date ckeckavailableTimeEnd = obj.isNull("ckeckavailableTimeEnd") ? null
+                    : DatetimeConverter.parse(obj.getString("ckeckavailableTimeEnd"), "yyyy-MM-dd hh:mm:ss");
+            Integer exceptid = obj.isNull("exceptid") ? null : obj.getInt("exceptid");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
@@ -180,7 +185,7 @@ public class AgendaService {
 
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<Agenda> page = agendaRepo.findByHQL(id, employee, unavailableTimeStr, createTime, unavailableTimeEnd,
-                    unavailableStatus, pgb);
+                    unavailableStatus, ckeckavailableTimeStr, ckeckavailableTimeEnd, exceptid, pgb);
 
             return page;
 
@@ -188,7 +193,33 @@ public class AgendaService {
             e.printStackTrace();
         }
         return null;
-        //
     }
 
+    // Bean 轉 VO
+    public AgendaVO vOChange(Agenda agenda) {
+        AgendaVO agendaVO = new AgendaVO();
+
+        BeanUtils.copyProperties(agenda, agendaVO);
+
+        // 排程分類 UnavailableStatu
+        switch (agenda.getUnavailableStatus()) {
+            case 1:
+                agendaVO.setUnavailableStatusName("請假");
+                break;
+            case 2:
+                agendaVO.setUnavailableStatusName("賞車");
+                break;
+            case 3:
+                agendaVO.setUnavailableStatusName("公事安排");
+                break;
+
+            default:
+                agendaVO.setUnavailableStatusName(
+                        "排程分類錯誤 UnavailableStatus = " + agenda.getUnavailableStatus().toString());
+        }
+        agendaVO.setEmployeeName(agenda.getEmployee().getName());
+        agendaVO.setEmployeeId(agenda.getEmployee().getId());
+
+        return agendaVO;
+    }
 }
