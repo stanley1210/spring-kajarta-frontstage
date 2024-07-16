@@ -34,10 +34,10 @@ public class ImageService {
     }
 
     // 查ID
-    public Optional<Image> findById(Integer Id) {
+    public Image findById(Integer Id) {
         Optional<Image> optional = imageRepo.findById(Id);
         if (optional.isPresent()) {
-            return optional;
+            return optional.get();
         }
         return null;
     }
