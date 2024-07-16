@@ -9,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -58,18 +62,30 @@ public class CustomerServiceImpl implements CustomerService {
         return customer.orElse(null);
     }
 
-    // 多條件查詢，依據用戶性別、帳號分類、帳號、城市、姓名、手機、電子信箱
-    public List<CustomerVO> multiConditionQuery(Character sex, Integer accountType, String account, Integer city, String name, String phone, String email) {
-        List<Customer> customers = customerRepo.findByMultipleConditions(sex, accountType, account, city, name, phone, email);
-        List<CustomerVO> customerVOList = new ArrayList<>();
-        for (Customer customer : customers) {
+    public Page<CustomerVO> findByConditionsWithPagination(
+            Character sex,
+            Integer accountType,
+            String account,
+            Integer city,
+            String name,
+            String phone,
+            String email,
+            int page,
+            int size,
+            String sort,
+            boolean dir) {
+
+        Sort sortOrder = dir ? Sort.by(Sort.Direction.ASC, sort) : Sort.by(Sort.Direction.DESC, sort);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Customer> customerPage = customerRepo.findByMultipleConditions(sex, accountType, account, city, name, phone, email, pageable);
+
+        return customerPage.map(customer -> {
             CustomerVO customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
             customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
             customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            customerVOList.add(customerVO);
-        }
-        return customerVOList;
+            return customerVO;
+        });
     }
 
     // 新增

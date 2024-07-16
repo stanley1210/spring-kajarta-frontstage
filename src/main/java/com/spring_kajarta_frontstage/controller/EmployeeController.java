@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,32 +81,37 @@ public class EmployeeController {
         return ResultUtil.success(employeeVO);
     }
 
-    @Operation(summary = "員工資訊-查詢多筆，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日")
-    @PostMapping("/multi")
-    public Result<List<EmployeeVO>> multiConditionQuery(@RequestBody EmployeeVO employeeVO) {
-        Character sex = employeeVO.getSex();
-        Integer accountType = employeeVO.getAccountType();
-        String account = employeeVO.getAccount();
-        String name = employeeVO.getName();
-        String phone = employeeVO.getPhone();
-        String email = employeeVO.getEmail();
-        Integer branch = employeeVO.getBranch();
-        Integer teamLeaderId = employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null;
-        LocalDate startDate = employeeVO.getStartDate();
-        LocalDate endDate = employeeVO.getEndDate();
+@Operation(summary = "會員資訊-依多條件查詢(分頁)")
+@PostMapping("/query")
+public Result<Page<EmployeeVO>> queryEmployees(
+        @RequestBody EmployeeVO employeeVO,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id") String sort,
+        @RequestParam(defaultValue = "true") boolean dir) {
 
-        log.info("後台查詢員工資訊-多筆：sex: {} accountType: {} account: {} name: {} phone: {} email: {} branch: {} teamLeaderId: {} startDate: {} endDate: {} ",
-                sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
+    log.info("{}-後台查詢員工資訊-多條件查詢(分頁)", "到時候換成上一步拿到的管理員");
+    Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(
+            employeeVO.getSex(), employeeVO.getAccountType(), employeeVO.getAccount(), employeeVO.getName(),
+            employeeVO.getPhone(), employeeVO.getEmail(), employeeVO.getBranch(), employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null,
+            employeeVO.getStartDate(), employeeVO.getEndDate(), page, size, sort, dir);
 
-        try {
-            List<EmployeeVO> employeeVOList = employeeService.multiConditionQuery(
-                    sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
-            return ResultUtil.success(employeeVOList);
-        } catch (Exception e) {
-            log.error("查詢出錯", e);
-            return ResultUtil.error("查詢出錯");
-        }
-    }
+    Result<Page<EmployeeVO>> result = new Result<>();
+    result.setCode(200);
+    result.setMsg("查詢成功");
+    result.setData(employeePage);
+    result.setSuccess(true);
+    result.setTotalPage(employeePage.getTotalPages());
+    result.setTotalElement(employeePage.getTotalElements());
+    result.setPageNumber(employeePage.getNumber());
+    result.setNumberOfElementsOnPage(employeePage.getNumberOfElements());
+    result.setHasNext(employeePage.hasNext());
+    result.setHasPrevious(employeePage.hasPrevious());
+    result.setFirstPageOrNot(employeePage.isFirst());
+    result.setLastPageOrNot(employeePage.isLast());
+
+    return result;
+}
 
     @Operation(summary = "員工資訊-新增員工")
     @PostMapping(value = "/add")

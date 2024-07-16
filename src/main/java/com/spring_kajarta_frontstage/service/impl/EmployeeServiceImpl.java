@@ -8,6 +8,10 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,19 +71,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
     @Override
-    public List<EmployeeVO> multiConditionQuery(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branch, Integer teamLeaderId, LocalDate startDate, LocalDate endDate) {
-        List<Employee> employees = employeeRepo.findByMultipleConditions(
-                sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
+    public Page<EmployeeVO> findByConditionsWithPagination(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branch, Integer teamLeaderId, LocalDate startDate, LocalDate endDate, int page, int size, String sort, boolean dir) {
+        Sort sortOrder = dir ? Sort.by(Sort.Direction.ASC, sort) : Sort.by(Sort.Direction.DESC, sort);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
 
-        List<EmployeeVO> employeeVOList = new ArrayList<>();
-        for (Employee employee : employees) {
+        Page<Employee> employeePage = employeeRepo.findByMultipleConditions(
+                sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate, pageable);
+
+        return employeePage.map(employee -> {
             EmployeeVO employeeVO = new EmployeeVO();
             BeanUtils.copyProperties(employee, employeeVO);
             employeeVO.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
             employeeVO.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            employeeVOList.add(employeeVO);
-        }
-        return employeeVOList;
+            return employeeVO;
+        });
     }
 
 

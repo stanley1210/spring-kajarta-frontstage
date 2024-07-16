@@ -1,5 +1,6 @@
 package com.spring_kajarta_frontstage.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Employee;
@@ -19,8 +20,8 @@ public interface EmployeeService {
     // 單筆查詢，依據員工id查詢單一員工資訊
     Employee findById(Integer employeeId);
 
-    // 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
-    List<EmployeeVO> multiConditionQuery(
+    // 多條件分頁查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
+    Page<EmployeeVO> findByConditionsWithPagination(
             Character sex,
             Integer accountType,
             String account,
@@ -30,8 +31,11 @@ public interface EmployeeService {
             Integer branch,
             Integer teamLeaderId,
             LocalDate startDate,
-            LocalDate endDate
-    );
+            LocalDate endDate,
+            int page,
+            int size,
+            String sort,
+            boolean dir);
 
     // 新增
     EmployeeVO create(EmployeeVO employeeVO);
