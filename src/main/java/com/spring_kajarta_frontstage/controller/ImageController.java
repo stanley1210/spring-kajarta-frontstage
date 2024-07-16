@@ -67,7 +67,7 @@ public class ImageController {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
-                Image image = imageService.findById(Id).get();
+                Image image = imageService.findById(Id);
                 if (image != null) {
                     String imageUrl = "/kajarta/image/getImage/" + Id;
                     JSONObject item = new JSONObject()
