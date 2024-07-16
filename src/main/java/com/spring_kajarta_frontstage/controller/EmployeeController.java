@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Tag(name = "管理後台-員工")
+@CrossOrigin
 @Slf4j
 @Validated
 @RestController
@@ -81,7 +82,7 @@ public class EmployeeController {
         return ResultUtil.success(employeeVO);
     }
 
-@Operation(summary = "會員資訊-依多條件查詢(分頁)")
+@Operation(summary = "員工資訊-依多條件查詢(分頁)")
 @PostMapping("/query")
 public Result<Page<EmployeeVO>> queryEmployees(
         @RequestBody EmployeeVO employeeVO,
