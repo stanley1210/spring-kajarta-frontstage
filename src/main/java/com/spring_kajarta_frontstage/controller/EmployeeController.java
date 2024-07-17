@@ -2,6 +2,7 @@ package com.spring_kajarta_frontstage.controller;
 
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.domian.ResultNew;
 import com.kajarta.demo.enums.AccountTypeEnum;
 import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Employee;
@@ -12,6 +13,7 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -71,6 +73,8 @@ public class EmployeeController {
             employeeVO = new EmployeeVO();
 
             BeanUtils.copyProperties(employee, employeeVO);
+            employeeVO.setTeamLeaderId(employee.getTeamLeader().getId());
+            employeeVO.setTeamLeaderName(employee.getTeamLeader().getName());
             employeeVO.setAccountTypeName(AccountTypeEnum.getByCode(employee.getAccountType()).getAccountType());
             employeeVO.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
             employeeVO.setBranchAddress(BranchEnum.getByCode(employee.getBranch()).getAddress());
@@ -85,38 +89,18 @@ public class EmployeeController {
 
     @Operation(summary = "員工資訊-依多條件查詢(分頁)")
     @PostMapping("/query")
-    public Result<Page<EmployeeVO>> queryEmployees(
-            @RequestBody EmployeeVO employeeVO,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "true") boolean dir) {
+    public ResultNew<Page<EmployeeVO>> queryEmployees(@RequestBody EmployeeVO employeeVO, HttpServletRequest request) {
+        // 解析token todo
 
         log.info("後台查詢員工資訊-多條件查詢(分頁)");
 
-        // 获取 teamLeaderId，安全检查
-        Integer teamLeader = employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null;
+        Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(employeeVO);
 
-        // 使用安全获取的 teamLeader 变量
-        Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(
-                employeeVO.getSex(), employeeVO.getAccountType(), employeeVO.getAccount(), employeeVO.getName(),
-                employeeVO.getPhone(), employeeVO.getEmail(), employeeVO.getBranch(),
-                teamLeader, employeeVO.getStartDate(), employeeVO.getEndDate(), page, size, sort, dir);
-
-        Result<Page<EmployeeVO>> result = new Result<>();
+        ResultNew<Page<EmployeeVO>> result = new ResultNew<>();
         result.setCode(200);
         result.setMsg("查詢成功");
         result.setData(employeePage);
         result.setSuccess(true);
-        result.setTotalPage(employeePage.getTotalPages());
-        result.setTotalElement(employeePage.getTotalElements());
-        result.setPageNumber(employeePage.getNumber());
-        result.setNumberOfElementsOnPage(employeePage.getNumberOfElements());
-        result.setHasNext(employeePage.hasNext());
-        result.setHasPrevious(employeePage.hasPrevious());
-        result.setFirstPageOrNot(employeePage.isFirst());
-        result.setLastPageOrNot(employeePage.isLast());
-
         return result;
     }
 

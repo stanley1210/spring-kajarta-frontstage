@@ -1,5 +1,6 @@
 package com.spring_kajarta_frontstage.repository;
 
+import com.kajarta.demo.dto.LeaveDTO;
 import com.kajarta.demo.model.Leave;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,17 +16,22 @@ import java.util.List;
 public interface LeaveRepository extends JpaRepository<Leave,Integer> {
     // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
 
-    @Query("SELECT l FROM Leave l WHERE "
-            + "(:leaveStatus IS NULL OR l.leaveStatus = :leaveStatus) AND "
-            + "(:startTime IS NULL OR l.startTime = :startTime) AND "
-            + "(:endTime IS NULL OR l.endTime = :endTime) AND "
-            + "(:leaveType IS NULL OR l.leaveType = :leaveType) AND "
-            + "(:employee IS NULL OR l.employee.id = :employee) AND "
-            + "(:teamLeaderId IS NULL OR l.teamLeaderId = :teamLeaderId) AND "
-            + "(:permisionStatus IS NULL OR l.permisionStatus = :permisionStatus) AND "
-            + "(:validityPeriodStart IS NULL OR l.validityPeriodStart = :validityPeriodStart) AND "
-            + "(:validityPeriodEnd IS NULL OR l.validityPeriodEnd = :validityPeriodEnd)")
-    Page<Leave> findAllByMultipleConditions(
+    @Query("SELECT new com.kajarta.demo.dto.LeaveDTO(l.id, l.leaveStatus, l.startTime, l.endTime, l.leaveType, " +
+            "l.employee.id, l.deputyId, l.teamLeaderId, l.permisionRemarks, l.permisionStatus, " +
+            "l.auditTime, l.reason, l.actualLeaveHours, l.image, l.specialLeaveHours, " +
+            "l.createTime, l.updateTime, l.validityPeriodStart, l.validityPeriodEnd, e.name) " +
+            "FROM Leave l LEFT JOIN Employee e ON e.id = l.deputyId " +
+            "WHERE (:leaveStatus IS NULL OR l.leaveStatus = :leaveStatus) AND " +
+            "(:startTime IS NULL OR l.startTime = :startTime) AND " +
+            "(:endTime IS NULL OR l.endTime = :endTime) AND " +
+            "(:leaveType IS NULL OR l.leaveType = :leaveType) AND " +
+            "(:employee IS NULL OR l.employee.id = :employee) AND " +
+            "(:teamLeaderId IS NULL OR l.teamLeaderId = :teamLeaderId) AND " +
+            "(:permisionStatus IS NULL OR l.permisionStatus = :permisionStatus) AND " +
+            "(:validityPeriodStart IS NULL OR l.validityPeriodStart = :validityPeriodStart) AND " +
+            "(:validityPeriodEnd IS NULL OR l.validityPeriodEnd = :validityPeriodEnd) " +
+            "ORDER BY l.createTime ASC")
+    Page<LeaveDTO> findAllByMultipleConditions(
             @Param("leaveStatus") Integer leaveStatus,
             @Param("startTime") String startTime,
             @Param("endTime") String endTime,

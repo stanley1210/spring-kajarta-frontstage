@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.service.impl;
 
 
+import com.kajarta.demo.dto.LeaveDTO;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.vo.LeaveVO;
@@ -136,7 +137,7 @@ public class LeaveServiceImpl implements LeaveService {
 
         Sort sortOrder = dir ? Sort.by(Sort.Direction.ASC, sort) : Sort.by(Sort.Direction.DESC, sort);
         Pageable pageable = PageRequest.of(page, size, sortOrder);
-        Page<Leave> leavePage = leaveRepo.findAllByMultipleConditions(leaveStatus, startTime, endTime, leaveType,
+        Page<LeaveDTO> leavePage = leaveRepo.findAllByMultipleConditions(leaveStatus, startTime, endTime, leaveType,
                 employeeId, teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd, pageable);
 
         return leavePage.map(leave -> {
@@ -163,7 +164,7 @@ public class LeaveServiceImpl implements LeaveService {
             leaveVO.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null
                     ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
                     : null);
-            leaveVO.setEmployeeId(leave.getEmployee().getId());
+            leaveVO.setEmployeeId(leave.getEmployeeId());
             return leaveVO;
         });
     }

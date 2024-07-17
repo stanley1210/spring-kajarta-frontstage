@@ -1,12 +1,12 @@
 package com.spring_kajarta_frontstage.repository;
 
 import com.kajarta.demo.model.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 
@@ -24,8 +24,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             + "(:branch IS NULL OR e.branch = :branch) AND "
             + "(:teamLeaderId IS NULL OR e.teamLeader.id = :teamLeaderId) AND "
             + "(:startDate IS NULL OR e.startDate = :startDate) AND "
-            + "(:endDate IS NULL OR e.endDate = :endDate)")
-Page<Employee> findByMultipleConditions(
+            + "(:endDate IS NULL OR e.endDate = :endDate)"
+            + "ORDER BY e.createTime ASC")
+    Page<Employee> findByMultipleConditions(
         @Param("sex") Character sex,
         @Param("accountType") Integer accountType,
         @Param("account") String account,
