@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @Tag(name = "管理後台-請假")
+@CrossOrigin
 @Slf4j
 @Validated
 @RestController
