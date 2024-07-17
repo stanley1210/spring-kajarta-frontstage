@@ -71,6 +71,7 @@ public class EmployeeController {
         try {
             Employee employee = employeeService.findById(employeeId);
             employeeVO = new EmployeeVO();
+
             BeanUtils.copyProperties(employee, employeeVO);
             employeeVO.setAccountTypeName(AccountTypeEnum.getByCode(employee.getAccountType()).getAccountType());
             employeeVO.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
@@ -84,38 +85,41 @@ public class EmployeeController {
         return ResultUtil.success(employeeVO);
     }
 
-@Operation(summary = "員工資訊-依多條件查詢(分頁)")
-@PostMapping("/query")
-public Result<Page<EmployeeVO>> queryEmployees(
-        @RequestBody EmployeeVO employeeVO,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "id") String sort,
-        @RequestParam(defaultValue = "true") boolean dir) {
+    @Operation(summary = "員工資訊-依多條件查詢(分頁)")
+    @PostMapping("/query")
+    public Result<Page<EmployeeVO>> queryEmployees(
+            @RequestBody EmployeeVO employeeVO,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "true") boolean dir) {
 
-    log.info("{}-後台查詢員工資訊-多條件查詢(分頁)", "到時候換成上一步拿到的管理員");
-    Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(
-            employeeVO.getSex(), employeeVO.getAccountType(), employeeVO.getAccount(), employeeVO.getName(),
-            employeeVO.getPhone(), employeeVO.getEmail(), employeeVO.getBranch(),
-            employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null,
-            employeeVO.getStartDate(), employeeVO.getEndDate(), page, size, sort, dir);
+        log.info("後台查詢員工資訊-多條件查詢(分頁)");
 
+        // 获取 teamLeaderId，安全检查
+        Integer teamLeader = employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null;
 
-    Result<Page<EmployeeVO>> result = new Result<>();
-    result.setCode(200);
-    result.setMsg("查詢成功");
-    result.setData(employeePage);
-    result.setSuccess(true);
-    result.setTotalPage(employeePage.getTotalPages());
-    result.setTotalElement(employeePage.getTotalElements());
-    result.setPageNumber(employeePage.getNumber());
-    result.setNumberOfElementsOnPage(employeePage.getNumberOfElements());
-    result.setHasNext(employeePage.hasNext());
-    result.setHasPrevious(employeePage.hasPrevious());
-    result.setFirstPageOrNot(employeePage.isFirst());
-    result.setLastPageOrNot(employeePage.isLast());
+        // 使用安全获取的 teamLeader 变量
+        Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(
+                employeeVO.getSex(), employeeVO.getAccountType(), employeeVO.getAccount(), employeeVO.getName(),
+                employeeVO.getPhone(), employeeVO.getEmail(), employeeVO.getBranch(),
+                teamLeader, employeeVO.getStartDate(), employeeVO.getEndDate(), page, size, sort, dir);
 
-    return result;
+        Result<Page<EmployeeVO>> result = new Result<>();
+        result.setCode(200);
+        result.setMsg("查詢成功");
+        result.setData(employeePage);
+        result.setSuccess(true);
+        result.setTotalPage(employeePage.getTotalPages());
+        result.setTotalElement(employeePage.getTotalElements());
+        result.setPageNumber(employeePage.getNumber());
+        result.setNumberOfElementsOnPage(employeePage.getNumberOfElements());
+        result.setHasNext(employeePage.hasNext());
+        result.setHasPrevious(employeePage.hasPrevious());
+        result.setFirstPageOrNot(employeePage.isFirst());
+        result.setLastPageOrNot(employeePage.isLast());
+
+        return result;
     }
 
     @Operation(summary = "員工資訊-新增員工")

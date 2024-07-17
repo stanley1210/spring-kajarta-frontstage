@@ -71,11 +71,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     // 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
+
     @Override
     public Page<EmployeeVO> findByConditionsWithPagination(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branch, Integer teamLeaderId, LocalDate startDate, LocalDate endDate, int page, int size, String sort, boolean dir) {
         Sort sortOrder = dir ? Sort.by(Sort.Direction.ASC, sort) : Sort.by(Sort.Direction.DESC, sort);
         Pageable pageable = PageRequest.of(page, size, sortOrder);
-
 
         Page<Employee> employeePage = employeeRepo.findByMultipleConditions(
                 sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate, pageable);
