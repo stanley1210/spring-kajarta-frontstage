@@ -1,5 +1,6 @@
 package com.spring_kajarta_frontstage.service.impl;
 
+import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
@@ -75,14 +76,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         Sort sortOrder = dir ? Sort.by(Sort.Direction.ASC, sort) : Sort.by(Sort.Direction.DESC, sort);
         Pageable pageable = PageRequest.of(page, size, sortOrder);
 
+
         Page<Employee> employeePage = employeeRepo.findByMultipleConditions(
                 sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate, pageable);
 
         return employeePage.map(employee -> {
             EmployeeVO employeeVO = new EmployeeVO();
+            employeeVO.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
+            employeeVO.setBranchAddress(BranchEnum.getByCode(employee.getBranch()).getAddress());
+            employeeVO.setBranchName(BranchEnum.getByCode(employee.getBranch()).getBranchName());
             BeanUtils.copyProperties(employee, employeeVO);
             employeeVO.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
             employeeVO.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+
             return employeeVO;
         });
     }

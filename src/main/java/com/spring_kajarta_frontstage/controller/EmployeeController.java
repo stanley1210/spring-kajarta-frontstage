@@ -2,6 +2,7 @@ package com.spring_kajarta_frontstage.controller;
 
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.enums.AccountTypeEnum;
 import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.utils.ResultUtil;
@@ -71,6 +72,7 @@ public class EmployeeController {
             Employee employee = employeeService.findById(employeeId);
             employeeVO = new EmployeeVO();
             BeanUtils.copyProperties(employee, employeeVO);
+            employeeVO.setAccountTypeName(AccountTypeEnum.getByCode(employee.getAccountType()).getAccountType());
             employeeVO.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
             employeeVO.setBranchAddress(BranchEnum.getByCode(employee.getBranch()).getAddress());
             employeeVO.setBranchName(BranchEnum.getByCode(employee.getBranch()).getBranchName());
@@ -94,8 +96,10 @@ public Result<Page<EmployeeVO>> queryEmployees(
     log.info("{}-後台查詢員工資訊-多條件查詢(分頁)", "到時候換成上一步拿到的管理員");
     Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(
             employeeVO.getSex(), employeeVO.getAccountType(), employeeVO.getAccount(), employeeVO.getName(),
-            employeeVO.getPhone(), employeeVO.getEmail(), employeeVO.getBranch(), employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null,
+            employeeVO.getPhone(), employeeVO.getEmail(), employeeVO.getBranch(),
+            employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null,
             employeeVO.getStartDate(), employeeVO.getEndDate(), page, size, sort, dir);
+
 
     Result<Page<EmployeeVO>> result = new Result<>();
     result.setCode(200);
@@ -112,7 +116,7 @@ public Result<Page<EmployeeVO>> queryEmployees(
     result.setLastPageOrNot(employeePage.isLast());
 
     return result;
-}
+    }
 
     @Operation(summary = "員工資訊-新增員工")
     @PostMapping(value = "/add")
