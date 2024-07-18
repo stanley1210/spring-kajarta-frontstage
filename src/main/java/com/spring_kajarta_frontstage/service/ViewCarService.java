@@ -6,7 +6,12 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 import com.kajarta.demo.enums.ViewTimeSectionEnum;
 import com.kajarta.demo.model.Car;
@@ -134,6 +139,14 @@ public class ViewCarService {
     public List<ViewCar> findAll() {
         return viewCarRepo.findAll();
     }
+
+	public Page<ViewCar> findByPage(Integer pageNumeber){
+		Pageable pgb = PageRequest.of(pageNumeber-1, 3, Sort.Direction.ASC, "viewCarDate");
+		Page<ViewCar> page = viewCarRepo.findAll(pgb);
+		return page;
+	}
+
+
 
     // 刪除
     public boolean remove(Integer id) {

@@ -6,11 +6,16 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Like;
+import com.kajarta.demo.model.ViewCar;
 import com.spring_kajarta_frontstage.repository.LikeRepository;
 import com.spring_kajarta_frontstage.repository.ViewCarRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
@@ -98,6 +103,12 @@ public class LikeService {
     // 查全
     public List<Like> findAll() {
         return likeRepository.findAll();
+    }
+
+    public Page<Like> findByPage(Integer pageNumber, String sortOrder, Integer max) {
+        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
+        Pageable pageable = PageRequest.of(pageNumber - 1, max, direction, "createTime");
+        return likeRepository.findAll(pageable);
     }
 
     // 刪除

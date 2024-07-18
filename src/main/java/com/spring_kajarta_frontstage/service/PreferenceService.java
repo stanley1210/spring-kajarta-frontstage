@@ -46,10 +46,80 @@ public class PreferenceService {
         return preferenceRepo.fuzzySearch(keyword);
     }
 
+    public List<Preference> searchBySelectName(String keyword) {// 模糊查詢 select_name欄位
+        List<Preference> results = preferenceRepo.searchBySelectName(keyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setSelectName("沒有這筆資料唷");
+            results.add(noData);
+        }
+        return results;
+    }
+
+    public List<Preference> searchByProductionYear(Integer keyword) {// 模糊查詢 production_year欄位
+        List<Preference> results = preferenceRepo.searchByProductionYear(keyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setProductionYear(0); // Integer沒辦法弄字串改0代表沒數據
+            results.add(noData);
+        }
+        return results;
+    }
+
+    public List<Preference> searchByPrice(BigDecimal keyword) { // 模糊查詢 price欄位
+        List<Preference> results = preferenceRepo.searchByPrice(keyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setPrice(BigDecimal.ZERO); // BigDecimal沒辦法弄字串改0代表沒數據
+            results.add(noData);
+        }
+        return results;
+    }
+
+    public List<Preference> searchByMilage(Integer keyword) { // 模糊查詢 milage欄位
+        List<Preference> results = preferenceRepo.searchByMilage(keyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setMilage(0); // Integer沒辦法弄字串改0代表沒數據
+            results.add(noData);
+        }
+        return results;
+    }
+
+    public List<Preference> searchByScore(Integer keyword) { // 模糊查詢 score欄位
+        List<Preference> results = preferenceRepo.searchByScore(keyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setScore(0); // Integer沒辦法弄字串改0代表沒數據
+            results.add(noData);
+        }
+        return results;
+    }
+
+    public List<Preference> searchByHp(Integer keyword) { // 模糊查詢hp欄位
+        List<Preference> results = preferenceRepo.searchByHp(keyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setHp(0); // Integer沒辦法弄字串改0代表沒數據
+            results.add(noData);
+        }
+        return results;
+    }
+
+    public List<Preference> searchByTorque(String keyword) { // 模糊查詢torque欄位
+        String strKeyword = String.valueOf(keyword); // DOUBLE要先轉整數才能搜到
+        List<Preference> results = preferenceRepo.searchByTorque(strKeyword);
+        if (results.isEmpty()) {
+            Preference noData = new Preference();
+            noData.setTorque(0.0); //
+            results.add(noData);
+        }
+        return results;
+    }
+
     public Preference create(String json) { // 新增
         try {
             JSONObject obj = new JSONObject(json);
-
             String selectName = obj.isNull("selectName") ? null : obj.getString("selectName");
             Integer productionYear = obj.isNull("productionYear") ? null : obj.getInt("productionYear");
             BigDecimal price = obj.isNull("price") ? null : obj.getBigDecimal("price");

@@ -106,7 +106,6 @@ public class AgendaController {
                         : obj.getString("unavailableTimeEnd");
                 // Integer unavailableStatus =
                 // agendaService.findById(id).getUnavailableStatus();
-
                 // 檢查Employee 的UavailableTime 是否有安排
                 String checkEmpUavailableTime = "{\"employeeId\":" + employeeId + ","
                         + "\"ckeckavailableTimeStr\":\"" + unavailableTimeStr + "\","
