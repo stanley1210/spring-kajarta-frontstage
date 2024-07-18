@@ -67,6 +67,79 @@ public class CarController {
             Car carOptional = carService.findById(Id);
             if (carOptional != null) {
                 Car carModel = carOptional;
+                String compareUrl = "kajarta/car/compare";
+                JSONObject item = new JSONObject()
+                        .put("id", carModel.getId())
+                        .put("productionYear", carModel.getProductionYear())
+                        .put("milage", carModel.getMilage())
+                        .put("customerId", carModel.getCustomer().getId())
+                        .put("employeeId", carModel.getEmployee().getId())
+                        .put("negotiable", carModel.getNegotiable())
+                        .put("conditionScore", carModel.getConditionScore())
+                        .put("branch", carModel.getBranch())
+                        .put("state", carModel.getState())
+                        .put("price", carModel.getPrice())
+                        .put("launchDate", carModel.getLaunchDate())
+                        .put("carinfoId", carModel.getCarinfo().getId())
+                        .put("color", carModel.getColor())
+                        .put("remark", carModel.getRemark())
+                        .put("compare", compareUrl);
+
+                array = array.put(item);
+                responseBody.put("list", array);
+                return responseBody.toString();
+            } else {
+                responseBody.put("success", false);
+                responseBody.put("message", "ID不存在");
+            }
+        }
+        return responseBody.toString();
+    }
+
+    // ------------------------------------------------------------------------
+    // 查詢兩筆(比較) 未完成
+    @GetMapping("/compare")
+    @ResponseBody
+    public String compare(@PathVariable(name = "Id") Integer Id) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        if (Id == null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "ID不得為空");
+        } else {
+            Car carOptional = carService.findById(Id);
+            if (carOptional != null) {
+                Car carModel = carOptional;
+                JSONObject item = new JSONObject()
+                        .put("id", carModel.getId())
+                        .put("productionYear", carModel.getProductionYear())
+                        .put("milage", carModel.getMilage())
+                        .put("customerId", carModel.getCustomer().getId())
+                        .put("employeeId", carModel.getEmployee().getId())
+                        .put("negotiable", carModel.getNegotiable())
+                        .put("conditionScore", carModel.getConditionScore())
+                        .put("branch", carModel.getBranch())
+                        .put("state", carModel.getState())
+                        .put("price", carModel.getPrice())
+                        .put("launchDate", carModel.getLaunchDate())
+                        .put("carinfoId", carModel.getCarinfo().getId())
+                        .put("color", carModel.getColor())
+                        .put("remark", carModel.getRemark());
+                array = array.put(item);
+                responseBody.put("list", array);
+                return responseBody.toString();
+            } else {
+                responseBody.put("success", false);
+                responseBody.put("message", "ID不存在");
+            }
+        }
+
+        if (Id == null) {
+            responseBody.put("success", "選擇你要比較的車輛");
+        } else {
+            Car carOptional = carService.findById(Id);
+            if (carOptional != null) {
+                Car carModel = carOptional;
                 JSONObject item = new JSONObject()
                         .put("id", carModel.getId())
                         .put("productionYear", carModel.getProductionYear())
@@ -92,6 +165,7 @@ public class CarController {
         }
         return responseBody.toString();
     }
+    // ------------------------------------------------------------------------
 
     // 新增單筆
     @PostMapping("/create")
