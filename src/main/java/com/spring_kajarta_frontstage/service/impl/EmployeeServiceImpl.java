@@ -108,7 +108,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employeeOptional.isPresent()) {
             throw new RuntimeException("找不到此員工");
         }
+
         employee.setTeamLeader(employeeOptional.get());
+        // 設置 createTime 為當前時間
+        Date now = new Date();
+        employee.setCreateTime(now);
+
+        // 當 updateTime 為空值時，設置為與 createTime 相同的時間
+        if (employee.getUpdateTime() == null) {
+            employee.setUpdateTime(now);
+        }
         employeeRepo.save(employee);
         EmployeeVO employeeVONew = new EmployeeVO();
         BeanUtils.copyProperties(employee, employeeVONew);

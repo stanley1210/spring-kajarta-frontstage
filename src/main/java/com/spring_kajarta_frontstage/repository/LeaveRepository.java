@@ -30,7 +30,7 @@ public interface LeaveRepository extends JpaRepository<Leave,Integer> {
             "(:permisionStatus IS NULL OR l.permisionStatus = :permisionStatus) AND " +
             "(:validityPeriodStart IS NULL OR l.validityPeriodStart = :validityPeriodStart) AND " +
             "(:validityPeriodEnd IS NULL OR l.validityPeriodEnd = :validityPeriodEnd) " +
-            "ORDER BY l.createTime ASC")
+            "ORDER BY l.createTime DESC")
     Page<LeaveDTO> findAllByMultipleConditions(
             @Param("leaveStatus") Integer leaveStatus,
             @Param("startTime") String startTime,
@@ -42,15 +42,5 @@ public interface LeaveRepository extends JpaRepository<Leave,Integer> {
             @Param("validityPeriodStart") String validityPeriodStart,
             @Param("validityPeriodEnd") String validityPeriodEnd,
             Pageable pageable);
-//    List<Leave> findByMultipleConditions(
-//            @Param("leaveStatus") Integer leaveStatus,
-//            @Param("startTime") String startTime,
-//            @Param("endTime") String endTime,
-//            @Param("leaveType") Integer leaveType,
-//            @Param("employee") Integer employee,
-//            @Param("teamLeaderId") Integer teamLeaderId,
-//            @Param("permisionStatus") Integer permisionStatus,
-//            @Param("validityPeriodStart") String validityPeriodStart,
-//            @Param("validityPeriodEnd") String validityPeriodEnd);
 
 }

@@ -25,7 +25,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             + "(:teamLeaderId IS NULL OR e.teamLeader.id = :teamLeaderId) AND "
             + "(:startDate IS NULL OR e.startDate = :startDate) AND "
             + "(:endDate IS NULL OR e.endDate = :endDate)"
-            + "ORDER BY e.createTime ASC")
+            + "ORDER BY e.id ASC")
     Page<Employee> findByMultipleConditions(
         @Param("sex") Character sex,
         @Param("accountType") Integer accountType,
