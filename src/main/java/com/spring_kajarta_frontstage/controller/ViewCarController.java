@@ -141,8 +141,6 @@ public class ViewCarController {
                     .put("viewCarStatus", viewCar.getViewCarStatus());
             array.put(obj);
         }
-        long count = viewCarService.count();
-        responseBody.put("count", count);
         responseBody.put("list", array);
         responseBody.put("totalPages", page.getTotalPages());
         responseBody.put("totalElements", page.getTotalElements());

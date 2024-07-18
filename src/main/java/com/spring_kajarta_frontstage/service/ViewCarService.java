@@ -141,7 +141,7 @@ public class ViewCarService {
     }
 
 	public Page<ViewCar> findByPage(Integer pageNumeber){
-		Pageable pgb = PageRequest.of(pageNumeber-1, 3, Sort.Direction.DESC, "viewCarDate");
+		Pageable pgb = PageRequest.of(pageNumeber-1, 3, Sort.Direction.ASC, "viewCarDate");
 		Page<ViewCar> page = viewCarRepo.findAll(pgb);
 		return page;
 	}
