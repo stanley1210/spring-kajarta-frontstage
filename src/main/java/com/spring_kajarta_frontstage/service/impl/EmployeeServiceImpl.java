@@ -57,6 +57,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeVOList;
     }
 
+    @Override
+    public List<EmployeeVO> findAllTeamLeader() {
+        List<Employee> employees = employeeRepo.findAllTeamLeader();
+        List<EmployeeVO> employeeVOList = new ArrayList<>();
+        for (Employee employee : employees) {
+            EmployeeVO employeeVO = new EmployeeVO();
+            BeanUtils.copyProperties(employee, employeeVO);
+            employeeVO.setTeamLeaderId(employee.getId());
+            employeeVO.setTeamLeaderName(employee.getName());
+            employeeVOList.add(employeeVO);
+        }
+        return employeeVOList;
+    }
+
     /**
      * 查詢單筆，依據員工id查詢單一員工資訊
      *
@@ -135,10 +149,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> optionalEmployee = employeeRepo.findById(employeeVO.getId());
         if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
-            BeanUtils.copyProperties(employeeVO, employee,"createTime", "updateTime");
+            BeanUtils.copyProperties(employeeVO, employee,"createTime", "updateTime", "account", "password");
             employeeRepo.save(employee);
             EmployeeVO updateEmployeeVO = new EmployeeVO();
             BeanUtils.copyProperties(employee, updateEmployeeVO);
+            updateEmployeeVO.setTeamLeaderId(employee.getTeamLeader().getId());
+            updateEmployeeVO.setTeamLeaderName(employee.getTeamLeader().getName());
             return updateEmployeeVO;
         } else {
             return null;
