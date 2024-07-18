@@ -140,10 +140,16 @@ public class CarAdjustService {
                     : obj.getBigDecimal("floatingAmountMax");
             BigDecimal floatingAmountMin = obj.isNull("floatingAmountMin") ? null
                     : obj.getBigDecimal("floatingAmountMin");
-            Date createTime = obj.isNull("createTime") ? null
-                    : DatetimeConverter.parse(obj.getString("createTime"), "yyyy-MM-dd");
-            Date updateTime = obj.isNull("updateTime") ? null
-                    : DatetimeConverter.parse(obj.getString("updateTime"), "yyyy-MM-dd");
+
+            Date createTimeStr = obj.isNull("createTimeStr") ? null
+                    : DatetimeConverter.parse(obj.getString("createTimeStr"), "yyyy-MM-dd");
+            Date createTimeEnd = obj.isNull("createTimeEnd") ? null
+                    : DatetimeConverter.parse(obj.getString("createTimeEnd"), "yyyy-MM-dd");
+
+            Date updateTimeStr = obj.isNull("updateTimeStr") ? null
+                    : DatetimeConverter.parse(obj.getString("updateTimeStr"), "yyyy-MM-dd");
+            Date updateTimeEnd = obj.isNull("updateTimeEnd") ? null
+                    : DatetimeConverter.parse(obj.getString("updateTimeEnd"), "yyyy-MM-dd");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
@@ -153,7 +159,8 @@ public class CarAdjustService {
 
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<CarAdjust> page = carAdjustRepo.findByHQL(id, teamLeaderId, employee, car, approvalStatus,
-                    approvalType, floatingAmountMax, floatingAmountMin, createTime, updateTime, pgb);
+                    approvalType, floatingAmountMax, floatingAmountMin, createTimeStr, createTimeEnd, updateTimeStr,
+                    updateTimeEnd, pgb);
 
             return page;
 
