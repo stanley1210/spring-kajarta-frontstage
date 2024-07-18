@@ -18,32 +18,8 @@ public interface LeaveService {
     Leave findById(Integer leaveId);
 
     // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
-    Page<LeaveVO> findByConditionsWithPagination(
-            Integer leaveStatus,
-            String startTime,
-            String endTime,
-            Integer leaveType,
-            Integer employee,
-            Integer teamLeaderId,
-            Integer permissionStatus,
-            String validityPeriodStart,
-            String validityPeriodEnd,
-            int page,
-            int size,
-            String sort,
-            boolean dir
-    );
-//    List<LeaveVO> multiConditionQuery(
-//            Integer leaveStatus,
-//            String startTime,
-//            String endTime,
-//            Integer leaveType,
-//            Integer employee,
-//            Integer teamLeaderId,
-//            Integer permisionStatus,
-//            String validityPeriodStart,
-//            String validityPeriodEnd
-//    );
+    Page<LeaveVO> findByConditionsWithPagination(LeaveVO leaveVO);
+
 
     // 新增
     LeaveVO create(LeaveVO leaveVO);

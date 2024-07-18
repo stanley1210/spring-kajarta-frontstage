@@ -19,9 +19,9 @@ public interface LeaveRepository extends JpaRepository<Leave,Integer> {
     @Query("SELECT new com.kajarta.demo.dto.LeaveDTO(l.id, l.leaveStatus, l.startTime, l.endTime, l.leaveType, " +
             "l.employee.id, l.deputyId, l.teamLeaderId, l.permisionRemarks, l.permisionStatus, " +
             "l.auditTime, l.reason, l.actualLeaveHours, l.image, l.specialLeaveHours, " +
-            "l.createTime, l.updateTime, l.validityPeriodStart, l.validityPeriodEnd, e.name) " +
-            "FROM Leave l LEFT JOIN Employee e ON e.id = l.deputyId " +
-            "WHERE (:leaveStatus IS NULL OR l.leaveStatus = :leaveStatus) AND " +
+            "l.createTime, l.updateTime, l.validityPeriodStart, l.validityPeriodEnd, e.name, em.name) " +
+            " FROM Leave l LEFT JOIN Employee e ON e.id = l.deputyId left join Employee em on em.id=l.employee.id" +
+            " WHERE (:leaveStatus IS NULL OR l.leaveStatus = :leaveStatus) AND " +
             "(:startTime IS NULL OR l.startTime = :startTime) AND " +
             "(:endTime IS NULL OR l.endTime = :endTime) AND " +
             "(:leaveType IS NULL OR l.leaveType = :leaveType) AND " +

@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.enums.LeaveTypeEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.utils.ResultUtil;
@@ -12,6 +13,7 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,20 +83,14 @@ public class LeaveController {
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
             leaveVO.setEmployeeId(leave.getEmployee().getId());
+            leaveVO.setEmployeeName(leave.getEmployee().getName());
+
 
             // 依據代理人id去查Employee
             Employee employeeDeputy = employeeService.findById(leave.getDeputyId());
             leaveVO.setDeputyId(employeeDeputy.getId());
             leaveVO.setDeputyName(employeeDeputy.getName());
 
-            // 设置时间字段，先进行空值判断
-            leaveVO.setCreateTime(leave.getCreateTime() != null ? DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
-            leaveVO.setUpdateTime(leave.getUpdateTime() != null ? DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
-            leaveVO.setStartTime(leave.getStartTime() != null ? DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
-            leaveVO.setEndTime(leave.getEndTime() != null ? DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
-            leaveVO.setAuditTime(leave.getAuditTime() != null ? DatetimeConverter.toString(new Date(leave.getAuditTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
-            leaveVO.setValidityPeriodStart(leave.getValidityPeriodStart() != null ? DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
-            leaveVO.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS) : null);
         } catch (Exception e) {
             log.error("查詢出錯", e);
             return ResultUtil.error("查詢出錯");
@@ -106,35 +102,18 @@ public class LeaveController {
 
     @Operation(summary = "假單資訊-依多條件查詢(分頁)")
     @PostMapping("/query")
-    public Result<Page<LeaveVO>> query(
-            @RequestBody LeaveVO leaveVO,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "true") boolean dir) {
+    public Result<Page<LeaveVO>> queryLeaves(@RequestBody LeaveVO leaveVO, HttpServletRequest request) {
+        // 解析token todo
 
-        log.info("{}-後台查詢假單資訊-多條件查詢(分頁)", "到時候換成上一步拿到的管理員");
-        Page<LeaveVO> leavePage = leaveService.findByConditionsWithPagination(
-                leaveVO.getLeaveStatus(), leaveVO.getStartTime(), leaveVO.getEndTime(),
-                leaveVO.getLeaveType(), leaveVO.getEmployeeId(), leaveVO.getTeamLeaderId(),
-                leaveVO.getPermisionStatus(), leaveVO.getValidityPeriodStart(), leaveVO.getValidityPeriodEnd(),
-                page, size, sort, dir);
+        log.info("後台查詢假單資訊-多條件查詢(分頁)");
+
+        Page<LeaveVO> leavePage = leaveService.findByConditionsWithPagination(leaveVO);
 
         Result<Page<LeaveVO>> result = new Result<>();
-
         result.setCode(200);
         result.setMsg("查詢成功");
         result.setData(leavePage);
         result.setSuccess(true);
-        result.setTotalPage(leavePage.getTotalPages());
-        result.setTotalElement(leavePage.getTotalElements());
-        result.setPageNumber(leavePage.getNumber());
-        result.setNumberOfElementsOnPage(leavePage.getNumberOfElements());
-        result.setHasNext(leavePage.hasNext());
-        result.setHasPrevious(leavePage.hasPrevious());
-        result.setFirstPageOrNot(leavePage.isFirst());
-        result.setLastPageOrNot(leavePage.isLast());
-
         return result;
     }
 
