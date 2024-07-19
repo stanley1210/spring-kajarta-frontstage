@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.enums.AccountTypeEnum;
 import com.kajarta.demo.enums.LeaveTypeEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
@@ -82,14 +83,28 @@ public class LeaveController {
 
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
+
+            leaveVO.setLeaveTypeName(LeaveTypeEnum.getByCode(leave.getLeaveType()).getLeaveType());
+
+
             leaveVO.setEmployeeId(leave.getEmployee().getId());
             leaveVO.setEmployeeName(leave.getEmployee().getName());
+
+            leaveVO.setStartTime(DatetimeConverter.toString(leave.getStartTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setEndTime(DatetimeConverter.toString(leave.getEndTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setCreateTime(DatetimeConverter.toString(leave.getCreateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setUpdateTime(DatetimeConverter.toString(leave.getUpdateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setAuditTime(DatetimeConverter.toString(leave.getAuditTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setValidityPeriodStart(DatetimeConverter.toString(leave.getValidityPeriodStart(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setValidityPeriodEnd(DatetimeConverter.toString(leave.getValidityPeriodEnd(), DatetimeConverter.YYYY_MM_DD_HH_MM));
 
 
             // 依據代理人id去查Employee
             Employee employeeDeputy = employeeService.findById(leave.getDeputyId());
             leaveVO.setDeputyId(employeeDeputy.getId());
             leaveVO.setDeputyName(employeeDeputy.getName());
+
+
 
         } catch (Exception e) {
             log.error("查詢出錯", e);

@@ -149,7 +149,68 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> optionalEmployee = employeeRepo.findById(employeeVO.getId());
         if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
-            BeanUtils.copyProperties(employeeVO, employee,"createTime", "updateTime", "account", "password");
+            // 使用 setter 方法更新屬性
+            if (employeeVO.getAccountType() != null) {
+                employee.setAccountType(employeeVO.getAccountType());
+            }
+            if (employeeVO.getAccount() != null) {
+                employee.setAccount(employeeVO.getAccount());
+            }
+            if (employeeVO.getPassword() != null) {
+                employee.setPassword(employeeVO.getPassword());
+            }
+            if (employeeVO.getName() != null) {
+                employee.setName(employeeVO.getName());
+            }
+            if (employeeVO.getTel() != null) {
+                employee.setTel(employeeVO.getTel());
+            }
+            if (employeeVO.getPhone() != null) {
+                employee.setPhone(employeeVO.getPhone());
+            }
+            if (employeeVO.getEmail() != null) {
+                employee.setEmail(employeeVO.getEmail());
+            }
+            if (employeeVO.getStartDate() != null) {
+                employee.setStartDate(employeeVO.getStartDate());
+            }
+            if (employeeVO.getSickLeaveHours() != null) {
+                employee.setSickLeaveHours(employeeVO.getSickLeaveHours());
+            }
+            if (employeeVO.getPersonalLeaveHours() != null) {
+                employee.setPersonalLeaveHours(employeeVO.getPersonalLeaveHours());
+            }
+            if (employeeVO.getAnnualLeaveHours() != null) {
+                employee.setAnnualLeaveHours(employeeVO.getAnnualLeaveHours());
+            }
+            if (employeeVO.getBereavementLeaveHours() != null) {
+                employee.setBereavementLeaveHours(employeeVO.getBereavementLeaveHours());
+            }
+            if (employeeVO.getMarriageLeaveHours() != null) {
+                employee.setMarriageLeaveHours(employeeVO.getMarriageLeaveHours());
+            }
+            if (employeeVO.getMenstrualLeaveHours() != null) {
+                employee.setMenstrualLeaveHours(employeeVO.getMenstrualLeaveHours());
+            }
+            if (employeeVO.getOfficialLeaveHours() != null) {
+                employee.setOfficialLeaveHours(employeeVO.getOfficialLeaveHours());
+            }
+            if (employeeVO.getBranch() != null) {
+                employee.setBranch(employeeVO.getBranch());
+            }
+            if (employeeVO.getEndDate() != null) {
+                employee.setEndDate(employeeVO.getEndDate());
+            }
+
+            // 新增對 teamLeaderId 的處理
+            if (employeeVO.getTeamLeaderId() != null) {
+                Optional<Employee> teamLeaderOptional = employeeRepo.findById(employeeVO.getTeamLeaderId());
+                if (teamLeaderOptional.isPresent()) {
+                    employee.setTeamLeader(teamLeaderOptional.get());
+                } else {
+                    throw new RuntimeException("找不到指定的直属主管");
+                }
+            }
             employeeRepo.save(employee);
             EmployeeVO updateEmployeeVO = new EmployeeVO();
             BeanUtils.copyProperties(employee, updateEmployeeVO);

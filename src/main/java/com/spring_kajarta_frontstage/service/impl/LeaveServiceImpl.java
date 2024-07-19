@@ -2,12 +2,9 @@ package com.spring_kajarta_frontstage.service.impl;
 
 
 import com.kajarta.demo.dto.LeaveDTO;
-import com.kajarta.demo.enums.AccountTypeEnum;
-import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.enums.LeaveTypeEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
-import com.kajarta.demo.vo.EmployeeVO;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
 import com.spring_kajarta_frontstage.repository.LeaveRepository;
@@ -117,7 +114,7 @@ public class LeaveServiceImpl implements LeaveService {
                     ? DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM)
                     : null);
             leaveVONew.setCreateTime(leave.getCreateTime() != null
-                    ? DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+                    ? DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM)
                     : null);
             leaveVONew.setUpdateTime(leave.getUpdateTime() != null
                     ? DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
@@ -159,20 +156,81 @@ public class LeaveServiceImpl implements LeaveService {
         return leaveVONew;
     }
 
-    // 修改
+
+
+
+
     @Override
     public LeaveVO modify(LeaveVO leaveVO) {
         Optional<Leave> optionalLeave = leaveRepo.findById(leaveVO.getId());
         if (optionalLeave.isPresent()) {
             Leave leave = optionalLeave.get();
-            BeanUtils.copyProperties(leaveVO, leave, "createTime", "updateTime");
+
+            // 使用 getter 和 setter 方法更新屬性
+            if (leaveVO.getLeaveStatus() != null) {
+                // 检查是否发生了状态变化
+                if (leave.getPermisionStatus() == null || !leaveVO.getPermisionStatus().equals(leave.getPermisionStatus())) {
+                    leave.setAuditTime(new Date()); // 设置当前时间到 auditTime
+                }
+                leave.setPermisionStatus(leaveVO.getPermisionStatus());
+            }
+            if (leaveVO.getStartTime() != null) {
+                leave.setStartTime(DatetimeConverter.parse(leaveVO.getStartTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+            if (leaveVO.getEndTime() != null) {
+                leave.setEndTime(DatetimeConverter.parse(leaveVO.getEndTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+            if (leaveVO.getLeaveType() != null) {
+                leave.setLeaveType(leaveVO.getLeaveType());
+            }
+            if (leaveVO.getDeputyId() != null) {
+                leave.setDeputyId(leaveVO.getDeputyId());
+            }
+            if (leaveVO.getTeamLeaderId() != null) {
+                leave.setTeamLeaderId(leaveVO.getTeamLeaderId());
+            }
+            if (leaveVO.getPermisionRemarks() != null) {
+                leave.setPermisionRemarks(leaveVO.getPermisionRemarks());
+            }
+            if (leaveVO.getAuditTime() != null) {
+                leave.setAuditTime(DatetimeConverter.parse(leaveVO.getAuditTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+            if (leaveVO.getReason() != null) {
+                leave.setReason(leaveVO.getReason());
+            }
+            if (leaveVO.getActualLeaveHours() != null) {
+                leave.setActualLeaveHours(leaveVO.getActualLeaveHours());
+            }
+            if (leaveVO.getImage() != null) {
+                leave.setImage(leaveVO.getImage());
+            }
+            if (leaveVO.getSpecialLeaveHours() != null) {
+                leave.setSpecialLeaveHours(leaveVO.getSpecialLeaveHours());
+            }
+            if (leaveVO.getCreateTime() != null) {
+                leave.setCreateTime(DatetimeConverter.parse(leaveVO.getCreateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+            if (leaveVO.getUpdateTime() != null) {
+                leave.setUpdateTime(DatetimeConverter.parse(leaveVO.getUpdateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+            if (leaveVO.getValidityPeriodStart() != null) {
+                leave.setValidityPeriodStart(DatetimeConverter.parse(leaveVO.getValidityPeriodStart(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+            if (leaveVO.getValidityPeriodEnd() != null) {
+                leave.setValidityPeriodEnd(DatetimeConverter.parse(leaveVO.getValidityPeriodEnd(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            }
+
+            // 保存修改后的假单
             leaveRepo.save(leave);
+
+            // 将 Leave 对象转换回 LeaveVO
             LeaveVO updateLeaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, updateLeaveVO);
             return updateLeaveVO;
         } else {
             return null;
         }
-
     }
+
+
 }
