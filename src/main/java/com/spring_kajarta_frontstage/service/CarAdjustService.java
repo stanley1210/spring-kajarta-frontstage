@@ -32,7 +32,7 @@ public class CarAdjustService {
     private EmployeeService employeeService;
 
     @Autowired
-    private CarService1 carService;
+    private CarService carService;
 
     // 新增
     public CarAdjust create(String json) {

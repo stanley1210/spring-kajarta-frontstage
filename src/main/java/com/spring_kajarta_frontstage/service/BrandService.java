@@ -12,7 +12,6 @@ public class BrandService {
     @Autowired
     private BrandRepository brandRepo;
 
-    // 查全部
     public Brand findById(Integer id) {
         return brandRepo.findById(id).get();
     }

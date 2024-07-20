@@ -1,6 +1,5 @@
 package com.spring_kajarta_frontstage.controller;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -38,38 +37,37 @@ public class LikeController {
         return likeService.count();
     }
 
-    //新增
-     @PostMapping("/create")
+    // 新增
+    @PostMapping("/create")
     public String create(@RequestBody String body) {
         JSONObject responseBody = new JSONObject();
         JSONObject obj = new JSONObject(body);
         Like card = likeService.create(body);
-                if(card==null) {
-                    responseBody.put("success", false);
-                    responseBody.put("message", "新增失敗");
-                } else {
-                    responseBody.put("success", true);
-                    responseBody.put("message", "新增成功");
-                }
+        if (card == null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "新增失敗");
+        } else {
+            responseBody.put("success", true);
+            responseBody.put("message", "新增成功");
+        }
         return responseBody.toString();
     }
 
-    
-    //修改
+    // 修改
 
     @PutMapping("/update/{id}")
     public String modify(@PathVariable Integer id, @RequestBody String body) {
         JSONObject responseBody = new JSONObject();
-        if(id==null) {
+        if (id == null) {
             responseBody.put("success", false);
             responseBody.put("message", "Id是必要欄位");
         } else {
-            if(!likeService.exists(id)) {
+            if (!likeService.exists(id)) {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
                 Like product = likeService.modify(body);
-                if(product==null) {
+                if (product == null) {
                     responseBody.put("success", false);
                     responseBody.put("message", "修改失敗");
                 } else {
@@ -81,9 +79,8 @@ public class LikeController {
         return responseBody.toString();
     }
 
-
-//     //查一
- @GetMapping("/select/{pk}")
+    // //查一
+    @GetMapping("/select/{pk}")
     public String findById(@PathVariable(name = "pk") Integer id) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
@@ -104,12 +101,13 @@ public class LikeController {
         responseBody.put("list", array);
         return responseBody.toString();
     }
-     //查全
+
+    // 查全
     @GetMapping("/selectAll")
     public String findAll(@RequestParam Integer pageNumber, @RequestParam String sortOrder, @RequestParam Integer max) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-      Page<Like> page = likeService.findByPage(pageNumber,sortOrder,max);
+        Page<Like> page = likeService.findByPage(pageNumber, sortOrder, max);
         List<Like> likes = page.getContent();
         for (Like like : likes) {
             String createTime = DatetimeConverter.toString(like.getCreateTime(), "yyyy-MM-dd");
@@ -131,25 +129,24 @@ public class LikeController {
         responseBody.put("list", array);
         responseBody.put("totalPages", page.getTotalPages());
         responseBody.put("totalElements", page.getTotalElements());
-        responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
+        responseBody.put("currentPage", page.getNumber() + 1); // Page numbers are 0-based, so we add 1
         return responseBody.toString();
     }
 
-
-//     //多條件查詢
-//     //刪除
-  @DeleteMapping("/delete/{id}")
+    // //多條件查詢
+    // //刪除
+    @DeleteMapping("/delete/{id}")
     public String remove(@PathVariable Integer id) {
         JSONObject responseBody = new JSONObject();
-        if(id==null) {
+        if (id == null) {
             responseBody.put("success", false);
             responseBody.put("message", "Id是必要欄位");
         } else {
-            if(!likeService.exists(id)) {
+            if (!likeService.exists(id)) {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
-                if(!likeService.remove(id)) {
+                if (!likeService.remove(id)) {
                     responseBody.put("success", false);
                     responseBody.put("message", "刪除失敗");
                 } else {

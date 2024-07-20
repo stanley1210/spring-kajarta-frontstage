@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-
 import com.kajarta.demo.enums.ViewTimeSectionEnum;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
@@ -27,7 +26,7 @@ public class ViewCarService {
     @Autowired
     private ViewCarRepository viewCarRepo;
     @Autowired
-    private CarService1 carService;
+    private CarService carService;
     @Autowired
     private CustomerService customerService;
 
@@ -36,7 +35,7 @@ public class ViewCarService {
         return viewCarRepo.count();
     }
 
-    //確定ID存不存在
+    // 確定ID存不存在
     public boolean exists(Integer id) {
         if (id != null) {
             return viewCarRepo.existsById(id);
@@ -49,7 +48,7 @@ public class ViewCarService {
         try {
             JSONObject obj = new JSONObject(json);
 
-            Integer viewTimeSectionCode  = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
+            Integer viewTimeSectionCode = obj.isNull("viewTimeSection") ? null : obj.getInt("viewTimeSection");
             ViewTimeSectionEnum viewTimeSection = ViewTimeSectionEnum.getByCode(viewTimeSectionCode);
             Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
             Integer salesScore = obj.isNull("salesScore") ? -1 : obj.getInt("salesScore");
@@ -140,13 +139,11 @@ public class ViewCarService {
         return viewCarRepo.findAll();
     }
 
-	public Page<ViewCar> findByPage(Integer pageNumeber){
-		Pageable pgb = PageRequest.of(pageNumeber-1, 3, Sort.Direction.ASC, "viewCarDate");
-		Page<ViewCar> page = viewCarRepo.findAll(pgb);
-		return page;
-	}
-
-
+    public Page<ViewCar> findByPage(Integer pageNumeber) {
+        Pageable pgb = PageRequest.of(pageNumeber - 1, 3, Sort.Direction.ASC, "viewCarDate");
+        Page<ViewCar> page = viewCarRepo.findAll(pgb);
+        return page;
+    }
 
     // 刪除
     public boolean remove(Integer id) {
