@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kajarta.demo.model.Brand;
 import com.kajarta.demo.model.Car;
+import com.kajarta.demo.model.Carinfo;
+import com.spring_kajarta_frontstage.service.BrandService;
+import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CarService;
 
 @RestController
@@ -26,6 +30,12 @@ import com.spring_kajarta_frontstage.service.CarService;
 public class CarController {
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private CarInfoService carInfoService;
+
+    @Autowired
+    private BrandService brandService;
 
     // 查全部
     @GetMapping("/findAll")
@@ -64,11 +74,13 @@ public class CarController {
             responseBody.put("success", false);
             responseBody.put("message", "ID不得為空");
         } else {
-            Car carOptional = carService.findById(Id);
-            if (carOptional != null) {
-                Car carModel = carOptional;
+            Car carBean = carService.findById(Id);
+            Carinfo carInfoBean = carInfoService.findById(Id);
+            Brand brandBean = brandService.findById(Id);
+            if (carBean != null) {
+                Car carModel = carBean;
                 String compareUrl = "kajarta/car/compare";
-                JSONObject item = new JSONObject()
+                JSONObject carJson = new JSONObject()
                         .put("id", carModel.getId())
                         .put("productionYear", carModel.getProductionYear())
                         .put("milage", carModel.getMilage())
@@ -80,13 +92,27 @@ public class CarController {
                         .put("state", carModel.getState())
                         .put("price", carModel.getPrice())
                         .put("launchDate", carModel.getLaunchDate())
-                        .put("carinfoId", carModel.getCarinfo().getId())
                         .put("color", carModel.getColor())
                         .put("remark", carModel.getRemark())
-                        .put("compare", compareUrl);
+                        .put("compare", compareUrl)
+                        // CarInfo的值
+                        .put("carinfoId", carModel.getCarinfo().getId())
+                        .put("carinfoBrand", brandBean.getBrand())
+                        .put("carinfoModelName", carInfoBean.getModelName())
+                        .put("carinfoSuspension", carInfoBean.getSuspension())
+                        .put("carinfoDoor", carInfoBean.getDoor())
+                        .put("carinfoPassenger", carInfoBean.getPassenger())
+                        .put("carinfoRearWheel", carInfoBean.getRearWheel())
+                        .put("carinfoGasoline", carInfoBean.getGasoline())
+                        .put("carinfoTransmission", carInfoBean.getTransmission())
+                        .put("carinfoCc", carInfoBean.getCc())
+                        .put("carinfoHp", carInfoBean.getHp())
+                        .put("carinfoTorque", carInfoBean.getTorque())
+                        .put("carinfoCreateTime", carInfoBean.getCreateTime())
+                        .put("carinfoUpdateTime", carInfoBean.getUpdateTime());
 
-                array = array.put(item);
-                responseBody.put("list", array);
+                array = array.put(carJson);
+                responseBody.put("carlist", array);
                 return responseBody.toString();
             } else {
                 responseBody.put("success", false);
