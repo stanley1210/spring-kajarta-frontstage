@@ -1,13 +1,14 @@
 package com.spring_kajarta_frontstage.repository;
 
 import com.kajarta.demo.model.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
@@ -17,24 +18,26 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             + "(:sex IS NULL OR e.sex = :sex) AND "
             + "(:accountType IS NULL OR e.accountType = :accountType) AND "
             + "(:account IS NULL OR e.account = :account) AND "
-            + "(:name IS NULL OR e.name LIKE %:name%) AND "
+            + "(:name IS NULL OR e.name LIKE %:name%) AND "  // 中文模糊查询
             + "(:phone IS NULL OR e.phone = :phone) AND "
             + "(:email IS NULL OR e.email = :email) AND "
             + "(:branch IS NULL OR e.branch = :branch) AND "
             + "(:teamLeaderId IS NULL OR e.teamLeader.id = :teamLeaderId) AND "
             + "(:startDate IS NULL OR e.startDate = :startDate) AND "
-            + "(:endDate IS NULL OR e.endDate = :endDate)")
-    List<Employee> findByMultipleConditions(
-            @Param("sex") Character sex,
-            @Param("accountType") Integer accountType,
-            @Param("account") String account,
-            @Param("name") String name,
-            @Param("phone") String phone,
-            @Param("email") String email,
-            @Param("branch") Integer branch,
-            @Param("teamLeaderId") Integer teamLeaderId,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
+            + "(:endDate IS NULL OR e.endDate = :endDate)"
+            + "ORDER BY e.id ASC")
+    Page<Employee> findByMultipleConditions(
+        @Param("sex") Character sex,
+        @Param("accountType") Integer accountType,
+        @Param("account") String account,
+        @Param("name") String name,
+        @Param("phone") String phone,
+        @Param("email") String email,
+        @Param("branch") Integer branch,
+        @Param("teamLeaderId") Integer teamLeaderId,
+        @Param("startDate") LocalDate startDate,
+        @Param("endDate") LocalDate endDate,
+        Pageable pageable);
 }
 
 

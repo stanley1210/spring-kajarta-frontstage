@@ -1,16 +1,25 @@
 package com.spring_kajarta_frontstage.service.impl;
 
 
+import com.kajarta.demo.dto.LeaveDTO;
+import com.kajarta.demo.enums.AccountTypeEnum;
+import com.kajarta.demo.enums.BranchEnum;
+import com.kajarta.demo.enums.LeaveTypeEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
+import com.kajarta.demo.vo.EmployeeVO;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
 import com.spring_kajarta_frontstage.repository.LeaveRepository;
+import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.LeaveService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +35,9 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Autowired
     private EmployeeRepository employeeRepo;
+
+    @Autowired
+    private EmployeeService employeeService;
 
 
     @Override
@@ -73,46 +85,61 @@ public class LeaveServiceImpl implements LeaveService {
         return leave.orElse(null);
     }
 
-    // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
-    @Override
-    public List<LeaveVO> multiConditionQuery(Integer leaveStatus, String startTime, String endTime, Integer leaveType,
-                                             Integer employee, Integer teamLeaderId, Integer permisionStatus, String validityPeriodStart,
-                                             String validityPeriodEnd) {
-        List<Leave> leaves = leaveRepo.findByMultipleConditions(leaveStatus, startTime, endTime, leaveType, employee,
-                teamLeaderId, permisionStatus, validityPeriodStart, validityPeriodEnd);
-        List<LeaveVO> leaveVOList = new ArrayList<>();
-        for (Leave leave : leaves) {
-            LeaveVO leaveVO = new LeaveVO();
-            BeanUtils.copyProperties(leave, leaveVO);
 
-            // 设置时间字段，先进行空值判断
-            leaveVO.setStartTime(leave.getStartTime() != null
-                    ? DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+
+    // 多條件查詢，依據假單的請假或給假狀態、開始時段、結束時段、假種、休假員工、核可主管、核可狀態、使用期限(開始)、使用期限(結束)
+
+    public Page<LeaveVO> findByConditionsWithPagination(LeaveVO leaveVO) {
+        Pageable pageable = PageRequest.of(leaveVO.getPageNum(), leaveVO.getPageSize());
+
+
+        Page<LeaveDTO> leavePage = leaveRepo.findAllByMultipleConditions(
+                leaveVO.getLeaveStatus(),
+                leaveVO.getStartTime(),
+                leaveVO.getEndTime(),
+                leaveVO.getLeaveType(),
+                leaveVO.getEmployeeId(),
+                leaveVO.getTeamLeaderId(),
+                leaveVO.getPermisionStatus(),
+                leaveVO.getValidityPeriodStart(),
+                leaveVO.getValidityPeriodEnd(),
+                pageable);
+
+        return leavePage.map(leave -> {
+            LeaveVO leaveVONew = new LeaveVO();
+            BeanUtils.copyProperties(leave, leaveVONew);
+            leaveVONew.setLeaveTypeName(LeaveTypeEnum.getByCode(leave.getLeaveType()).getLeaveType());
+
+            leaveVONew.setStartTime(leave.getStartTime() != null
+                    ? DatetimeConverter.toString(new Date(leave.getStartTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM)
                     : null);
-            leaveVO.setEndTime(leave.getEndTime() != null
-                    ? DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+            leaveVONew.setEndTime(leave.getEndTime() != null
+                    ? DatetimeConverter.toString(new Date(leave.getEndTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM)
                     : null);
-            leaveVO.setCreateTime(leave.getCreateTime() != null
+            leaveVONew.setCreateTime(leave.getCreateTime() != null
                     ? DatetimeConverter.toString(new Date(leave.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
                     : null);
-            leaveVO.setUpdateTime(leave.getUpdateTime() != null
+            leaveVONew.setUpdateTime(leave.getUpdateTime() != null
                     ? DatetimeConverter.toString(new Date(leave.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
                     : null);
-            leaveVO.setAuditTime(leave.getAuditTime() != null
+            leaveVONew.setAuditTime(leave.getAuditTime() != null
                     ? DatetimeConverter.toString(new Date(leave.getAuditTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
                     : null);
-            leaveVO.setValidityPeriodStart(leave.getValidityPeriodStart() != null
-                    ? DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+            leaveVONew.setValidityPeriodStart(leave.getValidityPeriodStart() != null
+                    ? DatetimeConverter.toString(new Date(leave.getValidityPeriodStart().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM)
                     : null);
-            leaveVO.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null
-                    ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS)
+            leaveVONew.setValidityPeriodEnd(leave.getValidityPeriodEnd() != null
+                    ? DatetimeConverter.toString(new Date(leave.getValidityPeriodEnd().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM)
                     : null);
+            leaveVONew.setEmployeeId(leave.getEmployeeId());
 
-            leaveVO.setEmployeeId(leave.getEmployee().getId());
-            leaveVOList.add(leaveVO);
-        }
-        return leaveVOList;
+            leaveVONew.setEmployeeName(leave.getEmployeeName());
+
+
+            return leaveVONew;
+        });
     }
+
 
 
     // 新增

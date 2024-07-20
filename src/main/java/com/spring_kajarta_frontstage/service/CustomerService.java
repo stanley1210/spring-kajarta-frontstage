@@ -2,6 +2,7 @@ package com.spring_kajarta_frontstage.service;
 
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.vo.CustomerVO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -15,15 +16,19 @@ public interface CustomerService {
     // 單筆查詢，依據用戶id查詢單一用戶資訊
     Customer findById(Integer customerId);
 
-    // 多條件查詢，依據用戶性別、帳號分類、帳號、城市、姓名、手機、電子信箱
-    List<CustomerVO> multiConditionQuery(
+    // 分頁多條件查詢
+    Page<CustomerVO> findByConditionsWithPagination(
             Character sex,
             Integer accountType,
             String account,
             Integer city,
             String name,
             String phone,
-            String email);
+            String email,
+            int page,
+            int size,
+            String sort,
+            boolean dir);
 
     // 新增
     CustomerVO create(CustomerVO customerVO);

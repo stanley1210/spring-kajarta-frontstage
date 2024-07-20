@@ -1,5 +1,7 @@
 package com.spring_kajarta_frontstage.service.impl;
 
+import com.kajarta.demo.enums.AccountTypeEnum;
+import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.repository.EmployeeRepository;
@@ -8,10 +10,12 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,21 +69,32 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee.orElse(null);
     }
 
-    // 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
+    /**
+     * 多條件查詢，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日
+     */
     @Override
-    public List<EmployeeVO> multiConditionQuery(Character sex, Integer accountType, String account, String name, String phone, String email, Integer branch, Integer teamLeaderId, LocalDate startDate, LocalDate endDate) {
-        List<Employee> employees = employeeRepo.findByMultipleConditions(
-                sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
+    public Page<EmployeeVO> findByConditionsWithPagination(EmployeeVO employeeVO) {
+        Pageable pageable = PageRequest.of(employeeVO.getPageNum(), employeeVO.getPageSize());
+        Integer teamLeaderId = (employeeVO.getTeamLeaderId() != null) ? employeeVO.getTeamLeaderId() : null;
 
-        List<EmployeeVO> employeeVOList = new ArrayList<>();
-        for (Employee employee : employees) {
-            EmployeeVO employeeVO = new EmployeeVO();
-            BeanUtils.copyProperties(employee, employeeVO);
-            employeeVO.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            employeeVO.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
-            employeeVOList.add(employeeVO);
-        }
-        return employeeVOList;
+        Page<Employee> employeePage = employeeRepo.findByMultipleConditions(
+                employeeVO.getSex(), employeeVO.getAccountType(), employeeVO.getAccount(), employeeVO.getName(), employeeVO.getPhone(), employeeVO.getEmail()
+                , employeeVO.getBranch(), teamLeaderId, employeeVO.getStartDate(), employeeVO.getEndDate(), pageable);
+
+        return employeePage.map(employee -> {
+            EmployeeVO employeeVONew = new EmployeeVO();
+            BeanUtils.copyProperties(employee, employeeVONew);
+            employeeVONew.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
+            employeeVONew.setBranchAddress(BranchEnum.getByCode(employee.getBranch()).getAddress());
+            employeeVONew.setBranchName(BranchEnum.getByCode(employee.getBranch()).getBranchName());
+            employeeVONew.setAccountTypeName(AccountTypeEnum.getByCode(employee.getAccountType()).getAccountType());
+            employeeVONew.setTeamLeaderId(employee.getTeamLeader().getId());
+            employeeVONew.setTeamLeaderName(employee.getTeamLeader().getName());
+            employeeVONew.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            employeeVONew.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+
+            return employeeVONew;
+        });
     }
 
 
@@ -88,9 +103,26 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeVO create(EmployeeVO employeeVO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeVO, employee);
+        // 查詢並設置employee
+        Optional<Employee> employeeOptional = employeeRepo.findById(employeeVO.getTeamLeaderId());
+        if (!employeeOptional.isPresent()) {
+            throw new RuntimeException("找不到此員工");
+        }
+
+        employee.setTeamLeader(employeeOptional.get());
+        // 設置 createTime 為當前時間
+        Date now = new Date();
+        employee.setCreateTime(now);
+
+        // 當 updateTime 為空值時，設置為與 createTime 相同的時間
+        if (employee.getUpdateTime() == null) {
+            employee.setUpdateTime(now);
+        }
         employeeRepo.save(employee);
         EmployeeVO employeeVONew = new EmployeeVO();
         BeanUtils.copyProperties(employee, employeeVONew);
+        employeeVONew.setTeamLeaderId(employee.getTeamLeader().getId());
+        employeeVONew.setTeamLeaderName(employee.getTeamLeader().getName());
         employeeVO.setCreateTime(DatetimeConverter.toString(new Date(employee.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         employeeVO.setUpdateTime(DatetimeConverter.toString(new Date(employee.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         return employeeVONew;

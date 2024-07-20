@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.model.Like;
+import com.kajarta.demo.model.ViewCar;
 import com.spring_kajarta_frontstage.service.LikeService;
 import com.spring_kajarta_frontstage.service.ViewCarService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
@@ -103,24 +106,32 @@ public class LikeController {
     }
      //查全
     @GetMapping("/selectAll")
-    public String findAll() {
+    public String findAll(@RequestParam Integer pageNumber, @RequestParam String sortOrder, @RequestParam Integer max) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        List<Like> likes = likeService.findAll();
+      Page<Like> page = likeService.findByPage(pageNumber,sortOrder,max);
+        List<Like> likes = page.getContent();
         for (Like like : likes) {
             String createTime = DatetimeConverter.toString(like.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(like.getUpdateTime(), "yyyy-MM-dd");
-            JSONObject item = new JSONObject()
-                    .put("id", like.getId())
-                    .put("car", like.getCar().getId())
-                    .put("customer", like.getCustomer().getId())
+            JSONObject obj = new JSONObject()
+                    .put("likeId", like.getId())
+                    .put("carId", like.getCar().getId())
+                    .put("productionYear", like.getCar().getProductionYear())
+                    .put("milage", like.getCar().getMilage())
+                    .put("conditionScore", like.getCar().getConditionScore())
+                    .put("price", like.getCar().getPrice())
+                    .put("modelName", like.getCar().getCarinfo().getModelName())
+                    .put("brand", like.getCar().getCarinfo().getBrand())
+                    .put("customerId", like.getCustomer().getId())
                     .put("createTime", createTime)
                     .put("updateTime", updateTime);
-            array.put(item);
+            array.put(obj);
         }
-        long count = likeService.count();
-        responseBody.put("count", count);
         responseBody.put("list", array);
+        responseBody.put("totalPages", page.getTotalPages());
+        responseBody.put("totalElements", page.getTotalElements());
+        responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
         return responseBody.toString();
     }
 

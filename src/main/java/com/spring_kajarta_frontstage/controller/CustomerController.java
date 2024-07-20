@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +53,39 @@ public class CustomerController {
     }
 
 
+    @Operation(summary = "會員資訊-依多條件查詢(分頁)")
+    @PostMapping("/query")
+    public Result<Page<CustomerVO>> query(@RequestBody CustomerVO customerVO,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(defaultValue = "id") String sort,
+                                          @RequestParam(defaultValue = "true") boolean dir) {
+
+        log.info("{}-後台查詢客戶資訊-多條件查詢(分頁)", "到時候換成上一步拿到的管理員");
+        Page<CustomerVO> customerPage = customerService.findByConditionsWithPagination(
+                customerVO.getSex(), customerVO.getAccountType(), customerVO.getAccount(), customerVO.getCity(),
+                customerVO.getName(), customerVO.getPhone(), customerVO.getEmail(), page, size, sort, dir);
+
+        Result<Page<CustomerVO>> result = new Result<>();
+        result.setCode(200);
+        result.setMsg("查詢成功");
+        result.setData(customerPage);
+        result.setSuccess(true);
+        result.setTotalPage(customerPage.getTotalPages());
+        result.setTotalElement(customerPage.getTotalElements());
+        result.setPageNumber(customerPage.getNumber());
+        result.setNumberOfElementsOnPage(customerPage.getNumberOfElements());
+        result.setHasNext(customerPage.hasNext());
+        result.setHasPrevious(customerPage.hasPrevious());
+        result.setFirstPageOrNot(customerPage.isFirst());
+        result.setLastPageOrNot(customerPage.isLast());
+
+        return result;
+    }
+
+
+
+
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
     @GetMapping("/info/{customerId}")
     public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId) {
@@ -70,31 +104,6 @@ public class CustomerController {
         }
 
         return ResultUtil.success(customerVO);
-    }
-
-
-    @Operation(summary = "會員資訊-查詢多筆，依據用戶性別、帳號分類、帳號、城市、姓名、手機、電子信箱")
-    @PostMapping("/multi")
-    public Result<List<CustomerVO>> multiConditionQuery(@RequestBody CustomerVO customerVO) {
-        Character sex = customerVO.getSex();
-        Integer accountType = customerVO.getAccountType();
-        String account = customerVO.getAccount();
-        Integer city = customerVO.getCity();
-        String name = customerVO.getName();
-        String phone = customerVO.getPhone();
-        String email = customerVO.getEmail();
-
-        // todo:依據token獲取後台登入用戶
-
-        log.info("{}-後台查詢客戶資訊-多筆：sex: {} accountType: {} account: {} city: {} name: {} phone: {} email: {}",
-                "到時候換成上一步拿到的管理員", sex, accountType, account, city, name, phone, email);
-
-        try {
-            List<CustomerVO> customerVOList = customerService.multiConditionQuery(sex, accountType, account, city, name, phone , email);
-            return ResultUtil.success(customerVOList);
-        } catch (Exception e) {
-            return ResultUtil.error("查詢出錯");
-        }
     }
 
 

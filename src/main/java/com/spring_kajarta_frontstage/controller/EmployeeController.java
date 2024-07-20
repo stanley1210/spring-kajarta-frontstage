@@ -2,6 +2,8 @@ package com.spring_kajarta_frontstage.controller;
 
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.domian.ResultNew;
+import com.kajarta.demo.enums.AccountTypeEnum;
 import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.utils.ResultUtil;
@@ -11,18 +13,20 @@ import com.spring_kajarta_frontstage.util.DatetimeConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Tag(name = "管理後台-員工")
+@CrossOrigin
 @Slf4j
 @Validated
 @RestController
@@ -67,7 +71,11 @@ public class EmployeeController {
         try {
             Employee employee = employeeService.findById(employeeId);
             employeeVO = new EmployeeVO();
+
             BeanUtils.copyProperties(employee, employeeVO);
+            employeeVO.setTeamLeaderId(employee.getTeamLeader().getId());
+            employeeVO.setTeamLeaderName(employee.getTeamLeader().getName());
+            employeeVO.setAccountTypeName(AccountTypeEnum.getByCode(employee.getAccountType()).getAccountType());
             employeeVO.setBranchCity(BranchEnum.getByCode(employee.getBranch()).getCity());
             employeeVO.setBranchAddress(BranchEnum.getByCode(employee.getBranch()).getAddress());
             employeeVO.setBranchName(BranchEnum.getByCode(employee.getBranch()).getBranchName());
@@ -79,31 +87,21 @@ public class EmployeeController {
         return ResultUtil.success(employeeVO);
     }
 
-    @Operation(summary = "員工資訊-查詢多筆，依據員工性別、帳號分類、帳號、姓名、手機、電子信箱、分店、直屬主管、入職日、離職日")
-    @PostMapping("/multi")
-    public Result<List<EmployeeVO>> multiConditionQuery(@RequestBody EmployeeVO employeeVO) {
-        Character sex = employeeVO.getSex();
-        Integer accountType = employeeVO.getAccountType();
-        String account = employeeVO.getAccount();
-        String name = employeeVO.getName();
-        String phone = employeeVO.getPhone();
-        String email = employeeVO.getEmail();
-        Integer branch = employeeVO.getBranch();
-        Integer teamLeaderId = employeeVO.getTeamLeader() != null ? employeeVO.getTeamLeader().getId() : null;
-        LocalDate startDate = employeeVO.getStartDate();
-        LocalDate endDate = employeeVO.getEndDate();
+    @Operation(summary = "員工資訊-依多條件查詢(分頁)")
+    @PostMapping("/query")
+    public ResultNew<Page<EmployeeVO>> queryEmployees(@RequestBody EmployeeVO employeeVO, HttpServletRequest request) {
+        // 解析token todo
 
-        log.info("後台查詢員工資訊-多筆：sex: {} accountType: {} account: {} name: {} phone: {} email: {} branch: {} teamLeaderId: {} startDate: {} endDate: {} ",
-                sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
+        log.info("後台查詢員工資訊-多條件查詢(分頁)");
 
-        try {
-            List<EmployeeVO> employeeVOList = employeeService.multiConditionQuery(
-                    sex, accountType, account, name, phone, email, branch, teamLeaderId, startDate, endDate);
-            return ResultUtil.success(employeeVOList);
-        } catch (Exception e) {
-            log.error("查詢出錯", e);
-            return ResultUtil.error("查詢出錯");
-        }
+        Page<EmployeeVO> employeePage = employeeService.findByConditionsWithPagination(employeeVO);
+
+        ResultNew<Page<EmployeeVO>> result = new ResultNew<>();
+        result.setCode(200);
+        result.setMsg("查詢成功");
+        result.setData(employeePage);
+        result.setSuccess(true);
+        return result;
     }
 
     @Operation(summary = "員工資訊-新增員工")

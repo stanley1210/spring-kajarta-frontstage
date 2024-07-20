@@ -23,8 +23,9 @@ public interface CarAdjustRepository extends JpaRepository<CarAdjust, Integer> {
                         + "(:approvalStatus IS NULL OR caj.approvalStatus = :approvalStatus) AND "
                         + "(:approvalType IS NULL OR caj.approvalType = :approvalType) AND "
                         + "(:floatingAmountMax IS NULL OR :floatingAmountMin IS NULL OR (caj.floatingAmount <= :floatingAmountMax AND caj.floatingAmount >= :floatingAmountMin)) AND "
-                        + "(:createTime IS NULL OR caj.createTime > :createTime) AND "
-                        + "(:updateTime IS NULL OR caj.updateTime > :updateTime) ")
+
+                        + "(:createTimeStr IS NULL OR :createTimeEnd IS NULL OR caj.createTime BETWEEN :createTimeStr AND :createTimeEnd ) AND "
+                        + "(:updateTimeStr IS NULL OR :updateTimeEnd IS NULL OR caj.updateTime BETWEEN :updateTimeStr AND :updateTimeEnd )")
         public Page<CarAdjust> findByHQL(@Param("id") Integer id,
                         @Param("teamLeaderId") Integer teamLeaderId,
                         @Param("employee") Employee employee,
@@ -33,7 +34,9 @@ public interface CarAdjustRepository extends JpaRepository<CarAdjust, Integer> {
                         @Param("approvalType") Integer approvalType,
                         @Param("floatingAmountMax") BigDecimal floatingAmountMax,
                         @Param("floatingAmountMin") BigDecimal floatingAmountMin,
-                        @Param("createTime") Date createTime,
-                        @Param("updateTime") Date updateTime,
+                        @Param("createTimeStr") Date createTimeStr,
+                        @Param("createTimeEnd") Date createTimeEnd,
+                        @Param("updateTimeStr") Date updateTimeStr,
+                        @Param("updateTimeEnd") Date updateTimeEnd,
                         Pageable pageable);
 }

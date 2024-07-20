@@ -1,5 +1,6 @@
 package com.spring_kajarta_frontstage.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,6 +34,27 @@ public interface PreferenceRepository extends JpaRepository<Preference, Integer>
             + "OR create_time LIKE %:word% "
             + "OR update_time LIKE %:word% "
             + "OR preferences_lists LIKE %:word% ", nativeQuery = true)
-    List<Preference> fuzzySearch(@Param(value = "word") String word); // 模糊查詢
+    List<Preference> fuzzySearch(@Param(value = "word") String word); // 模糊查詢全部
+
+    @Query(value = "SELECT * FROM Preference WHERE select_name LIKE %:word%", nativeQuery = true)
+    List<Preference> searchBySelectName(@Param(value = "word") String word); // 鎖定select_name欄位
+
+    @Query(value = "SELECT * FROM Preference WHERE production_year LIKE %:word%", nativeQuery = true)
+    List<Preference> searchByProductionYear(@Param(value = "word") Integer word); // 鎖定production_year欄位
+
+    @Query(value = "SELECT * FROM Preference WHERE price LIKE %:word%", nativeQuery = true)
+    List<Preference> searchByPrice(@Param(value = "word") BigDecimal word); // 鎖定price欄位
+
+    @Query(value = "SELECT * FROM Preference WHERE milage LIKE %:word%", nativeQuery = true)
+    List<Preference> searchByMilage(@Param(value = "word") Integer word); // 鎖定milage欄位
+
+    @Query(value = "SELECT * FROM Preference WHERE score LIKE %:word%", nativeQuery = true)
+    List<Preference> searchByScore(@Param(value = "word") Integer word); // 鎖定score欄位
+
+    @Query(value = "SELECT * FROM Preference WHERE hp LIKE %:word%", nativeQuery = true)
+    List<Preference> searchByHp(@Param(value = "word") Integer word); // 鎖定hp欄位
+
+    @Query(value = "SELECT * FROM Preference WHERE torque LIKE %:word%", nativeQuery = true)
+    List<Preference> searchByTorque(@Param(value = "word") String word); // 鎖定torque欄位
 
 }
