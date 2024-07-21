@@ -112,7 +112,7 @@ public class ImageController {
             Image createImage = imageService.create(image);
             responseBody.put("success", true);
             responseBody.put("message", "新增成功");
-            responseBody.put("message", createImage);
+            responseBody.put("message2", createImage);
         } catch (Exception e) {
             e.printStackTrace();
             responseBody.put("success", false);
