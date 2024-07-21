@@ -130,7 +130,7 @@ public class CarController {
                         .put("carinfoUpdateTime", carInfoBean.getUpdateTime());
 
                 array = array.put(carJson);
-                responseBody.put("carlist", array);
+                responseBody.put("list", array);
                 return responseBody.toString();
             } else {
                 responseBody.put("success", false);
