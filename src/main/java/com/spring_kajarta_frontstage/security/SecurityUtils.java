@@ -65,7 +65,7 @@ public class SecurityUtils {
     }
 
     /**
-     * 取得Long型的令牌
+     * 獲取Long 型別 token
      */
     public static Long getAdminId() {
         UsernamePasswordToken token = getToken();

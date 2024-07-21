@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * security常量
  */
+
 public class SecurityConst {
 
     /**
@@ -15,6 +16,7 @@ public class SecurityConst {
 
     static {
         allows = Arrays.asList(
+//                "/**",
                 "/ping",
                 "/login",
                 "/code/image",

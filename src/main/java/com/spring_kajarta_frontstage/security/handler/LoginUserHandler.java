@@ -1,6 +1,6 @@
 package com.spring_kajarta_frontstage.security.handler;
 
-import com.kajarta.demo.utils.RedisUtil;
+//import com.kajarta.demo.utils.RedisUtil;
 import com.spring_kajarta_frontstage.security.handler.vo.LoginUserSession;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -20,33 +20,33 @@ public class LoginUserHandler {
     // 24小時
     private final static long SESSION_TIME_OUT = 86400_000L;
 
-    @Autowired
-    private RedisUtil redisUtil;
+//    @Autowired
+//    private RedisUtil redisUtil;
 
     private static Map<Long, List<LoginUserSession>> loginUserSessionMap = new ConcurrentHashMap<>();
 
-    @PostConstruct
-    private void init() {
-        // 重新啟動後清除所有session
-        redisUtil.deletePattern("spring:session:*");
-    }
+//    @PostConstruct
+//    private void init() {
+//        // 重新啟動後清除所有session
+//        redisUtil.deletePattern("spring:session:*");
+//    }
 
 
-    /**
-     * 踢出用戶
-     */
-    public void kickLoginUser(Long adminId) {
-        if (loginUserSessionMap.containsKey(adminId)) {
-            List<LoginUserSession> userSession = loginUserSessionMap.get(adminId);
-            if (userSession != null) {
-                userSession.forEach(v -> {
-                    redisUtil.deletePattern("spring:session:*" + v.getSessionId());
-                    log.info("管理員[{}]下線 token: {}", adminId, v.getSessionId());
-                });
-                loginUserSessionMap.remove(adminId);
-            }
-        }
-    }
+//    /**
+//     * 踢出用戶
+//     */
+//    public void kickLoginUser(Long adminId) {
+//        if (loginUserSessionMap.containsKey(adminId)) {
+//            List<LoginUserSession> userSession = loginUserSessionMap.get(adminId);
+//            if (userSession != null) {
+//                userSession.forEach(v -> {
+//                    redisUtil.deletePattern("spring:session:*" + v.getSessionId());
+//                    log.info("管理員[{}]下線 token: {}", adminId, v.getSessionId());
+//                });
+//                loginUserSessionMap.remove(adminId);
+//            }
+//        }
+//    }
 
 
     /**
@@ -75,7 +75,7 @@ public class LoginUserHandler {
                     LoginUserSession v = userSession.get(i);
                     if (now.getTime() - v.getLoginTime() > SESSION_TIME_OUT) {
                         expired = true;
-                        redisUtil.deletePattern("spring:session:*" + v.getSessionId());
+//                        redisUtil.deletePattern("spring:session:*" + v.getSessionId());
                         log.info("管理員[{}]自動下線 token: {}", adminId, v.getSessionId());
                     }
                 }

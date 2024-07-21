@@ -1,12 +1,21 @@
 package com.spring_kajarta_frontstage.security.provider;
 
+import com.kajarta.demo.utils.JwtTokenUtil;
+//import com.spring_kajarta_frontstage.security.service.TokenService;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 
 /**
@@ -19,6 +28,16 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
 
     // post請求
     private boolean postOnly = true;
+
+//    private final JwtTokenUtil jwtTokenUtil;
+//    private final TokenService tokenService;
+//
+//    public MyAuthenticationFilter(JwtTokenUtil jwtTokenUtil, TokenService tokenService) {
+//        this.jwtTokenUtil = jwtTokenUtil;
+//        this.tokenService = tokenService;
+//    }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -52,6 +71,14 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
         return this.getAuthenticationManager().authenticate(token);
     }
 
+//    @Override
+//    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+//        UsernamePasswordToken tokenAuth = (UsernamePasswordToken) authentication;
+//        String username = tokenAuth.getPrincipal().toString();
+//        String token = jwtTokenUtil.generateToken(username);
+//        tokenService.storeToken(username, token);
+//        response.setHeader("Authorization", "Bearer：" + token);
+//    }
 
     @Override
     public void setPostOnly(boolean postOnly) {

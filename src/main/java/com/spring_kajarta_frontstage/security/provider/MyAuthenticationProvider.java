@@ -31,6 +31,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
             throw new UserLoginException("登录令牌类型错误");
         }
         UsernamePasswordToken token = (UsernamePasswordToken) authentication;
+        log.info("==>2 Token: " + token);
 
         String username = token.getPrincipal().toString();
         String password = token.getCredentials().toString();
@@ -63,7 +64,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 //                throw new UserLoginException("使用者名稱或密碼錯誤");
 //            }
             // 不加密
-            if (password.equals(userDetails.getPassword())) {
+            if (!password.equals(userDetails.getPassword())) {
                 throw new UserLoginException("使用者名稱或密碼錯誤");
             }
         }

@@ -11,8 +11,6 @@ import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
 import com.spring_kajarta_frontstage.repository.PreferenceRepository;
-import com.spring_kajarta_frontstage.service.CarInfoService;
-import com.spring_kajarta_frontstage.service.CustomerService;
 
 @Service
 public class PreferenceService {

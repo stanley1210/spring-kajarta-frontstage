@@ -1,5 +1,6 @@
 package com.spring_kajarta_frontstage.security;
 
+import com.kajarta.demo.utils.JwtTokenUtil;
 import com.spring_kajarta_frontstage.security.endpoint.UnauthorizedEntryPoint;
 import com.spring_kajarta_frontstage.security.handler.MyAccessDeniedHandler;
 import com.spring_kajarta_frontstage.security.handler.MyLoginFailureHandler;
@@ -7,6 +8,7 @@ import com.spring_kajarta_frontstage.security.handler.MyLoginSuccessHandler;
 import com.spring_kajarta_frontstage.security.handler.MyLogoutSuccessHandler;
 import com.spring_kajarta_frontstage.security.provider.MyAuthenticationFilter;
 import com.spring_kajarta_frontstage.security.provider.MyAuthenticationProvider;
+//import com.spring_kajarta_frontstage.security.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.session.SessionRegistry;
@@ -30,6 +31,7 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.List;
+
 
 @Configuration
 @EnableWebSecurity
@@ -56,6 +58,12 @@ public class SecurityConfig {
 
     @Autowired
     private SessionRegistry sessionRegistry;
+
+//    @Autowired
+//    private JwtTokenUtil jwtTokenUtil;
+
+//    @Autowired
+//    private TokenService tokenService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -104,14 +112,15 @@ public class SecurityConfig {
         return (web) -> web
                 .ignoring()
                 .requestMatchers(HttpMethod.GET,
+//                        "/**",
                         "/favicon.ico",
                         "/*.html",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/**/*.map",
-                        "/**/*.png",
-                        "/**/*.jpg");
+                        "/*/*.html",
+                        "/*/*.css",
+                        "/*/*.js",
+                        "/*/*.map",
+                        "/*/*.png",
+                        "/*/*.jpg");
     }
 
 
@@ -131,6 +140,8 @@ public class SecurityConfig {
      */
     @Bean
     public UsernamePasswordAuthenticationFilter myAuthenticationFilter() {
+        // token再用
+//        MyAuthenticationFilter filter = new MyAuthenticationFilter(jwtTokenUtil, tokenService);
         MyAuthenticationFilter filter = new MyAuthenticationFilter();
         filter.setPostOnly(true);
         filter.setAuthenticationManager(authenticationManager());

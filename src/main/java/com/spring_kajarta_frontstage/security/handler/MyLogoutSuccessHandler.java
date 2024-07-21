@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kajarta.demo.domian.ResultNew;
 import com.kajarta.demo.utils.ResultUtilNew;
 import com.spring_kajarta_frontstage.security.provider.UsernamePasswordToken;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -40,7 +42,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
         request.getSession().invalidate();
 
-//        CookieUtils.deleteCookie("AUTH-TOKEN", response);
+        deleteCookie("AUTH-TOKEN", null, response);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json;charset=UTF-8");
@@ -51,4 +53,18 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
         log.info("[{}]退出登入", principal);
     }
 
+    /**
+     * 刪除cookie
+     */
+    public static void deleteCookie(String cookieName, String domain, HttpServletResponse response) {
+        if (StringUtils.isNotBlank(cookieName) && response != null) {
+            Cookie cookie = new Cookie(StringUtils.trimToEmpty(cookieName), "");
+            if (StringUtils.isNotBlank(domain)) {
+                cookie.setDomain(StringUtils.trimToEmpty(domain));
+            }
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+    }
 }

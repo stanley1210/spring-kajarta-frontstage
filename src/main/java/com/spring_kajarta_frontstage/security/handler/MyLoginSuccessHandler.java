@@ -3,9 +3,11 @@ package com.spring_kajarta_frontstage.security.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kajarta.demo.model.Customer;
+import com.kajarta.demo.utils.JwtTokenUtil;
 import com.kajarta.demo.utils.ResultUtilNew;
 import com.spring_kajarta_frontstage.security.exception.UserLoginException;
 import com.spring_kajarta_frontstage.security.provider.UsernamePasswordToken;
+//import com.spring_kajarta_frontstage.security.service.TokenService;
 import com.spring_kajarta_frontstage.service.CustomerService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +33,12 @@ public class MyLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
     @Autowired
     private LoginUserHandler loginUserHandler;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+//    @Autowired
+//    private TokenService tokenService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -41,6 +49,7 @@ public class MyLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
         // Token
         UsernamePasswordToken token = (UsernamePasswordToken) authentication;
+        log.info("==>1 Token: " + token);
 
         // 正常是要設計這些欄位去更新登入信息
         Customer customer = customerService.findById(Integer.parseInt(token.getCustomerId().toString()));
@@ -57,12 +66,29 @@ public class MyLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 //                log.error("更新用戶信息錯誤,{}", mod, e);
 //            }
 //        }
+//        UsernamePasswordToken tokenAuth = (UsernamePasswordToken) authentication;
+//        String username = tokenAuth.getPrincipal().toString();
+//        String token = jwtTokenUtil.generateToken(username);
+//        tokenService.storeToken(username, token);
+//        response.setHeader("Authorization", "Bearer：" + token);
 
         JSONObject data = new JSONObject();
-        data.put("username", token.getPrincipal());
 //        data.put("google", ((SecurityUser) token.getDetails()).isGoogleEnable());
 //        data.put("menus", token.getMenus());
+
         data.put("auths", token.getAuthorities());
+
+        Object username = token.getPrincipal();
+        data.put("username", username);
+
+//        String jwtToken = jwtTokenUtil.generateToken(username.toString());
+//        tokenService.storeToken(username.toString(), jwtToken);
+//        response.setHeader("Authorization", "Bearer：" + token);
+
+//        String jwtToken = jwtTokenUtil.generateToken(token.getCustomerId());
+//        tokenService.storeToken(token.getCustomerId(), jwtToken);
+
+//        data.put("token", jwtToken);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json;charset=UTF-8");

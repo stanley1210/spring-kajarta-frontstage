@@ -5,7 +5,6 @@ import com.kajarta.demo.vo.CustomerVO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-
 public interface CustomerService {
     // 計算數量
     long countCustomers();

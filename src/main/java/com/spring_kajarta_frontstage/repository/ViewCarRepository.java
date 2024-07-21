@@ -15,5 +15,5 @@ public interface ViewCarRepository extends JpaRepository<ViewCar, Integer> {
 
 	@Query(value="from ViewCar")
 	 List<ViewCar> find3Latest(Pageable pgb);
-     
+
 }

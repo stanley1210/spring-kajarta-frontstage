@@ -1,7 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
-import java.util.List;
-
+import com.spring_kajarta_frontstage.service.CarService;
+import com.spring_kajarta_frontstage.service.ImageService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Image;
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.ImageService;
 
 @RestController
 @RequestMapping("/image")

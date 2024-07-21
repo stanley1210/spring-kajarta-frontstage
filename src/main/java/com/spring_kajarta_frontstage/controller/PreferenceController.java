@@ -3,6 +3,8 @@ package com.spring_kajarta_frontstage.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.spring_kajarta_frontstage.service.CarInfoService;
+import com.spring_kajarta_frontstage.service.PreferenceService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
-import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CustomerService;
-import com.spring_kajarta_frontstage.service.PreferenceService;
 
 @RestController
 @RequestMapping("/preference")

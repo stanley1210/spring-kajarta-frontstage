@@ -1,7 +1,6 @@
 package com.spring_kajarta_frontstage.repository;
 
 import com.kajarta.demo.model.Employee;
-import com.kajarta.demo.vo.EmployeeVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

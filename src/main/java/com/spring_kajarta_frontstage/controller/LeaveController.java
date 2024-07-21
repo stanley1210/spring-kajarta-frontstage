@@ -1,12 +1,10 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
-import com.kajarta.demo.enums.AccountTypeEnum;
 import com.kajarta.demo.enums.LeaveTypeEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.utils.ResultUtil;
-import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.LeaveService;
@@ -15,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,9 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "管理後台-請假")
 @CrossOrigin
