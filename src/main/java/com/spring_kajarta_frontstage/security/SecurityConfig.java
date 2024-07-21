@@ -112,7 +112,7 @@ public class SecurityConfig {
         return (web) -> web
                 .ignoring()
                 .requestMatchers(HttpMethod.GET,
-//                        "/**",
+                        "/**",
                         "/favicon.ico",
                         "/*.html",
                         "/*/*.html",

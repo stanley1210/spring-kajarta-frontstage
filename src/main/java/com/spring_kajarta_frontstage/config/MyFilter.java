@@ -59,6 +59,7 @@ public class MyFilter implements Filter {
      */
     private boolean excludedUri(String uri) {
         List<String> allows = Arrays.asList(
+                "/**",
                 "/ping",
                 "/login",
                 "/code/image",

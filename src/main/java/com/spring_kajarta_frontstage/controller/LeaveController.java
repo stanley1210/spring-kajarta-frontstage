@@ -32,7 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value = "/leave")
 @Controller
-public class LeaveController {
+public class LeaveController extends BaseController {
     @Autowired
     private LeaveService leaveService;
     @Autowired
@@ -114,8 +114,9 @@ public class LeaveController {
     @PostMapping("/query")
     public Result<Page<LeaveVO>> queryLeaves(@RequestBody LeaveVO leaveVO, HttpServletRequest request) {
         // 解析token todo
-
-        log.info("後台查詢假單資訊-多條件查詢(分頁)");
+        System.out.println("id="+getAdminId());
+        System.out.println("name="+getAdmin());
+        log.info("{}-後台查詢假單資訊-多條件查詢(分頁)", getAdmin());
 
         Page<LeaveVO> leavePage = leaveService.findByConditionsWithPagination(leaveVO);
 

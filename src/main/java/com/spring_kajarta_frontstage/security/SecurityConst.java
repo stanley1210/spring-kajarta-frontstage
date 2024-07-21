@@ -16,7 +16,7 @@ public class SecurityConst {
 
     static {
         allows = Arrays.asList(
-//                "/**",
+                "/**",
                 "/ping",
                 "/login",
                 "/code/image",
