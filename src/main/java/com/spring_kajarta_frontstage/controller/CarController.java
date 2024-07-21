@@ -1,11 +1,11 @@
 package com.spring_kajarta_frontstage.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +14,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kajarta.demo.model.Brand;
 import com.kajarta.demo.model.Car;
+import com.kajarta.demo.model.Carinfo;
+import com.kajarta.demo.model.Negotiable;
+import com.spring_kajarta_frontstage.service.BrandService;
+import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CarService;
+import com.spring_kajarta_frontstage.service.NegotiableService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
 @RequestMapping("/car")
@@ -27,13 +35,27 @@ public class CarController {
     @Autowired
     private CarService carService;
 
+    @Autowired
+    private CarInfoService carInfoService;
+
+    @Autowired
+    private BrandService brandService;
+
+    @Autowired
+    private NegotiableService negotiableService;
+
     // 查全部
     @GetMapping("/findAll")
-    public String findAll() {
-        List<Car> carList = carService.findAll();
+    public String findAll(@RequestParam Integer pageNumber,
+            @RequestParam String sortOrder,
+            @RequestParam Integer max) {
+        Page<Car> carPage = carService.findByPage(pageNumber, sortOrder, max);
+        List<Car> Cars = carPage.getContent();
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        for (Car car : carList) {
+        for (Car car : Cars) {
+            String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
@@ -48,10 +70,15 @@ public class CarController {
                     .put("launchDate", car.getLaunchDate())
                     .put("carinfoId", car.getCarinfo().getId())
                     .put("color", car.getColor())
-                    .put("remark", car.getRemark());
+                    .put("remark", car.getRemark())
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime);
             array.put(item);
         }
-        return responseBody.put("list", array).toString();
+        responseBody.put("list", array);
+        responseBody.put("totalPages", carPage.getTotalPages());
+        responseBody.put("totalElements", carPage.getTotalElements());
+        return responseBody.toString();
     }
 
     // 查詢單筆
@@ -64,29 +91,46 @@ public class CarController {
             responseBody.put("success", false);
             responseBody.put("message", "ID不得為空");
         } else {
-            Car carOptional = carService.findById(Id);
-            if (carOptional != null) {
-                Car carModel = carOptional;
+            Car carBean = carService.findById(Id);
+            Carinfo carInfoBean = carInfoService.findById(Id);
+            Brand brandEnum = brandService.findById(Id);
+            Negotiable negotiableEnum = negotiableService.findById(Id);
+            if (carBean != null) {
+                Car carModel = carBean;
                 String compareUrl = "kajarta/car/compare";
-                JSONObject item = new JSONObject()
+                JSONObject carJson = new JSONObject()
                         .put("id", carModel.getId())
                         .put("productionYear", carModel.getProductionYear())
                         .put("milage", carModel.getMilage())
                         .put("customerId", carModel.getCustomer().getId())
                         .put("employeeId", carModel.getEmployee().getId())
-                        .put("negotiable", carModel.getNegotiable())
+                        .put("negotiable", negotiableEnum.getPercent())
                         .put("conditionScore", carModel.getConditionScore())
                         .put("branch", carModel.getBranch())
                         .put("state", carModel.getState())
                         .put("price", carModel.getPrice())
                         .put("launchDate", carModel.getLaunchDate())
-                        .put("carinfoId", carModel.getCarinfo().getId())
                         .put("color", carModel.getColor())
                         .put("remark", carModel.getRemark())
-                        .put("compare", compareUrl);
+                        .put("compare", compareUrl)
+                        // CarInfo的值
+                        .put("carinfoId", carModel.getCarinfo().getId())
+                        .put("carinfoBrand", brandEnum.getBrand())
+                        .put("carinfoModelName", carInfoBean.getModelName())
+                        .put("carinfoSuspension", carInfoBean.getSuspension())
+                        .put("carinfoDoor", carInfoBean.getDoor())
+                        .put("carinfoPassenger", carInfoBean.getPassenger())
+                        .put("carinfoRearWheel", carInfoBean.getRearWheel())
+                        .put("carinfoGasoline", carInfoBean.getGasoline())
+                        .put("carinfoTransmission", carInfoBean.getTransmission())
+                        .put("carinfoCc", carInfoBean.getCc())
+                        .put("carinfoHp", carInfoBean.getHp())
+                        .put("carinfoTorque", carInfoBean.getTorque())
+                        .put("carinfoCreateTime", carInfoBean.getCreateTime())
+                        .put("carinfoUpdateTime", carInfoBean.getUpdateTime());
 
-                array = array.put(item);
-                responseBody.put("list", array);
+                array = array.put(carJson);
+                responseBody.put("carlist", array);
                 return responseBody.toString();
             } else {
                 responseBody.put("success", false);

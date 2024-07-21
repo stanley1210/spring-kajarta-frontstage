@@ -1,21 +1,22 @@
 package com.spring_kajarta_frontstage.service;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Employee;
+import com.kajarta.demo.model.Like;
 import com.spring_kajarta_frontstage.repository.CarRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
@@ -152,5 +153,12 @@ public class CarService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // 分頁請求
+    public Page<Car> findByPage(Integer pageNumber, String sortOrder, Integer max) {
+        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
+        Pageable pageable = PageRequest.of(pageNumber - 1, max, direction, "createTime");
+        return carRepo.findAll(pageable);
     }
 }

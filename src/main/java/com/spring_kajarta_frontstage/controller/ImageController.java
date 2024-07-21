@@ -1,7 +1,5 @@
 package com.spring_kajarta_frontstage.controller;
 
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

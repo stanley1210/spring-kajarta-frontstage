@@ -70,7 +70,8 @@ public class CarAdjustController {
     public Result<List<CarAdjustVO>> findByHQL(@Parameter(description = "調整簽核查詢條件") @RequestBody String body) {
         // todo:依據多條件(JSON)
         // 條件 - id, teamLeaderId, employeeId, carId, approvalStatus, approvalType,
-        // - floatingAmountMax, floatingAmountMin, createTime, updateTime,
+        // - floatingAmountMax, floatingAmountMin, createTimeStr, createTimeEnd,
+        // updateTimeStr, updateTimeEnd
         // 分頁 - is_page, max, dir, order
 
         log.info("{}-後台查詢調整簽核列表資訊-多條件JSONE：{}", "到時候換成上一步拿到的管理員", body);
