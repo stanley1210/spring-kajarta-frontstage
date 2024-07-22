@@ -1,5 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
+import com.spring_kajarta_frontstage.service.CarService;
+import com.spring_kajarta_frontstage.service.ImageService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Image;
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.ImageService;
 
 @RestController
 @RequestMapping("/image")
@@ -48,7 +48,7 @@ public class ImageController {
                     .put("isMainPic", image.getIsMainPic());
             array.put(item);
         }
-        return responseBody.put("list", array).toString();
+        return responseBody.put("imageList", array).toString();
     }
 
     // 查詢單筆
@@ -92,6 +92,26 @@ public class ImageController {
         return result;
     }
 
+    // 以CarId顯示圖片(多張)
+    @GetMapping(path = "/getCarIdImage/{carId}")
+    public String getCarIdImage(@PathVariable(name = "carId") Integer photoid) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        for (Image image : imageService.findByCarId(photoid)) {
+            String imageUrl = "/kajarta/image/getImage/" + image.getId();
+            JSONObject item = new JSONObject()
+                    .put("id", image.getId())
+                    .put("image", imageUrl)
+                    .put("car", image.getCar().getId())
+                    .put("createTime", image.getCreateTime())
+                    .put("updateTime", image.getUpdateTime())
+                    .put("isListPic", image.getIsListPic())
+                    .put("isMainPic", image.getIsMainPic());
+            array.put(item);
+        }
+        return responseBody.put("CarIdImageList", array).toString();
+    }
+
     // 新增單筆
     @PostMapping("/create")
     public String jsonCreate(@RequestParam("image") MultipartFile imageFile,
@@ -101,6 +121,8 @@ public class ImageController {
         JSONObject responseBody = new JSONObject();
         try {
             byte[] imageByte = imageFile.getBytes();
+            System.out.println("------------------------");
+            System.out.println("imageByte=" + imageByte);
             Car car = carService.findById(carId);
             Image image = new Image();
             image.setImage(imageByte);

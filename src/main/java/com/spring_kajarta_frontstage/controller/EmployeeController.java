@@ -61,6 +61,21 @@ public class EmployeeController {
         return ResultUtil.success(employeeVOList);
     }
 
+    @Operation(summary = "teamLeader資訊-查詢全部")
+    @GetMapping("/teamLeaders")
+    public Result<List<EmployeeVO>> findAllTeamLeader() {
+        // todo:依據token獲取後台登入用戶
+
+        List<EmployeeVO> employeeVOList;
+        try {
+            employeeVOList = employeeService.findAllTeamLeader();
+        } catch (Exception e) {
+            log.error("查詢出錯", e);
+            return ResultUtil.error("查詢出錯");
+        }
+        return ResultUtil.success(employeeVOList);
+    }
+
     @Operation(summary = "員工資訊-依據員工id查詢單筆")
     @GetMapping("/info/{employeeId}")
     public Result<EmployeeVO> info(@Parameter(description = "員工id") @PathVariable Integer employeeId) {
