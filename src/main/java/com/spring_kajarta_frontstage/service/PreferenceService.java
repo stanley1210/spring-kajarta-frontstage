@@ -119,11 +119,13 @@ public class PreferenceService {
         return results;
     }
 
-    // 多條件查詢
-    public List<Preference> dynamicSearch(String selectName, Integer productionYear, BigDecimal price, Integer milage,
-            Integer score, Integer hp, Double torque) {
-        return preferenceRepo.dynamicSearch(selectName, productionYear, price, milage, score, hp, torque);
-    }
+    // // 多條件查詢
+    // public List<Preference> dynamicSearch(String selectName, Integer
+    // productionYear, BigDecimal price, Integer milage,
+    // Integer score, Integer hp, Double torque) {
+    // return preferenceRepo.dynamicSearch(selectName, productionYear, price,
+    // milage, score, hp, torque);
+    // }
 
     public Preference create(String json) { // 新增
         try {
