@@ -123,6 +123,8 @@ public class ImageController {
         JSONObject responseBody = new JSONObject();
         try {
             byte[] imageByte = imageFile.getBytes();
+            System.out.println("------------------------");
+            System.out.println("imageByte=" + imageByte);
             Car car = carService.findById(carId);
             Image image = new Image();
             image.setImage(imageByte);
