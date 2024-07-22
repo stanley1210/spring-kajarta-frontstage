@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
 import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CustomerService;
 import com.spring_kajarta_frontstage.service.PreferenceService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
 @RequestMapping("/preference")
@@ -511,6 +514,54 @@ public class PreferenceController {
             }
         }
 
+        return responseBody.toString();
+    }
+
+    // 多條件動態查詢
+    @GetMapping("/searchMore")
+    public String searchPreferences(
+            @RequestParam(required = false) String modelName,
+            @RequestParam(required = false) Integer productionYear,
+            @RequestParam(required = false) BigDecimal price,
+            @RequestParam(required = false) Integer milage,
+            @RequestParam(required = false) Integer score,
+            @RequestParam(required = false) Integer hp,
+            @RequestParam(required = false) Double torque) {
+
+        List<Car> results = preferenceService.searchPreferences(modelName, productionYear, price, milage, score,
+                hp, torque);
+
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        for (Car car : results) {
+            Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
+            System.out.println("==================================");
+            System.out.println("carInfoBean=" + carInfoBean);
+            // Integer carinfoId = (preference.getCarinfo()) == null ? -1 :
+            // preference.getCarinfo().getId();
+            String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
+            JSONObject item = new JSONObject()
+                    .put("id", car.getId())
+                    .put("productionYear", car.getProductionYear())
+                    .put("milage", car.getMilage())
+                    .put("customerId", car.getCustomer().getId())
+                    .put("employeeId", car.getEmployee().getId())
+                    .put("negotiable", car.getNegotiable())
+                    .put("conditionScore", car.getConditionScore())
+                    .put("branch", car.getBranch())
+                    .put("state", car.getState())
+                    .put("price", car.getPrice())
+                    .put("launchDate", car.getLaunchDate())
+                    .put("modelName", carInfoBean.getModelName())
+                    .put("color", car.getColor())
+                    .put("remark", car.getRemark())
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime);
+            array.put(item);
+        }
+
+        responseBody.put("list", array);
         return responseBody.toString();
     }
 }
