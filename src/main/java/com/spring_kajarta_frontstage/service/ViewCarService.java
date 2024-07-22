@@ -56,7 +56,7 @@ public class ViewCarService {
             Integer carScore = obj.isNull("carScore") ? -1 : obj.getInt("carScore");
             Integer deal = obj.isNull("deal") ? -1 : obj.getInt("deal");
             Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
-            Integer viewCarStatus = obj.isNull("viewCarStatus") ? -1 : obj.getInt("viewCarStatus");
+            Integer viewCarStatus = obj.isNull("viewCarStatus") ? 0 : obj.getInt("viewCarStatus");
 
             Customer customer = customerService.findById(customerId);
             Car car = carService.findById(carId);
@@ -139,7 +139,7 @@ public class ViewCarService {
     }
 
     public Page<ViewCar> findByPage(Integer pageNumeber) {
-        Pageable pgb = PageRequest.of(pageNumeber - 1, 3, Sort.Direction.ASC, "viewCarDate");
+        Pageable pgb = PageRequest.of(pageNumeber - 1, 1, Sort.Direction.DESC, "updateTime");
         Page<ViewCar> page = viewCarRepo.findAll(pgb);
         return page;
     }

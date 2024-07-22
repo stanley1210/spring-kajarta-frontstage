@@ -115,7 +115,7 @@ public class ViewCarController {
     }
     //查全
     @GetMapping("/selectAll")
-    public String findAll(@RequestParam Integer pageNumber) {
+    public String findByPage(@RequestParam Integer pageNumber) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
         Page<ViewCar> page = viewCarService.findByPage(pageNumber);
@@ -126,9 +126,9 @@ public class ViewCarController {
             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
             JSONObject obj = new JSONObject()
                     .put("id", viewCar.getId())
-                    // .put("viewTimeSection", viewCar.getViewTimeSection())
                     .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
                     .put("car", viewCar.getCar().getId())
+                    .put("modelName", viewCar.getCar().getCarinfo().getModelName())
                     .put("salesScore", viewCar.getSalesScore())
                     .put("factoryScore", viewCar.getFactoryScore())
                     .put("viewCarDate", viewCarDate)
