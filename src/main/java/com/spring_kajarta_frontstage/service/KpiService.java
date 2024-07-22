@@ -59,7 +59,8 @@ public class KpiService {
             Integer teamLeaderRating = obj.isNull("teamLeaderRating") ? null : obj.getInt("teamLeaderRating");
             Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
             BigDecimal totalScore = obj.isNull("totalScore") ? null : obj.getBigDecimal("totalScore");
-            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer employeeId = obj.isNull("employeeId") ? kpiRepo.findById(id).get().getEmployee().getId()
+                    : obj.getInt("employeeId");
 
             Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isPresent()) {
