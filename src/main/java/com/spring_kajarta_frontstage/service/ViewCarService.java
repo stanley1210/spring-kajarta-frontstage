@@ -55,9 +55,9 @@ public class ViewCarService {
             Integer factoryScore = obj.isNull("factoryScore") ? -1 : obj.getInt("factoryScore");
             String viewCarDate = obj.isNull("viewCarDate") ? null : obj.getString("viewCarDate");
             Integer carScore = obj.isNull("carScore") ? -1 : obj.getInt("carScore");
-            Integer deal = obj.isNull("deal") ? null : obj.getInt("deal");
+            Integer deal = obj.isNull("deal") ? -1 : obj.getInt("deal");
             Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
-            Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
+            Integer viewCarStatus = obj.isNull("viewCarStatus") ? -1 : obj.getInt("viewCarStatus");
 
             Customer customer = customerService.findById(customerId);
             Car car = carService.findById(carId);
