@@ -39,6 +39,9 @@ public class KpiService {
             Kpi insert = new Kpi();
             insert.setSeasonStrDay(DatetimeConverter.parse(seasonStrDay, "yyyy-MM-dd"));
             insert.setEmployee(employeeService.findById(employeeId));
+            insert.setSalesScore(0);
+            insert.setTotalScore(BigDecimal.valueOf(0));
+            insert.setTeamLeaderRating(0);
 
             return kpiRepo.save(insert);
 
