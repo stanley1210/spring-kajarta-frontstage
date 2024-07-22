@@ -30,6 +30,9 @@ public interface CustomerRepository extends JpaRepository<Customer,Integer>{
             Pageable pageable);
 
 
+    @Query("SELECT c FROM Customer c WHERE c.account = :account")
+    Customer findByAccount(@Param("account") String account);
+
 }
 
 

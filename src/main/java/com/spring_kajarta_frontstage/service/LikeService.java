@@ -3,7 +3,6 @@ package com.spring_kajarta_frontstage.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,10 +14,7 @@ import org.springframework.stereotype.Service;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Like;
-import com.kajarta.demo.model.ViewCar;
 import com.spring_kajarta_frontstage.repository.LikeRepository;
-import com.spring_kajarta_frontstage.repository.ViewCarRepository;
-import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @Service
 public class LikeService {

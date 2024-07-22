@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
@@ -38,6 +39,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
         @Param("startDate") LocalDate startDate,
         @Param("endDate") LocalDate endDate,
         Pageable pageable);
+
+    @Query("SELECT e FROM Employee e WHERE e.accountType = 4")
+    List<Employee> findAllTeamLeader();
+
 }
 
 
