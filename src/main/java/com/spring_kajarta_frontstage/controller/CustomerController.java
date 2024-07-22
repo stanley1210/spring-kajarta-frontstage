@@ -105,6 +105,27 @@ public class CustomerController extends BaseController {
         return ResultUtil.success(customerVO);
     }
 
+    @Operation(summary = "會員資訊-依據會員名查詢單筆")
+    @GetMapping("/info/username/{username}")
+    public Result<CustomerVO> queryByUsername(@Parameter(description = "會員名") @PathVariable String username) {
+        // todo:依據token獲取後台登入用戶
+        System.out.println("id="+getAdminId());
+        System.out.println("name="+getAdmin());
+        log.info("{}-查詢客戶資訊-單筆：{}", getAdmin(), username);
+        CustomerVO customerVO;
+        try {
+            Customer customer = customerService.getByUsername(username);
+            customerVO = new CustomerVO();
+            BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+
+        return ResultUtil.success(customerVO);
+    }
+
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
     @GetMapping("/info/{customerId}")
     public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId) {
