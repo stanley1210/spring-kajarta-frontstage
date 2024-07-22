@@ -33,8 +33,8 @@ public class FilterConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-//        config.addAllowedOrigin("*"); // 允许任何域名使用
         config.addAllowedOriginPattern("*"); // 允许任何域名使用
+//        config.addAllowedOriginPattern("*"); // 允许任何域名使用
         config.addAllowedHeader("*"); // 允许任何头
         config.addAllowedMethod("*"); // 允许任何方法（post、get等）
         source.registerCorsConfiguration("/**", config); // 对接口配置跨域设置
