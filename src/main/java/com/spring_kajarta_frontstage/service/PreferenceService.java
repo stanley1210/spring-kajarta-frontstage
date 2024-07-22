@@ -1,10 +1,12 @@
 package com.spring_kajarta_frontstage.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.kajarta.demo.model.Carinfo;
@@ -13,6 +15,8 @@ import com.kajarta.demo.model.Preference;
 import com.spring_kajarta_frontstage.repository.PreferenceRepository;
 import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CustomerService;
+
+import jakarta.persistence.criteria.Predicate;
 
 @Service
 public class PreferenceService {
@@ -115,6 +119,12 @@ public class PreferenceService {
             results.add(noData);
         }
         return results;
+    }
+
+    // 多條件查詢
+    public List<Preference> dynamicSearch(String selectName, Integer productionYear, BigDecimal price, Integer milage,
+            Integer score, Integer hp, Double torque) {
+        return preferenceRepo.dynamicSearch(selectName, productionYear, price, milage, score, hp, torque);
     }
 
     public Preference create(String json) { // 新增
