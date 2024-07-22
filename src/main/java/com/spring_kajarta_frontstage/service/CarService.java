@@ -17,6 +17,7 @@ import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Like;
+import com.kajarta.demo.model.Preference;
 import com.spring_kajarta_frontstage.repository.CarRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
