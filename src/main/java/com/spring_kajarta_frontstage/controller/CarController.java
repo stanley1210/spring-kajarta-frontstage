@@ -18,14 +18,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Brand;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
+import com.kajarta.demo.model.Displacement;
+import com.kajarta.demo.model.Door;
+import com.kajarta.demo.model.Gasoline;
 import com.kajarta.demo.model.Negotiable;
+import com.kajarta.demo.model.Passenger;
+import com.kajarta.demo.model.Rearwheel;
+import com.kajarta.demo.model.Suspension;
+import com.kajarta.demo.model.Transmission;
 import com.spring_kajarta_frontstage.service.BrandService;
 import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CarService;
+import com.spring_kajarta_frontstage.service.DisplacementService;
+import com.spring_kajarta_frontstage.service.DoorService;
+import com.spring_kajarta_frontstage.service.GasolineService;
 import com.spring_kajarta_frontstage.service.NegotiableService;
+import com.spring_kajarta_frontstage.service.PassengerService;
+import com.spring_kajarta_frontstage.service.RearWheelService;
+import com.spring_kajarta_frontstage.service.SuspensionService;
+import com.spring_kajarta_frontstage.service.TransmissionService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
@@ -43,6 +58,27 @@ public class CarController {
 
     @Autowired
     private NegotiableService negotiableService;
+
+    @Autowired
+    private SuspensionService suspensionService;
+
+    @Autowired
+    private DoorService doorService;
+
+    @Autowired
+    private PassengerService passengerService;
+
+    @Autowired
+    private RearWheelService rearWheelService;
+
+    @Autowired
+    private GasolineService gasolineService;
+
+    @Autowired
+    private TransmissionService transmissionService;
+
+    @Autowired
+    private DisplacementService displacementService;
 
     // 查全部
     @GetMapping("/findAll")
@@ -95,6 +131,14 @@ public class CarController {
             Carinfo carInfoBean = carInfoService.findById(Id);
             Brand brandEnum = brandService.findById(Id);
             Negotiable negotiableEnum = negotiableService.findById(Id);
+            Suspension suspensionEnum = suspensionService.findById(Id);
+            Door doorEnum = doorService.findById(Id);
+            Passenger passengerEnum = passengerService.findById(Id);
+            Rearwheel rearwheelEnum = rearWheelService.findById(Id);
+            Gasoline gasolineEnum = gasolineService.findById(Id);
+            Transmission transmissionEnum = transmissionService.findById(Id);
+            Displacement displacementEnum = displacementService.findById(Id);
+            BranchEnum branch = BranchEnum.getByCode(Id);
             if (carBean != null) {
                 Car carModel = carBean;
                 String compareUrl = "kajarta/car/compare";
@@ -106,7 +150,7 @@ public class CarController {
                         .put("employeeId", carModel.getEmployee().getId())
                         .put("negotiable", negotiableEnum.getPercent())
                         .put("conditionScore", carModel.getConditionScore())
-                        .put("branch", carModel.getBranch())
+                        .put("branch", branch.getBranchName())
                         .put("state", carModel.getState())
                         .put("price", carModel.getPrice())
                         .put("launchDate", carModel.getLaunchDate())
@@ -117,13 +161,13 @@ public class CarController {
                         .put("carinfoId", carModel.getCarinfo().getId())
                         .put("carinfoBrand", brandEnum.getBrand())
                         .put("carinfoModelName", carInfoBean.getModelName())
-                        .put("carinfoSuspension", carInfoBean.getSuspension())
-                        .put("carinfoDoor", carInfoBean.getDoor())
-                        .put("carinfoPassenger", carInfoBean.getPassenger())
-                        .put("carinfoRearWheel", carInfoBean.getRearWheel())
-                        .put("carinfoGasoline", carInfoBean.getGasoline())
-                        .put("carinfoTransmission", carInfoBean.getTransmission())
-                        .put("carinfoCc", carInfoBean.getCc())
+                        .put("carinfoSuspension", suspensionEnum.getType())
+                        .put("carinfoDoor", doorEnum.getCardoor())
+                        .put("carinfoPassenger", passengerEnum.getSeat())
+                        .put("carinfoRearWheel", rearwheelEnum.getWheel())
+                        .put("carinfoGasoline", gasolineEnum.getGaso())
+                        .put("carinfoTransmission", transmissionEnum.getTrans())
+                        .put("carinfoCc", displacementEnum.getCc())
                         .put("carinfoHp", carInfoBean.getHp())
                         .put("carinfoTorque", carInfoBean.getTorque())
                         .put("carinfoCreateTime", carInfoBean.getCreateTime())
