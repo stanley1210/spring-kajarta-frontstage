@@ -5,7 +5,6 @@ import com.kajarta.demo.enums.LeaveTypeEnum;
 import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Leave;
 import com.kajarta.demo.utils.ResultUtil;
-import com.kajarta.demo.vo.CustomerVO;
 import com.kajarta.demo.vo.LeaveVO;
 import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.LeaveService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,9 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "管理後台-請假")
 @CrossOrigin
@@ -36,7 +32,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping(value = "/leave")
 @Controller
-public class LeaveController {
+public class LeaveController extends BaseController {
     @Autowired
     private LeaveService leaveService;
     @Autowired
@@ -82,14 +78,28 @@ public class LeaveController {
 
             leaveVO = new LeaveVO();
             BeanUtils.copyProperties(leave, leaveVO);
+
+            leaveVO.setLeaveTypeName(LeaveTypeEnum.getByCode(leave.getLeaveType()).getLeaveType());
+
+
             leaveVO.setEmployeeId(leave.getEmployee().getId());
             leaveVO.setEmployeeName(leave.getEmployee().getName());
+
+            leaveVO.setStartTime(DatetimeConverter.toString(leave.getStartTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setEndTime(DatetimeConverter.toString(leave.getEndTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setCreateTime(DatetimeConverter.toString(leave.getCreateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setUpdateTime(DatetimeConverter.toString(leave.getUpdateTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setAuditTime(DatetimeConverter.toString(leave.getAuditTime(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setValidityPeriodStart(DatetimeConverter.toString(leave.getValidityPeriodStart(), DatetimeConverter.YYYY_MM_DD_HH_MM));
+            leaveVO.setValidityPeriodEnd(DatetimeConverter.toString(leave.getValidityPeriodEnd(), DatetimeConverter.YYYY_MM_DD_HH_MM));
 
 
             // 依據代理人id去查Employee
             Employee employeeDeputy = employeeService.findById(leave.getDeputyId());
             leaveVO.setDeputyId(employeeDeputy.getId());
             leaveVO.setDeputyName(employeeDeputy.getName());
+
+
 
         } catch (Exception e) {
             log.error("查詢出錯", e);
@@ -104,8 +114,9 @@ public class LeaveController {
     @PostMapping("/query")
     public Result<Page<LeaveVO>> queryLeaves(@RequestBody LeaveVO leaveVO, HttpServletRequest request) {
         // 解析token todo
-
-        log.info("後台查詢假單資訊-多條件查詢(分頁)");
+        System.out.println("id="+getAdminId());
+        System.out.println("name="+getAdmin());
+        log.info("{}-後台查詢假單資訊-多條件查詢(分頁)", getAdmin());
 
         Page<LeaveVO> leavePage = leaveService.findByConditionsWithPagination(leaveVO);
 

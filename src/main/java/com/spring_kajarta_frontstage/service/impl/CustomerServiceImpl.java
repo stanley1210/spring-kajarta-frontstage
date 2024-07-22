@@ -62,6 +62,11 @@ public class CustomerServiceImpl implements CustomerService {
         return customer.orElse(null);
     }
 
+    @Override
+    public Customer getByUsername(String account) {
+        return customerRepo.findByAccount(account);
+    }
+
     public Page<CustomerVO> findByConditionsWithPagination(
             Character sex,
             Integer accountType,

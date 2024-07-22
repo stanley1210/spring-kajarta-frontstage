@@ -15,6 +15,9 @@ public interface EmployeeService {
     // 查詢全部
     List<EmployeeVO> findAll();
 
+    // 查詢全部TeamLeader
+    List<EmployeeVO> findAllTeamLeader();
+
     // 單筆查詢，依據員工id查詢單一員工資訊
     Employee findById(Integer employeeId);
 
