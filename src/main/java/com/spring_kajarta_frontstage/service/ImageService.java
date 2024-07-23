@@ -42,6 +42,17 @@ public class ImageService {
         return null;
     }
 
+    // 查carID
+    public List<Image> findByCarId(Integer Id) {
+        // Image imageModel = new Image();
+        // for (Image image : imageRepo.findByCarId(Id)) {
+        // imageModel.setCar(image.getCar());
+        // imageModel.setImage(image.getImage());
+        // }
+
+        return imageRepo.findByCarId(Id);
+    }
+
     // 新增（spring方法）
     public Image create(Image image) {
         return imageRepo.save(image);
@@ -88,16 +99,18 @@ public class ImageService {
             Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
             Integer isListPic = obj.isNull("isListPic") ? null : obj.getInt("isListPic");
             Integer isMainPic = obj.isNull("isMainPic") ? null : obj.getInt("isMainPic");
-            Car car = carService.findById(id);
+            Car car = carService.findById(carId);
 
-            Optional<Image> optional = imageRepo.findById(carId);
+            Optional<Image> optional = imageRepo.findById(id);
             if (optional.isPresent()) {
                 Image update = optional.get();
                 update.setImage(image);
                 update.setCar(car);
                 update.setIsListPic(isListPic);
                 update.setIsMainPic(isMainPic);
+
                 return imageRepo.save(update);
+
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -4,13 +4,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Preference;
 
 @Repository
-public interface PreferenceRepository extends JpaRepository<Preference, Integer> {
+public interface PreferenceRepository extends JpaRepository<Preference, Integer>, JpaSpecificationExecutor<Car> {
 
         @Query(value = "SELECT * FROM Preference "
                         + "WHERE id LIKE %:word% "
