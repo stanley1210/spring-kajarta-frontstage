@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Preference;
 
 @Repository
@@ -57,20 +59,20 @@ public interface PreferenceRepository extends JpaRepository<Preference, Integer>
         @Query(value = "SELECT * FROM Preference WHERE torque LIKE %:word%", nativeQuery = true)
         List<Preference> searchByTorque(@Param(value = "word") String word); // 鎖定torque欄位
 
-        // @Query(value = "SELECT * FROM Preference WHERE " + // 沒會員多條件查詢
-        // "(:selectName IS NULL OR select_name LIKE %:selectName%) AND " +
-        // "(:productionYear IS NULL OR production_year LIKE %:productionYear%) AND " +
-        // "(:price IS NULL OR price LIKE %:price%) AND " +
-        // "(:milage IS NULL OR milage LIKE %:milage%) AND " +
-        // "(:score IS NULL OR score LIKE %:score%) AND " +
-        // "(:hp IS NULL OR hp LIKE %:hp%) AND " +
-        // "(:torque IS NULL OR torque LIKE %:torque%)", nativeQuery = true)
-        // List<Car> dynamicSearch(@Param("selectName") String selectName,
-        // @Param("productionYear") Integer productionYear,
-        // @Param("price") BigDecimal price,
-        // @Param("milage") Integer milage,
-        // @Param("score") Integer score,
-        // @Param("hp") Integer hp,
-        // @Param("torque") Double torque);
-
+        @Query(value = "SELECT car.* FROM Car car JOIN CarInfo carinfo ON car.carinfo_id = carinfo.id WHERE " +
+                        "(:modelName IS NULL OR carinfo.model_name LIKE %:modelName%) AND " +
+                        "(:productionYear IS NULL OR car.production_year = :productionYear) AND " +
+                        "(:price IS NULL OR car.price = :price) AND " +
+                        "(:milage IS NULL OR car.milage = :milage) AND " +
+                        "(:score IS NULL OR car.condition_score = :score) AND " +
+                        "(:hp IS NULL OR carinfo.hp = :hp) AND " +
+                        "(:torque IS NULL OR carinfo.torque = :torque)", nativeQuery = true)
+        List<Car> dynamicSearch(
+                        @Param("modelName") String modelName,
+                        @Param("productionYear") Integer productionYear,
+                        @Param("price") BigDecimal price,
+                        @Param("milage") Integer milage,
+                        @Param("score") Integer score,
+                        @Param("hp") Integer hp,
+                        @Param("torque") Double torque);
 }
