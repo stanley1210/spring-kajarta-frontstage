@@ -16,7 +16,6 @@ import com.kajarta.demo.model.Passenger;
 import com.kajarta.demo.model.Rearwheel;
 import com.kajarta.demo.model.Suspension;
 import com.kajarta.demo.model.Transmission;
-import com.spring_kajarta_frontstage.service.BrandService;
 import com.spring_kajarta_frontstage.service.DisplacementService;
 import com.spring_kajarta_frontstage.service.DoorService;
 import com.spring_kajarta_frontstage.service.GasolineService;
