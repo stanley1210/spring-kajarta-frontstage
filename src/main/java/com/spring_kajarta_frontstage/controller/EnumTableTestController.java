@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.DispatcherServlet;
 
-import com.kajarta.demo.model.Brand;
 import com.kajarta.demo.model.Displacement;
 import com.kajarta.demo.model.Door;
 import com.kajarta.demo.model.Gasoline;
@@ -34,9 +32,6 @@ import com.spring_kajarta_frontstage.service.TransmissionService;
 public class EnumTableTestController {
 
     @Autowired
-    private BrandService brandService;
-
-    @Autowired
     private NegotiableService negotiableService;
 
     @Autowired
@@ -59,15 +54,6 @@ public class EnumTableTestController {
 
     @Autowired
     private DisplacementService displacementService;
-
-    @GetMapping("/brand/{id}")
-    public String brand(@PathVariable(name = "id") Integer Id) {
-        Brand brand = brandService.findById(Id);
-        JSONObject responseBody = new JSONObject()
-                .put("brand", brand.getBrand())
-                .put("trademark", brand.getTrademark());
-        return responseBody.toString();
-    }
 
     @GetMapping("/negotiable/{id}")
     public String negotiable(@PathVariable(name = "id") Integer Id) {
