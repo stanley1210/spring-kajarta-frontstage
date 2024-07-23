@@ -12,97 +12,32 @@ import com.kajarta.demo.model.Carinfo;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 
 public class CarSpecification {
-
-    // public static Specification<Car> dynamicSearch(Integer productionYear,
-    // BigDecimal price,
-    // Integer milage, Integer score) {
-    // return (root, query, cb) -> {
-    // List<Predicate> predicates = new ArrayList<>();
-
-    // if (productionYear != null) {
-    // String proS = productionYear.toString();
-    // predicates.add(
-    // cb.like(cb.toString(root.get("productionYear")),
-    // "%" + proS + "%"));
-
-    // }
-    // if (price != null) {
-    // String prS = price.toString();
-    // predicates.add(cb.like(cb.toString(root.get("price")), "%" + prS + "%"));
-    // }
-    // if (milage != null) {
-    // String miS = milage.toString();
-    // predicates.add(
-    // cb.like(cb.toString(root.get("milage")),
-    // "%" + miS + "%"));
-
-    // }
-    // if (score != null) {
-    // String scS = score.toString();
-    // predicates.add(
-    // cb.like(cb.toString(root.get("conditionScore")),
-    // "%" + scS + "%"));
-    // }
-
-    // return cb.and(predicates.toArray(new Predicate[0]));
-    // };
-    // }
 
     public static Specification<Car> dynamicSearch(String modelName, Integer productionYear, BigDecimal price,
             Integer milage, Integer score, Integer hp, Double torque) {
         return (root, query, cb) -> {
-            Root<Car> carRoot = root;
-            Join<Car, Carinfo> carinfoJoin = carRoot.join("carinfo", JoinType.LEFT);
-            Predicate joinCondition = cb.equal(carRoot.get("id"), carinfoJoin.get("id"));
             List<Predicate> predicates = new ArrayList<>();
 
-            // Join<Car, Carinfo> carinfoJoin = root.join("carinfo", JoinType.LEFT);
-            // query.where(cb.equal(root.get("id"), carinfoJoin.get("id")));
-            // if (modelName != null && !modelName.isEmpty()) {
-            // predicates.add(cb.like(carinfoJoin.get("modelName"), "%" + modelName + "%"));
-            // }
-            // if (productionYear != null) {
-            // predicates.add(cb.like(cb.toString(root.get("productionYear")), "%" +
-            // productionYear + "%"));
-            // }
-            // if (price != null) {
-            // predicates.add(cb.like(cb.toString(root.get("price")), "%" + price + "%"));
-            // }
-            // if (milage != null) {
-            // predicates.add(cb.like(cb.toString(root.get("milage")), "%" + milage + "%"));
-            // }
-            // if (score != null) {
-            // predicates.add(cb.like(cb.toString(root.get("conditionScore")), "%" + score +
-            // "%"));
-            // }
-            // if (hp != null) {
-            // predicates.add(cb.like(cb.toString(carinfoJoin.get("hp")), "%" + hp + "%"));
-            // }
-            // if (torque != null) {
-            // predicates.add(cb.like(cb.toString(carinfoJoin.get("torque")), "%" + torque +
-            // "%"));
-            // }
+            // 连接 Car 和 Carinfo
+            Join<Car, Carinfo> carinfoJoin = root.join("carinfo", JoinType.LEFT);
 
-            // return cb.and(predicates.toArray(new Predicate[0]));
-
-            predicates.add(joinCondition);
+            // 添加查询条件
             if (modelName != null && !modelName.isEmpty()) {
                 predicates.add(cb.like(carinfoJoin.get("modelName"), "%" + modelName + "%"));
             }
             if (productionYear != null) {
-                predicates.add(cb.like(cb.toString(carRoot.get("productionYear")), "%" + productionYear + "%"));
+                predicates.add(cb.like(cb.toString(root.get("productionYear")), "%" + productionYear + "%"));
             }
             if (price != null) {
-                predicates.add(cb.like(cb.toString(carRoot.get("price")), "%" + price + "%"));
+                predicates.add(cb.like(cb.toString(root.get("price")), "%" + price + "%"));
             }
             if (milage != null) {
-                predicates.add(cb.like(cb.toString(carRoot.get("milage")), "%" + milage + "%"));
+                predicates.add(cb.like(cb.toString(root.get("milage")), "%" + milage + "%"));
             }
             if (score != null) {
-                predicates.add(cb.like(cb.toString(carRoot.get("conditionScore")), "%" + score + "%"));
+                predicates.add(cb.like(cb.toString(root.get("conditionScore")), "%" + score + "%"));
             }
             if (hp != null) {
                 predicates.add(cb.like(cb.toString(carinfoJoin.get("hp")), "%" + hp + "%"));
@@ -110,7 +45,10 @@ public class CarSpecification {
             if (torque != null) {
                 predicates.add(cb.like(cb.toString(carinfoJoin.get("torque")), "%" + torque + "%"));
             }
+
+            // 返回所有条件
             return cb.and(predicates.toArray(new Predicate[0]));
+
         };
     }
 }

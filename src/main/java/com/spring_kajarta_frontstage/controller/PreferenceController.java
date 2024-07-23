@@ -528,17 +528,14 @@ public class PreferenceController {
             @RequestParam(required = false) Integer hp,
             @RequestParam(required = false) Double torque) {
 
-        List<Car> carList = preferenceService.searchPreferencesInCar(modelName, productionYear, price, milage, score,
+        List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(modelName, productionYear, price, milage,
+                score,
                 hp, torque);
-        // List<Carinfo> carinfoList =
-        // preferenceService.searchPreferencesInCarinfo(modelName, hp, torque);
 
         JSONObject responseBody = new JSONObject();
         JSONArray carArray = new JSONArray();
         for (Car car : carList) {
             Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
-            // Integer carinfoId = (preference.getCarinfo()) == null ? -1 :
-            // preference.getCarinfo().getId();
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
             JSONObject item = new JSONObject()
