@@ -2,12 +2,15 @@ package com.spring_kajarta_frontstage.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import com.spring_kajarta_frontstage.service.CarInfoService;
+import com.spring_kajarta_frontstage.service.CarService;
 import com.spring_kajarta_frontstage.service.PreferenceService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
@@ -461,10 +464,28 @@ public class PreferenceController {
         return responseBody.toString();
     }
 
-    // 多條件查詢
+    // // 多條件查詢
+    // @GetMapping("/nomemsearch")
+    // public ResponseEntity<?> searchByNoMemSearch(
+    // @RequestParam(name = "model_name", required = false) String modelName,
+    // @RequestParam(name = "production_year", required = false) Integer
+    // productionYear,
+    // @RequestParam(name = "price", required = false) BigDecimal price,
+    // @RequestParam(name = "milage", required = false) Integer milage,
+    // @RequestParam(name = "condition_score", required = false) Integer
+    // conditionScore,
+    // @RequestParam(name = "hp", required = false) Integer hp,
+    // @RequestParam(name = "torque", required = false) Double torque) {
+
+    // List<Car> cars = preferenceService.dynamicSearch(
+    // modelName, productionYear, price, milage, conditionScore, hp, torque);
+
+    // return ResponseEntity.ok(cars);
+    // }
+
     @GetMapping("/nomemsearch")
-    public String searchByNoMemSearch(
-            @RequestParam(name = "selectName", required = false) String selectName,
+    public ResponseEntity<?> searchByNoMemSearch(
+            @RequestParam(name = "model_name", required = false) String modelName,
             @RequestParam(name = "productionYear", required = false) Integer productionYear,
             @RequestParam(name = "price", required = false) BigDecimal price,
             @RequestParam(name = "milage", required = false) Integer milage,
@@ -472,42 +493,45 @@ public class PreferenceController {
             @RequestParam(name = "hp", required = false) Integer hp,
             @RequestParam(name = "torque", required = false) Double torque) {
 
-        List<Preference> preferences = preferenceService.dynamicSearch(
-                selectName, productionYear, price, milage, score, hp, torque);
+        List<Car> cars = preferenceService.dynamicSearch(
+                modelName, productionYear, price, milage, score, hp, torque);
 
-        JSONObject responseBody = new JSONObject();
-        JSONArray array = new JSONArray();
-
-        for (Preference preference : preferences) {
-            Integer customerId = (preference.getCustomer()) == null ? -1 : preference.getCustomer().getId();
-            Integer carinfoId = (preference.getCarinfo()) == null ? -1 : preference.getCarinfo().getId();
-            JSONObject item = new JSONObject()
-                    .put("id", preference.getId())
-                    .put("selectName", preference.getSelectName())
-                    .put("productionYear", preference.getProductionYear())
-                    .put("price", preference.getPrice())
-                    .put("milage", preference.getMilage())
-                    .put("score", preference.getScore())
-                    .put("customer_id", customerId)
-                    .put("carinfo_id", carinfoId)
-                    .put("brand", customerId)
-                    .put("suspension", preference.getSuspension())
-                    .put("door", preference.getDoor())
-                    .put("passenger", preference.getPassenger())
-                    .put("rearWheel", preference.getRearWheel())
-                    .put("gasoline", preference.getGasoline())
-                    .put("transmission", preference.getTransmission())
-                    .put("cc", preference.getCc())
-                    .put("hp", preference.getHp())
-                    .put("torque", preference.getTorque())
-                    .put("createTime", preference.getCreateTime())
-                    .put("updateTime", preference.getUpdateTime())
-                    .put("preferencesLists", preference.getPreferencesLists());
-            array.put(item);
-        }
-        responseBody.put("list", array);
-        return responseBody.toString();
+        return ResponseEntity.ok(cars);
     }
+
+    // 多條件查詢Json
+    // @GetMapping("/nomemsearch")
+    // public String searchByNoMemSearchJson(@RequestBody String body) {
+    // JSONObject responseBody = new JSONObject();
+    // JSONArray array = new JSONArray();
+    // for (Car car : preferenceService.dynamicSearchJson(body)) {
+    // String createTime = DatetimeConverter.toString(car.getCreateTime(),
+    // "yyyy-MM-dd");
+    // String updateTime = DatetimeConverter.toString(car.getUpdateTime(),
+    // "yyyy-MM-dd");
+    // JSONObject item = new JSONObject()
+    // .put("id", car.getId())
+    // .put("productionYear", car.getProductionYear())
+    // .put("milage", car.getMilage())
+    // .put("customerId", car.getCustomer().getId())
+    // .put("employeeId", car.getEmployee().getId())
+    // .put("negotiable", car.getNegotiable())
+    // .put("conditionScore", car.getConditionScore())
+    // .put("branch", car.getBranch())
+    // .put("state", car.getState())
+    // .put("price", car.getPrice())
+    // .put("launchDate", car.getLaunchDate())
+    // .put("carinfoId", car.getCarinfo().getId())
+    // .put("color", car.getColor())
+    // .put("remark", car.getRemark())
+    // .put("createTime", createTime)
+    // .put("updateTime", updateTime);
+    // array.put(item);
+    // }
+    // return responseBody.put("list", array).toString();
+    // // List<Car> cars = preferenceService.dynamicSearch(
+    // // modelName, productionYear, price, milage, conditionScore, hp, torque);
+    // }
 
     @PostMapping("/create") // 新增
     public String create(@RequestBody String body) {

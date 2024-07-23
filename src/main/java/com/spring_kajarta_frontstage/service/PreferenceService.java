@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
@@ -119,11 +120,46 @@ public class PreferenceService {
         return results;
     }
 
-    // 多條件查詢
-    public List<Preference> dynamicSearch(String selectName, Integer productionYear, BigDecimal price, Integer milage,
-            Integer score, Integer hp, Double torque) {
-        return preferenceRepo.dynamicSearch(selectName, productionYear, price, milage, score, hp, torque);
+    // // 多條件查詢
+    // public List<Car> dynamicSearch(String modeltName, Integer productionYear,
+    // BigDecimal price, Integer milage,
+    // Integer conditionScore, Integer hp, Double torque) {
+
+    // return preferenceRepo.dynamicSearch(modeltName, productionYear, price,
+    // milage, conditionScore, hp, torque);
+    // }
+
+    public List<Car> dynamicSearch(String modelName, Integer productionYear, BigDecimal price,
+            Integer milage, Integer score, Integer hp, Double torque) {
+        return preferenceRepo.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque);
     }
+
+    // 多條件查詢Json
+    // public List<Car> dynamicSearchJson(String json) {
+    // JSONObject obj = new JSONObject(json);
+    // String modelName = obj.isNull("modelName") ? null :
+    // obj.getString("modelName");
+    // String productionYear = obj.isNull("productionYear") ? null :
+    // String.valueOf(obj.getInt("productionYear"));
+    // String price = obj.isNull("price") ? null :
+    // obj.getBigDecimal("price").toString();
+    // String milage = obj.isNull("milage") ? null :
+    // String.valueOf(obj.getInt("milage"));
+    // String conditionScore = obj.isNull("conditionScore") ? null :
+    // String.valueOf(obj.getInt("conditionScore"));
+    // String hp = obj.isNull("hp") ? null : String.valueOf(obj.getInt("hp"));
+    // String torque = obj.isNull("torque") ? null :
+    // String.valueOf(obj.getDouble("torque"));
+    // // JSONObject body = new JSONObject()
+    // // .put("model_name", modelName)
+    // // .put("productionYear", productionYear)
+    // // .put("price", price);
+    // return preferenceRepo.dynamicSearch(modelName, productionYear, price, milage,
+    // conditionScore, hp, torque);
+
+    // // return preferenceRepo.dynamicSearch(modeltName, productionYear, price,
+    // // milage, conditionScore, hp, torque);
+    // }
 
     public Preference create(String json) { // 新增
         try {

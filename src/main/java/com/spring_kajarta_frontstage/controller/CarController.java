@@ -1,5 +1,6 @@
 package com.spring_kajarta_frontstage.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -27,6 +28,7 @@ import com.kajarta.demo.model.Door;
 import com.kajarta.demo.model.Gasoline;
 import com.kajarta.demo.model.Negotiable;
 import com.kajarta.demo.model.Passenger;
+import com.kajarta.demo.model.Preference;
 import com.kajarta.demo.model.Rearwheel;
 import com.kajarta.demo.model.Suspension;
 import com.kajarta.demo.model.Transmission;
