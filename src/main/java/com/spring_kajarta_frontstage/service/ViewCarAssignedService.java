@@ -187,6 +187,7 @@ public class ViewCarAssignedService {
                 DatetimeConverter.toString(viewCarAssigned.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
         viewCarAssignedVO.setUpdateTimeString(
                 DatetimeConverter.toString(viewCarAssigned.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+        viewCarAssignedVO.setEmployeeId(viewCarAssigned.getEmployee().getId());
 
         return viewCarAssignedVO;
     }
