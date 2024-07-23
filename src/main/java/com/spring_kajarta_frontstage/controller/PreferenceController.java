@@ -22,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
 import com.spring_kajarta_frontstage.service.CustomerService;
+import com.spring_kajarta_frontstage.service.PreferenceService;
+import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
 @CrossOrigin
@@ -585,6 +588,51 @@ public class PreferenceController {
             }
         }
 
+        return responseBody.toString();
+    }
+
+    // 多條件動態查詢
+    @GetMapping("/searchMore")
+    public String searchPreferences(
+            @RequestParam(required = false) String modelName,
+            @RequestParam(required = false) Integer productionYear,
+            @RequestParam(required = false) BigDecimal price,
+            @RequestParam(required = false) Integer milage,
+            @RequestParam(required = false) Integer score,
+            @RequestParam(required = false) Integer hp,
+            @RequestParam(required = false) Double torque) {
+
+        List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(modelName, productionYear, price, milage,
+                score,
+                hp, torque);
+
+        JSONObject responseBody = new JSONObject();
+        JSONArray carArray = new JSONArray();
+        for (Car car : carList) {
+            Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
+            String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
+            JSONObject item = new JSONObject()
+                    .put("id", car.getId())
+                    .put("productionYear", car.getProductionYear())
+                    .put("milage", car.getMilage())
+                    .put("customerId", car.getCustomer().getId())
+                    .put("employeeId", car.getEmployee().getId())
+                    .put("negotiable", car.getNegotiable())
+                    .put("conditionScore", car.getConditionScore())
+                    .put("branch", car.getBranch())
+                    .put("state", car.getState())
+                    .put("price", car.getPrice())
+                    .put("launchDate", car.getLaunchDate())
+                    .put("modelName", carInfoBean.getModelName())
+                    .put("color", car.getColor())
+                    .put("remark", car.getRemark())
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime);
+            carArray.put(item);
+        }
+
+        responseBody.put("preferenceCarList", carArray);
         return responseBody.toString();
     }
 }
