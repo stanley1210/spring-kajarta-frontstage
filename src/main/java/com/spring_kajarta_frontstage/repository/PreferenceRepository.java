@@ -60,20 +60,4 @@ public interface PreferenceRepository extends JpaRepository<Preference, Integer>
         @Query(value = "SELECT * FROM Preference WHERE torque LIKE %:word%", nativeQuery = true)
         List<Preference> searchByTorque(@Param(value = "word") String word); // 鎖定torque欄位
 
-        @Query(value = "SELECT * FROM Preference WHERE " + // 沒會員多條件查詢
-                        "(:selectName IS NULL OR select_name LIKE %:selectName%) AND " +
-                        "(:productionYear IS NULL OR production_year LIKE %:productionYear%) AND " +
-                        "(:price IS NULL OR price LIKE %:price%) AND " +
-                        "(:milage IS NULL OR milage LIKE %:milage%) AND " +
-                        "(:score IS NULL OR score LIKE %:score%) AND " +
-                        "(:hp IS NULL OR hp LIKE %:hp%) AND " +
-                        "(:torque IS NULL OR torque LIKE %:torque%)", nativeQuery = true)
-        List<Preference> dynamicSearch(@Param("selectName") String selectName,
-                        @Param("productionYear") Integer productionYear,
-                        @Param("price") BigDecimal price,
-                        @Param("milage") Integer milage,
-                        @Param("score") Integer score,
-                        @Param("hp") Integer hp,
-                        @Param("torque") Double torque);
-
 }

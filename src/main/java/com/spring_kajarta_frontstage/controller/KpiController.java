@@ -3,6 +3,7 @@ package com.spring_kajarta_frontstage.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.spring_kajarta_frontstage.service.KpiService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,6 @@ import com.kajarta.demo.domian.Result;
 import com.kajarta.demo.model.Kpi;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.KpiVO;
-import com.spring_kajarta_frontstage.service.KpiService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

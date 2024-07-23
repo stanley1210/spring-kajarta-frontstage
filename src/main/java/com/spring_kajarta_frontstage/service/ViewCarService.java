@@ -3,7 +3,6 @@ package com.spring_kajarta_frontstage.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,9 +54,9 @@ public class ViewCarService {
             Integer factoryScore = obj.isNull("factoryScore") ? -1 : obj.getInt("factoryScore");
             String viewCarDate = obj.isNull("viewCarDate") ? null : obj.getString("viewCarDate");
             Integer carScore = obj.isNull("carScore") ? -1 : obj.getInt("carScore");
-            Integer deal = obj.isNull("deal") ? null : obj.getInt("deal");
+            Integer deal = obj.isNull("deal") ? -1 : obj.getInt("deal");
             Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
-            Integer viewCarStatus = obj.isNull("viewCarStatus") ? null : obj.getInt("viewCarStatus");
+            Integer viewCarStatus = obj.isNull("viewCarStatus") ? 0 : obj.getInt("viewCarStatus");
 
             Customer customer = customerService.findById(customerId);
             Car car = carService.findById(carId);
@@ -140,7 +139,7 @@ public class ViewCarService {
     }
 
     public Page<ViewCar> findByPage(Integer pageNumeber) {
-        Pageable pgb = PageRequest.of(pageNumeber - 1, 3, Sort.Direction.ASC, "viewCarDate");
+        Pageable pgb = PageRequest.of(pageNumeber - 1, 1, Sort.Direction.DESC, "updateTime");
         Page<ViewCar> page = viewCarRepo.findAll(pgb);
         return page;
     }

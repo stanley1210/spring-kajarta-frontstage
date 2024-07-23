@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/customer")
-public class CustomerController {
+public class CustomerController extends BaseController {
     @Autowired
     private CustomerService customerService;
 
@@ -84,14 +84,55 @@ public class CustomerController {
     }
 
 
+    @Operation(summary = "會員資訊-依據會員id查詢單筆")
+    @PostMapping(value = "/info2")
+    public Result<CustomerVO> info2(@Parameter(description = "會員id") Integer customerId) {
+        // todo:依據token獲取後台登入用戶
 
+
+        log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
+        CustomerVO customerVO;
+        try {
+            Customer customer = customerService.findById(customerId);
+            customerVO = new CustomerVO();
+            BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+
+        return ResultUtil.success(customerVO);
+    }
+
+    @Operation(summary = "會員資訊-依據會員名查詢單筆")
+    @GetMapping("/info/username/{username}")
+    public Result<CustomerVO> queryByUsername(@Parameter(description = "會員名") @PathVariable String username) {
+        // todo:依據token獲取後台登入用戶
+        System.out.println("id="+getAdminId());
+        System.out.println("name="+getAdmin());
+        log.info("{}-查詢客戶資訊-單筆：{}", getAdmin(), username);
+        CustomerVO customerVO;
+        try {
+            Customer customer = customerService.getByUsername(username);
+            customerVO = new CustomerVO();
+            BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+            customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
+        } catch (Exception e) {
+            return ResultUtil.error("查詢出錯");
+        }
+
+        return ResultUtil.success(customerVO);
+    }
 
     @Operation(summary = "會員資訊-依據會員id查詢單筆")
     @GetMapping("/info/{customerId}")
     public Result<CustomerVO> info(@Parameter(description = "會員id") @PathVariable Integer customerId) {
         // todo:依據token獲取後台登入用戶
-
-        log.info("{}-後台查詢客戶資訊-單筆：{}", "到時候換成上一步拿到的管理員", customerId);
+        System.out.println("id="+getAdminId());
+        System.out.println("name="+getAdmin());
+        log.info("{}-後台查詢客戶資訊-單筆：{}", getAdmin(), customerId);
         CustomerVO customerVO;
         try {
             Customer customer = customerService.findById(customerId);

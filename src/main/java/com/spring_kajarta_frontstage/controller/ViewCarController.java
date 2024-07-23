@@ -2,8 +2,8 @@ package com.spring_kajarta_frontstage.controller;
 
 
 import java.util.List;
-import java.util.Optional;
 
+import com.spring_kajarta_frontstage.service.ViewCarService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.enums.ViewTimeSectionEnum;
 import com.kajarta.demo.model.ViewCar;
-import com.spring_kajarta_frontstage.service.ViewCarService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
@@ -53,7 +52,7 @@ public class ViewCarController {
         return responseBody.toString();
     }
 
-    
+
     //修改
 
     @PutMapping("/update/{id}")
@@ -116,7 +115,7 @@ public class ViewCarController {
     }
     //查全
     @GetMapping("/selectAll")
-    public String findAll(@RequestParam Integer pageNumber) {
+    public String findByPage(@RequestParam Integer pageNumber) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
         Page<ViewCar> page = viewCarService.findByPage(pageNumber);
@@ -127,15 +126,18 @@ public class ViewCarController {
             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
             JSONObject obj = new JSONObject()
                     .put("id", viewCar.getId())
-                    // .put("viewTimeSection", viewCar.getViewTimeSection())
                     .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
                     .put("car", viewCar.getCar().getId())
+                    .put("modelName", viewCar.getCar().getCarinfo().getModelName())
+                    .put("branch", viewCar.getCar().getBranch())
                     .put("salesScore", viewCar.getSalesScore())
                     .put("factoryScore", viewCar.getFactoryScore())
                     .put("viewCarDate", viewCarDate)
                     .put("carScore", viewCar.getCarScore())
                     .put("deal", viewCar.getDeal())
                     .put("customer", viewCar.getCustomer().getId())
+                    .put("customerName", viewCar.getCustomer().getName())
+                    .put("tel", viewCar.getCustomer().getTel())
                     .put("createTime", createTime)
                     .put("updateTime", updateTime)
                     .put("viewCarStatus", viewCar.getViewCarStatus());

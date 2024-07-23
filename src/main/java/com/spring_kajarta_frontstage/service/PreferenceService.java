@@ -18,8 +18,6 @@ import com.spring_kajarta_frontstage.repository.CarRepository;
 import com.spring_kajarta_frontstage.repository.PreferenceRepository;
 import com.spring_kajarta_frontstage.repository.Specification.CarSpecification;
 
-import jakarta.persistence.criteria.Predicate;
-
 @Service
 public class PreferenceService {
 
@@ -124,12 +122,6 @@ public class PreferenceService {
             results.add(noData);
         }
         return results;
-    }
-
-    // 多條件查詢
-    public List<Preference> dynamicSearch(String selectName, Integer productionYear, BigDecimal price, Integer milage,
-            Integer score, Integer hp, Double torque) {
-        return preferenceRepo.dynamicSearch(selectName, productionYear, price, milage, score, hp, torque);
     }
 
     public Preference create(String json) { // 新增

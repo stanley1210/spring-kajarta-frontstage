@@ -3,6 +3,7 @@ package com.spring_kajarta_frontstage.controller;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.spring_kajarta_frontstage.service.CarInfoService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.model.Carinfo;
-import com.spring_kajarta_frontstage.service.CarInfoService;
 
 @RestController
 @RequestMapping("/carinfo")
