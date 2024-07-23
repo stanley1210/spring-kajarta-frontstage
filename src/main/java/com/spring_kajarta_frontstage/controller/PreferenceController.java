@@ -2,15 +2,10 @@ package com.spring_kajarta_frontstage.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
-import com.spring_kajarta_frontstage.service.CarInfoService;
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.PreferenceService;
-import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +22,7 @@ import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
+import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CustomerService;
 import com.spring_kajarta_frontstage.service.PreferenceService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
