@@ -528,15 +528,15 @@ public class PreferenceController {
             @RequestParam(required = false) Integer hp,
             @RequestParam(required = false) Double torque) {
 
-        List<Car> results = preferenceService.searchPreferences(modelName, productionYear, price, milage, score,
+        List<Car> carList = preferenceService.searchPreferencesInCar(modelName, productionYear, price, milage, score,
                 hp, torque);
+        // List<Carinfo> carinfoList =
+        // preferenceService.searchPreferencesInCarinfo(modelName, hp, torque);
 
         JSONObject responseBody = new JSONObject();
-        JSONArray array = new JSONArray();
-        for (Car car : results) {
+        JSONArray carArray = new JSONArray();
+        for (Car car : carList) {
             Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
-            System.out.println("==================================");
-            System.out.println("carInfoBean=" + carInfoBean);
             // Integer carinfoId = (preference.getCarinfo()) == null ? -1 :
             // preference.getCarinfo().getId();
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
@@ -558,10 +558,10 @@ public class PreferenceController {
                     .put("remark", car.getRemark())
                     .put("createTime", createTime)
                     .put("updateTime", updateTime);
-            array.put(item);
+            carArray.put(item);
         }
 
-        responseBody.put("list", array);
+        responseBody.put("preferenceCarList", carArray);
         return responseBody.toString();
     }
 }

@@ -11,9 +11,11 @@ import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
+import com.spring_kajarta_frontstage.repository.CarInfoRepository;
 import com.spring_kajarta_frontstage.repository.CarRepository;
 import com.spring_kajarta_frontstage.repository.PreferenceRepository;
 import com.spring_kajarta_frontstage.repository.Specification.CarSpecification;
+import com.spring_kajarta_frontstage.repository.Specification.CarinfoSpecification;
 import com.spring_kajarta_frontstage.repository.Specification.PreferenceSpecification;
 import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CustomerService;
@@ -32,6 +34,9 @@ public class PreferenceService {
 
     @Autowired
     private CarRepository carRepo;
+
+    @Autowired
+    private CarInfoRepository carInfoRepo;
 
     public boolean exists(Integer id) { // 檢查ID
         return preferenceRepo.existsById(id);
@@ -241,10 +246,15 @@ public class PreferenceService {
         return false;
     }
 
-    // 動態查詢
-    public List<Car> searchPreferences(String modelName, Integer productionYear, BigDecimal price,
+    // 動態查詢Car
+    public List<Car> searchPreferencesInCar(String modelName, Integer productionYear, BigDecimal price,
             Integer milage, Integer score, Integer hp, Double torque) {
         return carRepo.findAll(
                 CarSpecification.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque));
+    }
+
+    // 動態查詢Carinfo
+    public List<Carinfo> searchPreferencesInCarinfo(String modelName, Integer hp, Double torque) {
+        return carInfoRepo.findAll(CarinfoSpecification.dynamicSearch(modelName, hp, torque));
     }
 }
