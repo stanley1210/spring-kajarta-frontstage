@@ -1,7 +1,7 @@
 package com.spring_kajarta_frontstage.controller;
 
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.ImageService;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Image;
+import com.spring_kajarta_frontstage.service.CarService;
+import com.spring_kajarta_frontstage.service.ImageService;
 
 @RestController
 @RequestMapping("/image")
@@ -112,27 +114,51 @@ public class ImageController {
         return responseBody.put("CarIdImageList", array).toString();
     }
 
+    // 只新增圖片
+    @PostMapping("/createImage")
+    public String imageCreate(@RequestParam("images") List<MultipartFile> images,
+            @RequestParam("carId") Integer carId) {
+        JSONObject responseBody = new JSONObject();
+        try {
+            for (MultipartFile imageFile : images) {
+                byte[] imageByte = imageFile.getBytes();
+                Car car = carService.findById(carId);
+                Image image = new Image();
+                image.setImage(imageByte);
+                image.setCar(car);
+                imageService.create(image);
+            }
+            responseBody.put("success", true);
+            responseBody.put("message", "新增成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseBody.put("success", false);
+            responseBody.put("message", "新增失敗");
+        }
+        return responseBody.toString();
+    }
+
     // 新增單筆
     @PostMapping("/create")
-    public String jsonCreate(@RequestParam("images") MultipartFile imageFile,
+    public String jsonCreate(@RequestParam("images") List<MultipartFile> images,
             @RequestParam("carId") Integer carId,
             @RequestParam("isListPic") Integer isListPic,
             @RequestParam("isMainPic") Integer isMainPic) {
         JSONObject responseBody = new JSONObject();
         try {
-            byte[] imageByte = imageFile.getBytes();
-            System.out.println("------------------------");
-            System.out.println("imageByte=" + imageByte);
-            Car car = carService.findById(carId);
-            Image image = new Image();
-            image.setImage(imageByte);
-            image.setCar(car);
-            image.setIsListPic(isListPic);
-            image.setIsMainPic(isMainPic);
-            Image createImage = imageService.create(image);
+            for (MultipartFile imageFile : images) {
+                byte[] imageByte = imageFile.getBytes();
+                Car car = carService.findById(carId);
+                Image image = new Image();
+                image.setImage(imageByte);
+                image.setCar(car);
+                image.setIsListPic(isListPic);
+                image.setIsMainPic(isMainPic);
+                imageService.create(image);
+            }
+
             responseBody.put("success", true);
             responseBody.put("message", "新增成功");
-            responseBody.put("message2", createImage);
         } catch (Exception e) {
             e.printStackTrace();
             responseBody.put("success", false);
