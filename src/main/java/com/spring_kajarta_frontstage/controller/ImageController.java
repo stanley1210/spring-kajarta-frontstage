@@ -114,6 +114,30 @@ public class ImageController {
         return responseBody.put("CarIdImageList", array).toString();
     }
 
+    // 只新增圖片
+    @PostMapping("/createImage")
+    public String imageCreate(@RequestParam("images") List<MultipartFile> images,
+            @RequestParam("carId") Integer carId) {
+        JSONObject responseBody = new JSONObject();
+        try {
+            for (MultipartFile imageFile : images) {
+                byte[] imageByte = imageFile.getBytes();
+                Car car = carService.findById(carId);
+                Image image = new Image();
+                image.setImage(imageByte);
+                image.setCar(car);
+                imageService.create(image);
+            }
+            responseBody.put("success", true);
+            responseBody.put("message", "新增成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseBody.put("success", false);
+            responseBody.put("message", "新增失敗");
+        }
+        return responseBody.toString();
+    }
+
     // 新增單筆
     @PostMapping("/create")
     public String jsonCreate(@RequestParam("images") List<MultipartFile> images,
