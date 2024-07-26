@@ -39,6 +39,9 @@ public class KpiService {
             Kpi insert = new Kpi();
             insert.setSeasonStrDay(DatetimeConverter.parse(seasonStrDay, "yyyy-MM-dd"));
             insert.setEmployee(employeeService.findById(employeeId));
+            insert.setSalesScore(0);
+            insert.setTotalScore(BigDecimal.valueOf(0));
+            insert.setTeamLeaderRating(0);
 
             return kpiRepo.save(insert);
 
@@ -56,7 +59,8 @@ public class KpiService {
             Integer teamLeaderRating = obj.isNull("teamLeaderRating") ? null : obj.getInt("teamLeaderRating");
             Integer salesScore = obj.isNull("salesScore") ? null : obj.getInt("salesScore");
             BigDecimal totalScore = obj.isNull("totalScore") ? null : obj.getBigDecimal("totalScore");
-            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer employeeId = obj.isNull("employeeId") ? kpiRepo.findById(id).get().getEmployee().getId()
+                    : obj.getInt("employeeId");
 
             Optional<Kpi> optional = kpiRepo.findById(id);
             if (optional.isPresent()) {
@@ -128,6 +132,7 @@ public class KpiService {
             Integer salesScoreMin = obj.isNull("salesScoreMin") ? null : obj.getInt("salesScoreMin");
             BigDecimal totalScoreMax = obj.isNull("salesScoreMin") ? null : obj.getBigDecimal("totalScoreMax");
             BigDecimal totalScoreMin = obj.isNull("totalScoreMin") ? null : obj.getBigDecimal("totalScoreMin");
+            Integer branchId = obj.isNull("branchId") ? null : obj.getInt("branchId");
 
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
@@ -138,7 +143,7 @@ public class KpiService {
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<Kpi> page = kpiRepo.findByHQL(id, selectStrDay, selectEndDay, employee, teamLeader,
                     teamLeaderRatingMax, teamLeaderRatingMin, salesScoreMax, salesScoreMin, totalScoreMax,
-                    totalScoreMin, pgb);
+                    totalScoreMin, branchId, pgb);
 
             return page;
 
@@ -165,6 +170,8 @@ public class KpiService {
         kpiVO.setSeasonStrDayString(DatetimeConverter.toString(kpi.getSeasonStrDay(), "yyyy-MM-dd"));
         kpiVO.setCreateTimeString(DatetimeConverter.toString(kpi.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
         kpiVO.setUpdateTimeString(DatetimeConverter.toString(kpi.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+        kpiVO.setEmployeeId(kpi.getEmployee().getId());
+        kpiVO.setTeamLeaderId(kpi.getEmployee().getTeamLeader().getId());
 
         return kpiVO;
     }

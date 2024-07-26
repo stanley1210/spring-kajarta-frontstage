@@ -16,7 +16,10 @@ import com.kajarta.demo.model.Employee;
 @Repository
 public interface CarAdjustRepository extends JpaRepository<CarAdjust, Integer> {
 
-        @Query("SELECT caj FROM CarAdjust caj WHERE (:id IS NULL OR caj.id = :id) AND "
+        @Query("SELECT caj FROM CarAdjust caj "
+                        + "INNER JOIN caj.car car "
+                        + "INNER JOIN car.carinfo carinfo  "
+                        + "WHERE (:id IS NULL OR caj.id = :id) AND "
                         + "(:teamLeaderId IS NULL OR caj.teamLeaderId = :teamLeaderId) AND "
                         + "(:employee IS NULL OR caj.employee = :employee) AND "
                         + "(:car IS NULL OR caj.car = :car) AND "
@@ -25,7 +28,8 @@ public interface CarAdjustRepository extends JpaRepository<CarAdjust, Integer> {
                         + "(:floatingAmountMax IS NULL OR :floatingAmountMin IS NULL OR (caj.floatingAmount <= :floatingAmountMax AND caj.floatingAmount >= :floatingAmountMin)) AND "
 
                         + "(:createTimeStr IS NULL OR :createTimeEnd IS NULL OR caj.createTime BETWEEN :createTimeStr AND :createTimeEnd ) AND "
-                        + "(:updateTimeStr IS NULL OR :updateTimeEnd IS NULL OR caj.updateTime BETWEEN :updateTimeStr AND :updateTimeEnd )")
+                        + "(:updateTimeStr IS NULL OR :updateTimeEnd IS NULL OR caj.updateTime BETWEEN :updateTimeStr AND :updateTimeEnd ) AND "
+                        + "(:brandId IS NULL OR carinfo.brand = :brandId)")
         public Page<CarAdjust> findByHQL(@Param("id") Integer id,
                         @Param("teamLeaderId") Integer teamLeaderId,
                         @Param("employee") Employee employee,
@@ -38,5 +42,6 @@ public interface CarAdjustRepository extends JpaRepository<CarAdjust, Integer> {
                         @Param("createTimeEnd") Date createTimeEnd,
                         @Param("updateTimeStr") Date updateTimeStr,
                         @Param("updateTimeEnd") Date updateTimeEnd,
+                        @Param("brandId") Integer brandId,
                         Pageable pageable);
 }

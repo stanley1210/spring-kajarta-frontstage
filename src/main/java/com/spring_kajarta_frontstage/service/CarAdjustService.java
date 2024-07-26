@@ -22,6 +22,8 @@ import com.kajarta.demo.vo.CarAdjustVO;
 import com.spring_kajarta_frontstage.repository.CarAdjustRepository;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Service
 public class CarAdjustService {
 
@@ -33,6 +35,9 @@ public class CarAdjustService {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private BrandService brandService;
 
     // 新增
     public CarAdjust create(String json) {
@@ -151,6 +156,8 @@ public class CarAdjustService {
             Date updateTimeEnd = obj.isNull("updateTimeEnd") ? null
                     : DatetimeConverter.parse(obj.getString("updateTimeEnd"), "yyyy-MM-dd");
 
+            Integer brandId = obj.isNull("brandId") ? null : obj.getInt("brandId");
+
             Integer isPage = obj.isNull("isPage") ? 0 : obj.getInt("isPage");
             Integer max = obj.isNull("max") ? 4 : obj.getInt("max");
             boolean dir = obj.isNull("dir") ? true : obj.getBoolean("dir");
@@ -160,7 +167,7 @@ public class CarAdjustService {
             Pageable pgb = PageRequest.of(isPage.intValue(), max.intValue(), sort);
             Page<CarAdjust> page = carAdjustRepo.findByHQL(id, teamLeaderId, employee, car, approvalStatus,
                     approvalType, floatingAmountMax, floatingAmountMin, createTimeStr, createTimeEnd, updateTimeStr,
-                    updateTimeEnd, pgb);
+                    updateTimeEnd, brandId, pgb);
 
             return page;
 
@@ -215,6 +222,12 @@ public class CarAdjustService {
         carAdjustVO.setCarId(carAdjust.getCar().getId());
         carAdjustVO.setCreateTimeString(DatetimeConverter.toString(carAdjust.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
         carAdjustVO.setUpdateTimeString(DatetimeConverter.toString(carAdjust.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+        // 0723新增
+        carAdjustVO.setEmployeeId(carAdjust.getEmployee().getId());
+        carAdjustVO.setTeamLeaderId(carAdjust.getTeamLeaderId());
+        carAdjustVO.setCarPrice(carAdjust.getCar().getPrice());
+        carAdjustVO.setCarBrand(brandService.findById(carAdjust.getCar().getCarinfo().getBrand()).getBrand());
+        carAdjustVO.setCarModelName(carAdjust.getCar().getCarinfo().getModelName());
 
         return carAdjustVO;
     }
