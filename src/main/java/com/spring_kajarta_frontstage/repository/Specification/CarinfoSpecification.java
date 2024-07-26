@@ -13,9 +13,9 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 
-public class CarSpecification {
+public class CarinfoSpecification {
 
-    public static Specification<Car> dynamicSearch(String modelName, Integer productionYear, BigDecimal price,
+    public static Specification<Carinfo> dynamicSearch(String modelName, Integer productionYear, BigDecimal price,
             Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
             Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
         return (root, query, cb) -> {

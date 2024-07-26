@@ -14,9 +14,11 @@ import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.model.Preference;
+import com.spring_kajarta_frontstage.repository.CarInfoRepository;
 import com.spring_kajarta_frontstage.repository.CarRepository;
 import com.spring_kajarta_frontstage.repository.PreferenceRepository;
 import com.spring_kajarta_frontstage.repository.Specification.CarSpecification;
+import com.spring_kajarta_frontstage.repository.Specification.CarinfoSpecification;
 
 @Service
 public class PreferenceService {
@@ -32,6 +34,9 @@ public class PreferenceService {
 
     @Autowired
     private CarRepository carRepo;
+
+    @Autowired
+    private CarInfoRepository carInfoRepo;
 
     public boolean exists(Integer id) { // 檢查ID
         return preferenceRepo.existsById(id);
@@ -241,11 +246,24 @@ public class PreferenceService {
         return false;
     }
 
-    // 動態查詢
+    // 動態查詢Car
     public List<Car> searchPreferencesCarJoinCarinfo(String modelName, Integer productionYear, BigDecimal price,
-            Integer milage, Integer score, Integer hp, Double torque) {
+            Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
+            Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
+
         return carRepo.findAll(
-                CarSpecification.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque));
+                CarSpecification.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque, brand,
+                        suspension, door, passenger, rearwheel, gasoline, transmission, cc));
+    }
+
+    // 動態查詢Carinfo
+    public List<Carinfo> searchPreferencesCarinfo(String modelName, Integer productionYear, BigDecimal price,
+            Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
+            Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
+
+        return carInfoRepo.findAll(
+                CarinfoSpecification.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque, brand,
+                        suspension, door, passenger, rearwheel, gasoline, transmission, cc));
     }
 
 }
