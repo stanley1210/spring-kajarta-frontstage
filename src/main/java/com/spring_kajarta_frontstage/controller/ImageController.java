@@ -114,7 +114,7 @@ public class ImageController {
 
     // 新增單筆
     @PostMapping("/create")
-    public String jsonCreate(@RequestParam("image") MultipartFile imageFile,
+    public String jsonCreate(@RequestParam("images") MultipartFile imageFile,
             @RequestParam("carId") Integer carId,
             @RequestParam("isListPic") Integer isListPic,
             @RequestParam("isMainPic") Integer isMainPic) {
