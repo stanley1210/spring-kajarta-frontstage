@@ -115,10 +115,10 @@ public class ViewCarController {
     }
     //查全
     @GetMapping("/selectAll")
-    public String findByPage(@RequestParam Integer pageNumber) {
+    public String findByPage(@RequestParam Integer pageNumber, @RequestParam Integer max) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        Page<ViewCar> page = viewCarService.findByPage(pageNumber);
+        Page<ViewCar> page = viewCarService.findByPage(pageNumber, max);
         List<ViewCar> viewCars = page.getContent();
         for (ViewCar viewCar : viewCars) {
             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
