@@ -247,7 +247,8 @@ public class PreferenceService {
     }
 
     // 動態查詢Car
-    public List<Car> searchPreferencesCarJoinCarinfo(String modelName, Integer productionYear, BigDecimal price,
+    public List<Car> searchPreferencesCarJoinCarinfo(String modelName, Integer productionYear,
+            BigDecimal price,
             Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
             Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
 

@@ -589,18 +589,46 @@ public class PreferenceController {
 
         JSONObject responseBody = new JSONObject();
         JSONArray carArray = new JSONArray();
+
+        if (carList.isEmpty()) {
+            System.out.println("carList是空的");
+            return responseBody.put("message", "carList是空的").toString();
+        } else {
+            System.out.println("carList=" + carList);
+        }
+
         for (Car car : carList) {
+            System.out.println("================================");
+            System.out.println(car.getCarinfo().getId());
             Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getBrand());
             Brand brandEnum = brandService.findById(carInfoBean.getBrand());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getSuspension());
             Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getDoor());
             Door doorEnum = doorService.findById(carInfoBean.getDoor());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getPassenger());
             Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getRearWheel());
             Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearWheel());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getGasoline());
             Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getTransmission());
             Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getCc());
+
             Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
+
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
