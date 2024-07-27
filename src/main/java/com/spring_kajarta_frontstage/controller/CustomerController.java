@@ -1,6 +1,8 @@
 package com.spring_kajarta_frontstage.controller;
 
 import com.kajarta.demo.domian.Result;
+import com.kajarta.demo.enums.AccountTypeEnum;
+import com.kajarta.demo.enums.CityEnum;
 import com.kajarta.demo.model.Customer;
 import com.kajarta.demo.utils.ResultUtil;
 import com.kajarta.demo.vo.CustomerVO;
@@ -96,6 +98,7 @@ public class CustomerController extends BaseController {
             Customer customer = customerService.findById(customerId);
             customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCityName(CityEnum.getByCode(customer.getCity()).getCity());
             customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
             customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         } catch (Exception e) {
@@ -117,6 +120,7 @@ public class CustomerController extends BaseController {
             Customer customer = customerService.getByUsername(username);
             customerVO = new CustomerVO();
             BeanUtils.copyProperties(customer, customerVO);
+            customerVO.setCityName(CityEnum.getByCode(customer.getCity()).getCity());
             customerVO.setCreateTime(DatetimeConverter.toString(new Date(customer.getCreateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
             customerVO.setUpdateTime(DatetimeConverter.toString(new Date(customer.getUpdateTime().getTime()), DatetimeConverter.YYYY_MM_DD_HH_MM_SS));
         } catch (Exception e) {

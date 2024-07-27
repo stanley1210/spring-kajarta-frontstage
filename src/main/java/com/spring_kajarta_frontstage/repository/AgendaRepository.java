@@ -20,7 +20,10 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer>, Agenda
                         + "(:createTime IS NULL OR agd.createTime >= :createTime) AND "
                         + "(:unavailableTimeEnd IS NULL OR agd.unavailableTimeEnd < :unavailableTimeEnd) AND "
                         + "(:unavailableStatus IS NULL OR agd.unavailableStatus = :unavailableStatus) AND "
-                        + "(:ckeckavailableTimeStr IS NULL OR :ckeckavailableTimeEnd IS NULL OR (agd.unavailableTimeStr BETWEEN :ckeckavailableTimeStr AND :ckeckavailableTimeEnd) OR (agd.unavailableTimeEnd BETWEEN :ckeckavailableTimeStr AND :ckeckavailableTimeEnd)) AND "
+                        + "(:ckeckavailableTimeStr IS NULL OR :ckeckavailableTimeEnd IS NULL OR (agd.unavailableTimeStr BETWEEN :ckeckavailableTimeStr AND :ckeckavailableTimeEnd) "
+                        + "OR (agd.unavailableTimeEnd BETWEEN :ckeckavailableTimeStr AND :ckeckavailableTimeEnd) "
+                        + "OR ((agd.unavailableTimeStr <= :ckeckavailableTimeStr) AND(agd.unavailableTimeEnd >= :ckeckavailableTimeEnd)) "
+                        + "OR ((agd.unavailableTimeStr >= :ckeckavailableTimeStr) AND(agd.unavailableTimeEnd <= :ckeckavailableTimeEnd))) AND "
                         + "(:exceptid IS NULL OR agd.id != :exceptid)")
         public Page<Agenda> findByHQL(@Param("id") Integer id,
                         @Param("employee") Employee employee,

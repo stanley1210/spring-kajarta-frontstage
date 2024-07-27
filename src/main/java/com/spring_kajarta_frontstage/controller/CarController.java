@@ -130,17 +130,17 @@ public class CarController {
             responseBody.put("message", "ID不得為空");
         } else {
             Car carBean = carService.findById(Id);
-            Carinfo carInfoBean = carInfoService.findById(Id);
-            Brand brandEnum = brandService.findById(Id);
-            Negotiable negotiableEnum = negotiableService.findById(Id);
-            Suspension suspensionEnum = suspensionService.findById(Id);
-            Door doorEnum = doorService.findById(Id);
-            Passenger passengerEnum = passengerService.findById(Id);
-            Rearwheel rearwheelEnum = rearWheelService.findById(Id);
-            Gasoline gasolineEnum = gasolineService.findById(Id);
-            Transmission transmissionEnum = transmissionService.findById(Id);
-            Displacement displacementEnum = displacementService.findById(Id);
-            BranchEnum branch = BranchEnum.getByCode(Id);
+            Carinfo carInfoBean = carInfoService.findById(carBean.getCarinfo().getId());
+            Brand brandEnum = brandService.findById(carInfoBean.getBrand());
+            Negotiable negotiableEnum = negotiableService.findById(carBean.getNegotiable());
+            Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
+            Door doorEnum = doorService.findById(carInfoBean.getDoor());
+            Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
+            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearWheel());
+            Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
+            Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
+            Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
+            BranchEnum branch = BranchEnum.getByCode(carBean.getBranch());
             if (carBean != null) {
                 Car carModel = carBean;
                 String compareUrl = "kajarta/car/compare";
@@ -178,9 +178,6 @@ public class CarController {
                 array = array.put(carJson);
                 responseBody.put("list", array);
                 return responseBody.toString();
-            } else {
-                responseBody.put("success", false);
-                responseBody.put("message", "ID不存在");
             }
         }
         return responseBody.toString();
