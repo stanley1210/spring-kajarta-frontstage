@@ -29,7 +29,7 @@ public class SecurityConst {
                 "/swagger-resources/configuration/security",
                 "/swagger-ui.html",
                 "/webjars/**",
-                "/v2/**");
+                "/v2/**", "/images/**");
     }
 
 }

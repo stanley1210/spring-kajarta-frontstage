@@ -120,12 +120,12 @@ public class CarService {
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
             Integer productionYear = obj.isNull("productionYear") ? null : obj.getInt("productionYear");
             Integer milage = obj.isNull("milage") ? null : obj.getInt("milage");
-            Integer negotiable = obj.isNull("negotiable") ? null : obj.getInt("negotiable");
+            Integer negotiable = obj.isNull("negotiable") ? null : obj.getInt("negotiable");//
             Integer conditionScore = obj.isNull("conditionScore") ? null : obj.getInt("conditionScore");
-            Integer branch = obj.isNull("branch") ? null : obj.getInt("branch");
+            Integer branch = obj.isNull("branch") ? null : obj.getInt("branch");//
             Integer state = obj.isNull("state") ? null : obj.getInt("state");
             BigDecimal price = obj.isNull("price") ? null : obj.getBigDecimal("price");
-            String launchDate = obj.isNull("launchDate") ? null : obj.getString("launchDate");
+            String launchDate = obj.isNull("launchDate") ? null : obj.getString("launchDate");//
             String color = obj.isNull("color") ? null : obj.getString("color");
             Integer remark = obj.isNull("remark") ? null : obj.getInt("remark");
             Customer c = customerService.findById(id);
