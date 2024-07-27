@@ -2,6 +2,7 @@ package com.spring_kajarta_frontstage.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.kajarta.demo.enums.BranchEnum;
 import com.kajarta.demo.model.Brand;
@@ -564,6 +567,13 @@ public class PreferenceController {
         return responseBody.toString();
     }
 
+    // 抓小辮子用
+    @InitBinder
+    public void initBinder(WebRequest webRequest) {
+        Map<String, String[]> map = webRequest.getParameterMap();
+        map.forEach((k, v) -> System.out.println(k + "     " + v[0]));
+    }
+
     // 多條件動態查詢
     @GetMapping("/searchMore")
     public String searchPreferences(
@@ -614,8 +624,8 @@ public class PreferenceController {
             System.out.println(carInfoBean.getPassenger());
             Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
             System.out.println("================================");
-            System.out.println(carInfoBean.getRearWheel());
-            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearWheel());
+            System.out.println(carInfoBean.getRearwheel());
+            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearwheel());
             System.out.println("================================");
             System.out.println(carInfoBean.getGasoline());
             Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());

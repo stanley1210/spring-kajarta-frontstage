@@ -43,7 +43,7 @@ public class CarInfoController {
             itemMap.put("suspension", carInfo.getSuspension());
             itemMap.put("door", carInfo.getDoor());
             itemMap.put("passenger", carInfo.getPassenger());
-            itemMap.put("rearWheel", carInfo.getRearWheel());
+            itemMap.put("rearWheel", carInfo.getRearwheel());
             itemMap.put("gasoline", carInfo.getGasoline());
             itemMap.put("transmission", carInfo.getTransmission());
             itemMap.put("cc", carInfo.getCc());
@@ -74,7 +74,7 @@ public class CarInfoController {
                     .put("suspension", carInfo.getSuspension())
                     .put("door", carInfo.getDoor())
                     .put("passenger", carInfo.getPassenger())
-                    .put("rearWheel", carInfo.getRearWheel())
+                    .put("rearWheel", carInfo.getRearwheel())
                     .put("gasoline", carInfo.getGasoline())
                     .put("transmission", carInfo.getTransmission())
                     .put("cc", carInfo.getCc())
@@ -103,7 +103,7 @@ public class CarInfoController {
                     .put("suspension", carInfo.getSuspension())
                     .put("door", carInfo.getDoor())
                     .put("passenger", carInfo.getPassenger())
-                    .put("rearWheel", carInfo.getRearWheel())
+                    .put("rearWheel", carInfo.getRearwheel())
                     .put("gasoline", carInfo.getGasoline())
                     .put("transmission", carInfo.getTransmission())
                     .put("cc", carInfo.getCc())

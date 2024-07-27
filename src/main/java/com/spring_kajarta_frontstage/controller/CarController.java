@@ -136,7 +136,7 @@ public class CarController {
             Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
             Door doorEnum = doorService.findById(carInfoBean.getDoor());
             Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
-            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearWheel());
+            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearwheel());
             Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
             Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
             Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
