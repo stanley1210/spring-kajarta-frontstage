@@ -128,10 +128,12 @@ public class CarService {
             String launchDate = obj.isNull("launchDate") ? null : obj.getString("launchDate");//
             String color = obj.isNull("color") ? null : obj.getString("color");
             Integer remark = obj.isNull("remark") ? null : obj.getInt("remark");
-            Customer c = customerService.findById(id);
-            Employee e = employeeService.findById(id);
-            Carinfo carinfo = carInfoService.findById(id);
-
+            Integer customerId = obj.isNull("customerId") ? null : obj.getInt("customerId");
+            Integer employeeId = obj.isNull("employeeId") ? null : obj.getInt("employeeId");
+            Integer carinfoId = obj.isNull("carinfoId") ? null : obj.getInt("carinfoId");
+            Customer c = customerService.findById(customerId);
+            Employee e = employeeService.findById(employeeId);
+            Carinfo carinfo = carInfoService.findById(carinfoId);
             Optional<Car> optional = carRepo.findById(id);
             if (optional.isPresent()) {
                 Car update = optional.get();
