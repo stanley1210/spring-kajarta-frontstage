@@ -96,12 +96,14 @@ public class ImageService {
             JSONObject obj = new JSONObject(json);
 
             Integer id = obj.isNull("id") ? null : obj.getInt("id");
-            Integer carId = obj.isNull("carId") ? null : obj.getInt("carId");
-            Integer isListPic = obj.isNull("isListPic") ? null : obj.getInt("isListPic");
-            Integer isMainPic = obj.isNull("isMainPic") ? null : obj.getInt("isMainPic");
+            Optional<Image> optional = imageRepo.findById(id);
+            System.out.println("carID=" + optional.get().getCar().getId());
+            Integer carId = obj.isNull("carId") ? optional.get().getCar().getId() : obj.getInt("carId");
+            Integer isListPic = obj.isNull("isListPic") ? optional.get().getIsListPic() : obj.getInt("isListPic");
+            Integer isMainPic = obj.isNull("isMainPic") ? optional.get().getIsMainPic() : obj.getInt("isMainPic");
+
             Car car = carService.findById(carId);
 
-            Optional<Image> optional = imageRepo.findById(id);
             if (optional.isPresent()) {
                 Image update = optional.get();
                 update.setImage(image);

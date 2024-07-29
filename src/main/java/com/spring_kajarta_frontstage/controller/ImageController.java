@@ -190,11 +190,10 @@ public class ImageController {
     // 修改
     @PutMapping("/modify/{id}")
     public String modify(@PathVariable(name = "id") Integer Id,
-            @RequestParam("image") MultipartFile imageFile,
-            @RequestParam("carId") Integer carId,
-            @RequestParam("isListPic") Integer isListPic,
-            @RequestParam("isMainPic") Integer isMainPic) {
-        System.out.println("=======================");
+            @RequestParam(name = "image", required = false) MultipartFile imageFile,
+            @RequestParam(name = "carId", required = false) Integer carId,
+            @RequestParam(name = "isListPic", required = false) Integer isListPic,
+            @RequestParam(name = "isMainPic", required = false) Integer isMainPic) {
         JSONObject responseBody = new JSONObject();
         if (Id == null) {
             responseBody.put("success", false);
@@ -206,6 +205,7 @@ public class ImageController {
             } else {
                 try {
                     byte[] imageByte = imageFile.getBytes();
+
                     JSONObject item = new JSONObject()
                             .put("id", Id)
                             .put("carId", carId)
