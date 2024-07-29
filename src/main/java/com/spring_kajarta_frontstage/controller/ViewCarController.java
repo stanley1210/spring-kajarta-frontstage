@@ -172,7 +172,6 @@ public class ViewCarController {
                     .put("viewCarDate", viewCarDate)
                     .put("carScore", viewCar.getCarScore())
                     .put("deal", viewCar.getDeal())
-                    .put("customer", viewCar.getCustomer().getId())
                     .put("customerName", viewCar.getCustomer().getName())
                     .put("tel", viewCar.getCustomer().getTel())
                     .put("createTime", createTime)
