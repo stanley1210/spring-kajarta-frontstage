@@ -9,5 +9,5 @@ import com.kajarta.demo.model.Like;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Integer> {
-    Page<Like> findByCustomerId(Integer customerId, Pageable pageable);
+    // Page<Like> findByCustomerId(Integer customerId, Pageable pageable);
 }
