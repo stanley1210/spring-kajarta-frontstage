@@ -194,6 +194,7 @@ public class ImageController {
             @RequestParam("carId") Integer carId,
             @RequestParam("isListPic") Integer isListPic,
             @RequestParam("isMainPic") Integer isMainPic) {
+        System.out.println("=======================");
         JSONObject responseBody = new JSONObject();
         if (Id == null) {
             responseBody.put("success", false);
