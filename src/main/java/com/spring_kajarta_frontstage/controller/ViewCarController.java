@@ -190,6 +190,43 @@ public String findByCustomerId(@RequestParam Integer customerId, @RequestParam I
     return responseBody.toString();
 }
 
+// 根据 customerId 查找所有 ViewCar
+@GetMapping("/findAllByCustomer")
+public String findAllByCustomerId(@RequestParam Integer customerId) {
+    JSONObject responseBody = new JSONObject();
+    JSONArray array = new JSONArray();
+    List<ViewCar> viewCars = viewCarService.findAllByCustomerId(customerId);
+
+    for (ViewCar viewCar : viewCars) {
+        String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
+        String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
+        String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
+
+        JSONObject obj = new JSONObject()
+                .put("id", viewCar.getId())
+                .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
+                .put("car", viewCar.getCar().getId())
+                .put("modelName", viewCar.getCar().getCarinfo().getModelName())
+                .put("branch", viewCar.getCar().getBranch())
+                .put("salesScore", viewCar.getSalesScore())
+                .put("factoryScore", viewCar.getFactoryScore())
+                .put("viewCarDate", viewCarDate)
+                .put("carScore", viewCar.getCarScore())
+                .put("deal", viewCar.getDeal())
+                .put("customer", viewCar.getCustomer().getId())
+                .put("customerName", viewCar.getCustomer().getName())
+                .put("tel", viewCar.getCustomer().getTel())
+                .put("createTime", createTime)
+                .put("updateTime", updateTime)
+                .put("viewTimeSectionNb", viewCar.getViewTimeSection())
+                .put("viewCarStatus", viewCar.getViewCarStatus());
+        array.put(obj);
+    }
+
+    responseBody.put("list", array);
+    return responseBody.toString();
+}
+
     // 刪除
     @DeleteMapping("/delete/{id}")
     public String remove(@PathVariable Integer id) {

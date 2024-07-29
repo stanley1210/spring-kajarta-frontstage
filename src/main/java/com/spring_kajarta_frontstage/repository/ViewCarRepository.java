@@ -18,4 +18,6 @@ public interface ViewCarRepository extends JpaRepository<ViewCar, Integer> {
 	 List<ViewCar> find3Latest(Pageable pgb);
 
 	 Page<ViewCar> findByCustomer_Id(Integer customerId, Pageable pageable);
+
+	 List<ViewCar> findAllByCustomer_Id(Integer customerId); // 根据 customerId 查找所有 ViewCar
 }

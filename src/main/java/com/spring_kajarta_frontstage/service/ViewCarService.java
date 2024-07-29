@@ -149,6 +149,10 @@ public class ViewCarService {
         return viewCarRepo.findByCustomer_Id(customerId, pageable);
     }
 
+    public List<ViewCar> findAllByCustomerId(Integer customerId) {
+        return viewCarRepo.findAllByCustomer_Id(customerId);
+    }
+
     // 刪除
     public boolean remove(Integer id) {
         if (id != null) {
