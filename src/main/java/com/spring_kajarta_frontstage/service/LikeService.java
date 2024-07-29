@@ -106,6 +106,15 @@ public class LikeService {
         Pageable pageable = PageRequest.of(pageNumber - 1, max, direction, "createTime");
         return likeRepository.findAll(pageable);
     }
+    
+
+    public Page<Like> findByCustomerIdAndPage(Integer customerId, Integer pageNumber, String sortOrder, Integer max) {
+        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
+        Pageable pageable = PageRequest.of(pageNumber - 1, max, direction, "createTime");
+        return likeRepository.findByCustomerId(customerId, pageable);
+    }
+
+
 
     // 刪除
     public boolean remove(Integer id) {

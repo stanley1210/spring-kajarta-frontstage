@@ -133,6 +133,40 @@ public class LikeController {
         return responseBody.toString();
     }
 
+
+    @GetMapping("/selectByCustomer")
+    public String findByCustomerId(@RequestParam Integer customerId, @RequestParam Integer pageNumber, @RequestParam String sortOrder, @RequestParam Integer max) {
+        if (pageNumber < 1) {
+            return "Invalid page number";
+        }
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        Page<Like> page = likeService.findByCustomerIdAndPage(customerId, pageNumber, sortOrder, max);
+        List<Like> likes = page.getContent();
+        for (Like like : likes) {
+            String createTime = DatetimeConverter.toString(like.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(like.getUpdateTime(), "yyyy-MM-dd");
+            JSONObject obj = new JSONObject()
+                    .put("likeId", like.getId())
+                    .put("carId", like.getCar().getId())
+                    .put("productionYear", like.getCar().getProductionYear())
+                    .put("milage", like.getCar().getMilage())
+                    .put("conditionScore", like.getCar().getConditionScore())
+                    .put("price", like.getCar().getPrice())
+                    .put("modelName", like.getCar().getCarinfo().getModelName())
+                    .put("brand", like.getCar().getCarinfo().getBrand())
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime);
+            array.put(obj);
+        }
+        responseBody.put("list", array);
+        responseBody.put("totalPages", page.getTotalPages());
+        responseBody.put("totalElements", page.getTotalElements());
+        responseBody.put("currentPage", page.getNumber() + 1); // Page numbers are 0-based, so we add 1
+        return responseBody.toString();
+    }
+
+
     // //多條件查詢
     // //刪除
     @DeleteMapping("/delete/{id}")
