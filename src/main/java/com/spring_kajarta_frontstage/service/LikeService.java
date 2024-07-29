@@ -31,7 +31,7 @@ public class LikeService {
         return likeRepository.count();
     }
 
-    //確定ID存不存在
+    // 確定ID存不存在
     public boolean exists(Integer id) {
         if (id != null) {
             return likeRepository.existsById(id);

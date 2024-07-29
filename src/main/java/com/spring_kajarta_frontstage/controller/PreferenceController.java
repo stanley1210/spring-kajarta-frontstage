@@ -2,18 +2,15 @@ package com.spring_kajarta_frontstage.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
-import com.spring_kajarta_frontstage.service.CarInfoService;
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.PreferenceService;
-import com.spring_kajarta_frontstage.util.DatetimeConverter;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,13 +19,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
+import com.kajarta.demo.enums.BranchEnum;
+import com.kajarta.demo.model.Brand;
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Customer;
+import com.kajarta.demo.model.Displacement;
+import com.kajarta.demo.model.Door;
+import com.kajarta.demo.model.Gasoline;
+import com.kajarta.demo.model.Negotiable;
+import com.kajarta.demo.model.Passenger;
 import com.kajarta.demo.model.Preference;
+import com.kajarta.demo.model.Rearwheel;
+import com.kajarta.demo.model.Suspension;
+import com.kajarta.demo.model.Transmission;
+import com.spring_kajarta_frontstage.service.BrandService;
+import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CustomerService;
+import com.spring_kajarta_frontstage.service.DisplacementService;
+import com.spring_kajarta_frontstage.service.DoorService;
+import com.spring_kajarta_frontstage.service.GasolineService;
+import com.spring_kajarta_frontstage.service.NegotiableService;
+import com.spring_kajarta_frontstage.service.PassengerService;
 import com.spring_kajarta_frontstage.service.PreferenceService;
+import com.spring_kajarta_frontstage.service.RearWheelService;
+import com.spring_kajarta_frontstage.service.SuspensionService;
+import com.spring_kajarta_frontstage.service.TransmissionService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
@@ -44,6 +62,33 @@ public class PreferenceController {
 
     @Autowired
     private CarInfoService carinfoService;
+
+    @Autowired
+    private BrandService brandService;
+
+    @Autowired
+    private NegotiableService negotiableService;
+
+    @Autowired
+    private SuspensionService suspensionService;
+
+    @Autowired
+    private DoorService doorService;
+
+    @Autowired
+    private PassengerService passengerService;
+
+    @Autowired
+    private RearWheelService rearWheelService;
+
+    @Autowired
+    private GasolineService gasolineService;
+
+    @Autowired
+    private TransmissionService transmissionService;
+
+    @Autowired
+    private DisplacementService displacementService;
 
     @GetMapping("/find/{Id}") // 查單筆ID
     @ResponseBody
@@ -522,6 +567,13 @@ public class PreferenceController {
         return responseBody.toString();
     }
 
+    // 抓小辮子用
+    @InitBinder
+    public void initBinder(WebRequest webRequest) {
+        Map<String, String[]> map = webRequest.getParameterMap();
+        map.forEach((k, v) -> System.out.println(k + "     " + v[0]));
+    }
+
     // 多條件動態查詢
     @GetMapping("/searchMore")
     public String searchPreferences(
@@ -531,18 +583,62 @@ public class PreferenceController {
             @RequestParam(required = false) Integer milage,
             @RequestParam(required = false) Integer score,
             @RequestParam(required = false) Integer hp,
-            @RequestParam(required = false) Double torque) {
+            @RequestParam(required = false) Double torque,
+            @RequestParam(required = false) Integer brand,
+            @RequestParam(required = false) Integer suspension,
+            @RequestParam(required = false) Integer door,
+            @RequestParam(required = false) Integer passenger,
+            @RequestParam(required = false) Integer rearwheel,
+            @RequestParam(required = false) Integer gasoline,
+            @RequestParam(required = false) Integer transmission,
+            @RequestParam(required = false) Integer cc) {
 
         List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(modelName, productionYear, price, milage,
                 score,
-                hp, torque);
+                hp, torque, brand, suspension, door, passenger, rearwheel, gasoline, transmission, cc);
 
         JSONObject responseBody = new JSONObject();
         JSONArray carArray = new JSONArray();
+
+        if (carList.isEmpty()) {
+            System.out.println("carList是空的");
+            return responseBody.put("message", "carList是空的").toString();
+        } else {
+            System.out.println("carList=" + carList);
+        }
+
         for (Car car : carList) {
+            System.out.println("================================");
+            System.out.println(car.getCarinfo().getId());
             Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getBrand());
+            Brand brandEnum = brandService.findById(carInfoBean.getBrand());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getSuspension());
+            Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getDoor());
+            Door doorEnum = doorService.findById(carInfoBean.getDoor());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getPassenger());
+            Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getRearwheel());
+            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearwheel());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getGasoline());
+            Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getTransmission());
+            Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
+            System.out.println("================================");
+            System.out.println(carInfoBean.getCc());
+
+            Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
+
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
@@ -559,7 +655,19 @@ public class PreferenceController {
                     .put("color", car.getColor())
                     .put("remark", car.getRemark())
                     .put("createTime", createTime)
-                    .put("updateTime", updateTime);
+                    .put("updateTime", updateTime)
+                    // CarInfo的值
+                    .put("brand", brandEnum.getBrand())
+                    .put("modelName", carInfoBean.getModelName())
+                    .put("suspension", suspensionEnum.getType())
+                    .put("door", doorEnum.getCardoor())
+                    .put("passenger", passengerEnum.getSeat())
+                    .put("rearWheel", rearwheelEnum.getWheel())
+                    .put("gasoline", gasolineEnum.getGaso())
+                    .put("transmission", transmissionEnum.getTrans())
+                    .put("cc", displacementEnum.getCc())
+                    .put("hp", carInfoBean.getHp())
+                    .put("torque", carInfoBean.getTorque());
             carArray.put(item);
         }
 

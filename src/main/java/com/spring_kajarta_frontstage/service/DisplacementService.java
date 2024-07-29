@@ -1,5 +1,8 @@
 package com.spring_kajarta_frontstage.service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,12 @@ public class DisplacementService {
     private DisplacementRepository displacementRepo;
 
     public Displacement findById(Integer id) {
-        return displacementRepo.findById(id).get();
+        Optional<Displacement> displacement = displacementRepo.findById(id);
+        if (displacement.isPresent()) {
+            System.out.println("displacement=" + displacement.get());
+            return displacement.get();
+        } else {
+            throw new NoSuchElementException("No value present for ID: " + id);
+        }
     }
 }
