@@ -149,6 +149,42 @@ public class ViewCarController {
          return responseBody.toString();
      }
 
+
+     @GetMapping("/findPageByCustomerId")
+     public String findPageByCustomerId(@RequestParam Integer customerId, @RequestParam Integer pageNumber, @RequestParam Integer max) {
+         JSONObject responseBody = new JSONObject();
+         JSONArray array = new JSONArray();
+         Page<ViewCar> page = viewCarService.findPageByCustomerId(customerId, pageNumber, max);
+         List<ViewCar> viewCars = page.getContent();
+         for (ViewCar viewCar : viewCars) {
+             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
+             String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
+             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
+             JSONObject obj = new JSONObject()
+                     .put("id", viewCar.getId())
+                     .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
+                     .put("car", viewCar.getCar().getId())
+                     .put("modelName", viewCar.getCar().getCarinfo().getModelName())
+                     .put("branch", viewCar.getCar().getBranch())
+                     .put("salesScore", viewCar.getSalesScore())
+                     .put("factoryScore", viewCar.getFactoryScore())
+                     .put("viewCarDate", viewCarDate)
+                     .put("carScore", viewCar.getCarScore())
+                     .put("deal", viewCar.getDeal())
+                     .put("createTime", createTime)
+                     .put("updateTime", updateTime)
+                     .put("viewTimeSectionNb", viewCar.getViewTimeSection())
+                     .put("viewCarStatus", viewCar.getViewCarStatus());
+             array.put(obj);
+         }
+         responseBody.put("list", array);
+         responseBody.put("totalPages", page.getTotalPages());
+         responseBody.put("totalElements", page.getTotalElements());
+         responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
+         return responseBody.toString();
+     }
+
+
     // 根据 customerId 查找所有 ViewCar
     @GetMapping("/findByCustomer/{customerId}")
     public String findByCustomerId(@PathVariable Integer customerId) {
