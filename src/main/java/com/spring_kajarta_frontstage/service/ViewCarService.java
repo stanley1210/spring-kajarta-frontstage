@@ -144,6 +144,11 @@ public class ViewCarService {
         return page;
     }
 
+    public Page<ViewCar> findPageByCustomerId(Integer customerId, Integer pageNumber, Integer max) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, max, Sort.Direction.ASC, "viewCarDate");
+        return viewCarRepo.findPageByCustomerId(customerId, pageable);
+    }
+
 
     //用customerId查詢
     public List<ViewCar> findByCustomerId(Integer customerId) {
