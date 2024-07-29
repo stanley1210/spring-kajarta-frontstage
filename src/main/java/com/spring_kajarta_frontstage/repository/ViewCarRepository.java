@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 
@@ -17,7 +16,5 @@ public interface ViewCarRepository extends JpaRepository<ViewCar, Integer> {
 	@Query(value="from ViewCar")
 	 List<ViewCar> find3Latest(Pageable pgb);
 
-	 Page<ViewCar> findByCustomer_Id(Integer customerId, Pageable pageable);
-
-	 List<ViewCar> findAllByCustomer_Id(Integer customerId); // 根据 customerId 查找所有 ViewCar
+	 List<ViewCar> findByCustomer_Id(Integer customerId); // 根据 customerId 查找所有 ViewCar
 }

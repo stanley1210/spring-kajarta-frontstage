@@ -149,81 +149,39 @@ public class ViewCarController {
          return responseBody.toString();
      }
 
-   // 根据 customerId 查找所有 ViewCar 并支持分页
-@GetMapping("/findByCustomer")
-public String findByCustomerId(@RequestParam Integer customerId, @RequestParam Integer pageNumber, @RequestParam Integer max) {
-    JSONObject responseBody = new JSONObject();
-    JSONArray array = new JSONArray();
-    Page<ViewCar> page = viewCarService.findByCustomerId(customerId, pageNumber, max);
-    List<ViewCar> viewCars = page.getContent();
+    // 根据 customerId 查找所有 ViewCar
+    @GetMapping("/findByCustomer/{customerId}")
+    public String findByCustomerId(@PathVariable Integer customerId) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<ViewCar> viewCars = viewCarService.findByCustomerId(customerId);
 
-    for (ViewCar viewCar : viewCars) {
-        String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
-        String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
-        String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
+        for (ViewCar viewCar : viewCars) {
+            String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
+            String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
 
-        JSONObject obj = new JSONObject()
-                .put("id", viewCar.getId())
-                .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
-                .put("car", viewCar.getCar().getId())
-                .put("modelName", viewCar.getCar().getCarinfo().getModelName())
-                .put("branch", viewCar.getCar().getBranch())
-                .put("salesScore", viewCar.getSalesScore())
-                .put("factoryScore", viewCar.getFactoryScore())
-                .put("viewCarDate", viewCarDate)
-                .put("carScore", viewCar.getCarScore())
-                .put("deal", viewCar.getDeal())
-                .put("customerName", viewCar.getCustomer().getName())
-                .put("tel", viewCar.getCustomer().getTel())
-                .put("createTime", createTime)
-                .put("updateTime", updateTime)
-                .put("viewTimeSectionNb", viewCar.getViewTimeSection())
-                .put("viewCarStatus", viewCar.getViewCarStatus());
-        array.put(obj);
+            JSONObject obj = new JSONObject()
+                    .put("id", viewCar.getId())
+                    .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
+                    .put("car", viewCar.getCar().getId())
+                    .put("modelName", viewCar.getCar().getCarinfo().getModelName())
+                    .put("branch", viewCar.getCar().getBranch())
+                    .put("salesScore", viewCar.getSalesScore())
+                    .put("factoryScore", viewCar.getFactoryScore())
+                    .put("viewCarDate", viewCarDate)
+                    .put("carScore", viewCar.getCarScore())
+                    .put("deal", viewCar.getDeal())
+                    .put("customerName", viewCar.getCustomer().getName())
+                    .put("tel", viewCar.getCustomer().getTel())
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime)
+                    .put("viewCarStatus", viewCar.getViewCarStatus());
+            array.put(obj);
+        }
+        responseBody.put("list", array);
+        return responseBody.toString();
     }
-
-    responseBody.put("list", array);
-    responseBody.put("totalPages", page.getTotalPages());
-    responseBody.put("totalElements", page.getTotalElements());
-    responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
-    return responseBody.toString();
-}
-
-// 根据 customerId 查找所有 ViewCar
-@GetMapping("/findAllByCustomer")
-public String findAllByCustomerId(@RequestParam Integer customerId) {
-    JSONObject responseBody = new JSONObject();
-    JSONArray array = new JSONArray();
-    List<ViewCar> viewCars = viewCarService.findAllByCustomerId(customerId);
-
-    for (ViewCar viewCar : viewCars) {
-        String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
-        String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
-        String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
-
-        JSONObject obj = new JSONObject()
-                .put("id", viewCar.getId())
-                .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
-                .put("car", viewCar.getCar().getId())
-                .put("modelName", viewCar.getCar().getCarinfo().getModelName())
-                .put("branch", viewCar.getCar().getBranch())
-                .put("salesScore", viewCar.getSalesScore())
-                .put("factoryScore", viewCar.getFactoryScore())
-                .put("viewCarDate", viewCarDate)
-                .put("carScore", viewCar.getCarScore())
-                .put("deal", viewCar.getDeal())
-                .put("customerName", viewCar.getCustomer().getName())
-                .put("tel", viewCar.getCustomer().getTel())
-                .put("createTime", createTime)
-                .put("updateTime", updateTime)
-                .put("viewTimeSectionNb", viewCar.getViewTimeSection())
-                .put("viewCarStatus", viewCar.getViewCarStatus());
-        array.put(obj);
-    }
-
-    responseBody.put("list", array);
-    return responseBody.toString();
-}
 
     // 刪除
     @DeleteMapping("/delete/{id}")

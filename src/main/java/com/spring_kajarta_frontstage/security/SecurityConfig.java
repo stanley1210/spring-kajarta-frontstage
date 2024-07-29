@@ -32,138 +32,131 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.List;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private MyAuthenticationProvider authProvider;
+        @Autowired
+        private MyAuthenticationProvider authProvider;
 
-    @Autowired
-    private MyLoginSuccessHandler myLoginSuccessHandler;
+        @Autowired
+        private MyLoginSuccessHandler myLoginSuccessHandler;
 
-    @Autowired
-    private MyLoginFailureHandler myLoginFailureHandler;
+        @Autowired
+        private MyLoginFailureHandler myLoginFailureHandler;
 
-    @Autowired
-    private MyLogoutSuccessHandler myLogoutSuccessHandler;
+        @Autowired
+        private MyLogoutSuccessHandler myLogoutSuccessHandler;
 
-    @Autowired
-    private MyAccessDeniedHandler myAccessDeniedHandler;
+        @Autowired
+        private MyAccessDeniedHandler myAccessDeniedHandler;
 
-    @Autowired
-    private UnauthorizedEntryPoint unauthorizedEntryPoint;
+        @Autowired
+        private UnauthorizedEntryPoint unauthorizedEntryPoint;
 
-    @Autowired
-    private SessionRegistry sessionRegistry;
+        @Autowired
+        private SessionRegistry sessionRegistry;
 
-//    @Autowired
-//    private JwtTokenUtil jwtTokenUtil;
+        // @Autowired
+        // private JwtTokenUtil jwtTokenUtil;
 
-//    @Autowired
-//    private TokenService tokenService;
+        // @Autowired
+        // private TokenService tokenService;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // 設定明確儲存的需求
-                .securityContext(securityContext -> securityContext
-                        .requireExplicitSave(false)
-                )
-                // 解決同源問題 X-Frame-Options to allow any request from same domain
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
-                )
-                // 關閉csrf
-                .csrf(csrf -> csrf.disable())
-                // session管理策略
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionAuthenticationStrategy(new SessionFixationProtectionStrategy())
-                )
-                // 登入認證過濾器
-                .addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(SecurityConst.allows.toArray(new String[0])).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(formLogin -> formLogin
-                        .loginProcessingUrl("/login")
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessHandler(myLogoutSuccessHandler)
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(true)
-                        .permitAll()
-                )
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(unauthorizedEntryPoint)
-                        .accessDeniedHandler(myAccessDeniedHandler)
-                );
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                // 設定明確儲存的需求
+                                .securityContext(securityContext -> securityContext
+                                                .requireExplicitSave(false))
+                                // 解決同源問題 X-Frame-Options to allow any request from same domain
+                                .headers(headers -> headers
+                                                .frameOptions(frameOptions -> frameOptions.sameOrigin()))
+                                // 關閉csrf
+                                .csrf(csrf -> csrf.disable())
+                                // session管理策略
+                                .sessionManagement(sessionManagement -> sessionManagement
+                                                .sessionAuthenticationStrategy(new SessionFixationProtectionStrategy()))
+                                // 登入認證過濾器
+                                .addFilterAt(myAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                                                .requestMatchers(SecurityConst.allows.toArray(new String[0]))
+                                                .permitAll()
+                                                .anyRequest().authenticated())
+                                .formLogin(formLogin -> formLogin
+                                                .loginProcessingUrl("/login"))
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout")
+                                                .deleteCookies("JSESSIONID")
+                                                .logoutSuccessHandler(myLogoutSuccessHandler)
+                                                .clearAuthentication(true)
+                                                .invalidateHttpSession(true)
+                                                .permitAll())
+                                .exceptionHandling(exceptionHandling -> exceptionHandling
+                                                .authenticationEntryPoint(unauthorizedEntryPoint)
+                                                .accessDeniedHandler(myAccessDeniedHandler));
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        //解決靜態資源被攔截的問題
-        return (web) -> web
-                .ignoring()
-                .requestMatchers(HttpMethod.GET,
-                        "/**",
-                        "/favicon.ico",
-                        "/*.html",
-                        "/*/*.html",
-                        "/*/*.css",
-                        "/*/*.js",
-                        "/*/*.map",
-                        "/*/*.png",
-                        "/*/*.jpg");
-    }
+        @Bean
+        public WebSecurityCustomizer webSecurityCustomizer() {
+                // 解決靜態資源被攔截的問題
+                return (web) -> web
+                                .ignoring()
+                                .requestMatchers(HttpMethod.GET,
+                                                "/**",
+                                                "/favicon.ico",
+                                                "/*.html",
+                                                "/*/*.html",
+                                                "/*/*.css",
+                                                "/*/*.js",
+                                                "/*/*.map",
+                                                "/*/*.png",
+                                                "/*/*.jpg");
+        }
 
+        @Bean
+        public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+                return new DefaultHttpFirewall();
+        }
 
-    @Bean
-    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-        return new DefaultHttpFirewall();
-    }
+        @Bean
+        public SessionRegistry sessionRegistry() {
+                return new SessionRegistryImpl();
+        }
 
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
+        /**
+         * 自定義登入過濾器
+         */
+        @Bean
+        public UsernamePasswordAuthenticationFilter myAuthenticationFilter() {
+                // token再用
+                // MyAuthenticationFilter filter = new MyAuthenticationFilter(jwtTokenUtil,
+                // tokenService);
+                MyAuthenticationFilter filter = new MyAuthenticationFilter();
+                filter.setPostOnly(true);
+                filter.setAuthenticationManager(authenticationManager());
+                filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
+                filter.setAuthenticationSuccessHandler(myLoginSuccessHandler);
+                filter.setAuthenticationFailureHandler(myLoginFailureHandler);
+                filter.setSessionAuthenticationStrategy(
+                                new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry));
+                return filter;
+        }
 
+        @Bean
+        public AuthenticationManager authenticationManager() {
+                return new ProviderManager(List.of(authProvider));
+        }
 
-    /**
-     * 自定義登入過濾器
-     */
-    @Bean
-    public UsernamePasswordAuthenticationFilter myAuthenticationFilter() {
-        // token再用
-//        MyAuthenticationFilter filter = new MyAuthenticationFilter(jwtTokenUtil, tokenService);
-        MyAuthenticationFilter filter = new MyAuthenticationFilter();
-        filter.setPostOnly(true);
-        filter.setAuthenticationManager(authenticationManager());
-        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
-        filter.setAuthenticationSuccessHandler(myLoginSuccessHandler);
-        filter.setAuthenticationFailureHandler(myLoginFailureHandler);
-        filter.setSessionAuthenticationStrategy(new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry));
-        return filter;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(List.of(authProvider));
-    }
-
-    // Implement the AuthenticationManager as a bean
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .authenticationProvider(authProvider)
-                .build();
-    }
+        // Implement the AuthenticationManager as a bean
+        @Bean
+        public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+                return http.getSharedObject(AuthenticationManagerBuilder.class)
+                                .authenticationProvider(authProvider)
+                                .build();
+        }
 }

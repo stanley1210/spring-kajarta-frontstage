@@ -138,19 +138,16 @@ public class ViewCarService {
         return viewCarRepo.findAll();
     }
 
-    public Page<ViewCar> findByPage(Integer pageNumeber, Integer max) {
+    public Page<ViewCar> findByPage(Integer pageNumeber,  Integer max) {
         Pageable pgb = PageRequest.of(pageNumeber - 1, max, Sort.Direction.ASC, "viewCarDate");
         Page<ViewCar> page = viewCarRepo.findAll(pgb);
         return page;
     }
 
-    public Page<ViewCar> findByCustomerId(Integer customerId, Integer pageNumber, Integer max) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, max, Sort.Direction.ASC, "viewCarDate");
-        return viewCarRepo.findByCustomer_Id(customerId, pageable);
-    }
 
-    public List<ViewCar> findAllByCustomerId(Integer customerId) {
-        return viewCarRepo.findAllByCustomer_Id(customerId);
+    //用customerId查詢
+    public List<ViewCar> findByCustomerId(Integer customerId) {
+        return viewCarRepo.findByCustomer_Id(customerId);
     }
 
     // 刪除
