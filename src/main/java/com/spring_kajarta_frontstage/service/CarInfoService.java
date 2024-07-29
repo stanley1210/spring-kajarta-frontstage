@@ -51,7 +51,7 @@ public class CarInfoService {
             insert.setSuspension(suspension);
             insert.setDoor(door);
             insert.setPassenger(passenger);
-            insert.setRearWheel(rearWheel);
+            insert.setRearwheel(rearWheel);
             insert.setGasoline(gasoline);
             insert.setTransmission(transmission);
             insert.setCc(cc);
@@ -91,7 +91,7 @@ public class CarInfoService {
                 update.setSuspension(suspension);
                 update.setDoor(door);
                 update.setPassenger(passenger);
-                update.setRearWheel(rearWheel);
+                update.setRearwheel(rearWheel);
                 update.setGasoline(gasoline);
                 update.setTransmission(transmission);
                 update.setCc(cc);

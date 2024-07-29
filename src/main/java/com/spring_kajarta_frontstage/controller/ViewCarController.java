@@ -1,6 +1,5 @@
 package com.spring_kajarta_frontstage.controller;
 
-
 import java.util.List;
 
 import com.spring_kajarta_frontstage.service.ViewCarService;
@@ -36,38 +35,37 @@ public class ViewCarController {
         return viewCarService.count();
     }
 
-    //新增
-     @PostMapping("/create")
+    // 新增
+    @PostMapping("/create")
     public String create(@RequestBody String body) {
         JSONObject responseBody = new JSONObject();
         JSONObject obj = new JSONObject(body);
         ViewCar card = viewCarService.create(body);
-                if(card==null) {
-                    responseBody.put("success", false);
-                    responseBody.put("message", "新增失敗");
-                } else {
-                    responseBody.put("success", true);
-                    responseBody.put("message", "新增成功");
-                }
+        if (card == null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "新增失敗");
+        } else {
+            responseBody.put("success", true);
+            responseBody.put("message", "新增成功");
+        }
         return responseBody.toString();
     }
 
-
-    //修改
+    // 修改
 
     @PutMapping("/update/{id}")
     public String modify(@PathVariable Integer id, @RequestBody String body) {
         JSONObject responseBody = new JSONObject();
-        if(id==null) {
+        if (id == null) {
             responseBody.put("success", false);
             responseBody.put("message", "Id是必要欄位");
         } else {
-            if(!viewCarService.exists(id)) {
+            if (!viewCarService.exists(id)) {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
                 ViewCar product = viewCarService.modify(body);
-                if(product==null) {
+                if (product == null) {
                     responseBody.put("success", false);
                     responseBody.put("message", "修改失敗");
                 } else {
@@ -79,9 +77,8 @@ public class ViewCarController {
         return responseBody.toString();
     }
 
-
-    //查一
- @GetMapping("/select/{pk}")
+    // 查一
+    @GetMapping("/select/{pk}")
     public String findById(@PathVariable(name = "pk") Integer id) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
@@ -113,17 +110,57 @@ public class ViewCarController {
         responseBody.put("list", array);
         return responseBody.toString();
     }
-    //查全
-    @GetMapping("/selectAll")
-    public String findByPage(@RequestParam Integer pageNumber) {
+
+     //查全
+     @GetMapping("/selectAll")
+     public String findByPage(@RequestParam Integer pageNumber, @RequestParam Integer max) {
+         JSONObject responseBody = new JSONObject();
+         JSONArray array = new JSONArray();
+         Page<ViewCar> page = viewCarService.findByPage(pageNumber, max);
+         List<ViewCar> viewCars = page.getContent();
+         for (ViewCar viewCar : viewCars) {
+             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
+             String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
+             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
+             JSONObject obj = new JSONObject()
+                     .put("id", viewCar.getId())
+                     .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
+                     .put("car", viewCar.getCar().getId())
+                     .put("modelName", viewCar.getCar().getCarinfo().getModelName())
+                     .put("branch", viewCar.getCar().getBranch())
+                     .put("salesScore", viewCar.getSalesScore())
+                     .put("factoryScore", viewCar.getFactoryScore())
+                     .put("viewCarDate", viewCarDate)
+                     .put("carScore", viewCar.getCarScore())
+                     .put("deal", viewCar.getDeal())
+                     .put("customer", viewCar.getCustomer().getId())
+                     .put("customerName", viewCar.getCustomer().getName())
+                     .put("tel", viewCar.getCustomer().getTel())
+                     .put("createTime", createTime)
+                     .put("updateTime", updateTime)
+                     .put("viewTimeSectionNb", viewCar.getViewTimeSection())
+                     .put("viewCarStatus", viewCar.getViewCarStatus());
+             array.put(obj);
+         }
+         responseBody.put("list", array);
+         responseBody.put("totalPages", page.getTotalPages());
+         responseBody.put("totalElements", page.getTotalElements());
+         responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
+         return responseBody.toString();
+     }
+
+    // 根据 customerId 查找所有 ViewCar
+    @GetMapping("/findByCustomer/{customerId}")
+    public String findByCustomerId(@PathVariable Integer customerId) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        Page<ViewCar> page = viewCarService.findByPage(pageNumber);
-        List<ViewCar> viewCars = page.getContent();
+        List<ViewCar> viewCars = viewCarService.findByCustomerId(customerId);
+
         for (ViewCar viewCar : viewCars) {
             String viewCarDate = DatetimeConverter.toString(viewCar.getViewCarDate(), "yyyy-MM-dd");
             String createTime = DatetimeConverter.toString(viewCar.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(viewCar.getUpdateTime(), "yyyy-MM-dd");
+
             JSONObject obj = new JSONObject()
                     .put("id", viewCar.getId())
                     .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
@@ -144,27 +181,22 @@ public class ViewCarController {
             array.put(obj);
         }
         responseBody.put("list", array);
-        responseBody.put("totalPages", page.getTotalPages());
-        responseBody.put("totalElements", page.getTotalElements());
-        responseBody.put("currentPage", page.getNumber() + 1);  // Page numbers are 0-based, so we add 1
         return responseBody.toString();
     }
 
-
-    //多條件查詢
-    //刪除
-  @DeleteMapping("/delete/{id}")
+    // 刪除
+    @DeleteMapping("/delete/{id}")
     public String remove(@PathVariable Integer id) {
         JSONObject responseBody = new JSONObject();
-        if(id==null) {
+        if (id == null) {
             responseBody.put("success", false);
             responseBody.put("message", "Id是必要欄位");
         } else {
-            if(!viewCarService.exists(id)) {
+            if (!viewCarService.exists(id)) {
                 responseBody.put("success", false);
                 responseBody.put("message", "Id不存在");
             } else {
-                if(!viewCarService.remove(id)) {
+                if (!viewCarService.remove(id)) {
                     responseBody.put("success", false);
                     responseBody.put("message", "刪除失敗");
                 } else {
