@@ -13,7 +13,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 
-public class CarinfoSpecification {
+public class CarinfoSpecification {// 這邊別看 是坨大便 他沒有用
 
     public static Specification<Carinfo> dynamicSearch(String modelName, Integer productionYear, BigDecimal price,
             Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
