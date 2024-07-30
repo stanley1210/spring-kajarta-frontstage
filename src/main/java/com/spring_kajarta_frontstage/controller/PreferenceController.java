@@ -608,33 +608,14 @@ public class PreferenceController {
         }
 
         for (Car car : carList) {
-            System.out.println("================================");
-            System.out.println(car.getCarinfo().getId());
             Carinfo carInfoBean = carinfoService.findById(car.getCarinfo().getId());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getBrand());
             Brand brandEnum = brandService.findById(carInfoBean.getBrand());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getSuspension());
             Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getDoor());
             Door doorEnum = doorService.findById(carInfoBean.getDoor());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getPassenger());
             Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getRearwheel());
             Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearwheel());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getGasoline());
             Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getTransmission());
             Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
-            System.out.println("================================");
-            System.out.println(carInfoBean.getCc());
-
             Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");

@@ -257,14 +257,4 @@ public class PreferenceService {
                         suspension, door, passenger, rearwheel, gasoline, transmission, cc));
     }
 
-    // 動態查詢Carinfo
-    public List<Carinfo> searchPreferencesCarinfo(String modelName, Integer productionYear, BigDecimal price,
-            Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
-            Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
-
-        return carInfoRepo.findAll(
-                CarinfoSpecification.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque, brand,
-                        suspension, door, passenger, rearwheel, gasoline, transmission, cc));
-    }
-
 }
