@@ -1,6 +1,7 @@
 package com.spring_kajarta_frontstage.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -170,5 +171,10 @@ public class CarService {
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
         Pageable pageable = PageRequest.of(pageNumber - 1, max, direction, "createTime");
         return carRepo.findAll(pageable);
+    }
+
+      // 查找指定时间后的新增车辆
+    public List<Car> findCarsAddedAfter(LocalDateTime since) {
+        return carRepo.findByCreateTimeAfter(since);
     }
 }

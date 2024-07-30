@@ -1,12 +1,14 @@
 package com.spring_kajarta_frontstage.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -307,4 +309,36 @@ public class CarController {
         }
         return responseBody.toString();
     }
+
+     // 查找指定时间后的新增车辆
+@GetMapping("/new-cars")
+public String findNewCars(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime since) {
+    List<Car> newCars = carService.findCarsAddedAfter(since);
+    JSONArray array = new JSONArray();
+    for (Car car : newCars) {
+        String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd'T'HH:mm:ss");
+        String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd'T'HH:mm:ss");
+        JSONObject item = new JSONObject()
+                .put("id", car.getId())
+                .put("productionYear", car.getProductionYear())
+                .put("milage", car.getMilage())
+                .put("customerId", car.getCustomer().getId())
+                .put("employeeId", car.getEmployee().getId())
+                .put("negotiable", car.getNegotiable())
+                .put("conditionScore", car.getConditionScore())
+                .put("branch", car.getBranch())
+                .put("state", car.getState())
+                .put("price", car.getPrice())
+                .put("launchDate", car.getLaunchDate())
+                .put("carinfoId", car.getCarinfo().getId())
+                .put("color", car.getColor())
+                .put("remark", car.getRemark())
+                .put("createTime", createTime)
+                .put("updateTime", updateTime);
+        array.put(item);
+    }
+    System.out.println("Since parameter: " + since);
+System.out.println("New cars fetched: " + newCars);
+    return array.toString();
+}
 }
