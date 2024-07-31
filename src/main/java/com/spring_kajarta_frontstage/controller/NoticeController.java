@@ -209,9 +209,7 @@ public class NoticeController {
         return array.toString();
     }
 
-    public List<Preference> customer(){
-        
-    }
+
 
 
 }
