@@ -577,13 +577,14 @@ public class PreferenceController {
     // 多條件動態查詢
     @GetMapping("/searchMore")
     public String searchPreferences(
+            @RequestParam(required = false) String carinfoId,
             @RequestParam(required = false) String modelName,
             @RequestParam(required = false) Integer productionYear,
             @RequestParam(required = false) BigDecimal price,
             @RequestParam(required = false) Integer milage,
             @RequestParam(required = false) Integer score,
             @RequestParam(required = false) Integer hp,
-            @RequestParam(required = false) Double torque,
+            @RequestParam(required = false) String torque,
             @RequestParam(required = false) Integer brand,
             @RequestParam(required = false) Integer suspension,
             @RequestParam(required = false) Integer door,
@@ -593,7 +594,8 @@ public class PreferenceController {
             @RequestParam(required = false) Integer transmission,
             @RequestParam(required = false) Integer cc) {
 
-        List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(modelName, productionYear, price, milage,
+        List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(carinfoId, modelName, productionYear,
+                price, milage,
                 score,
                 hp, torque, brand, suspension, door, passenger, rearwheel, gasoline, transmission, cc);
 
@@ -638,6 +640,7 @@ public class PreferenceController {
                     .put("createTime", createTime)
                     .put("updateTime", updateTime)
                     // CarInfo的值
+                    .put("carinfoId", carInfoBean.getId())
                     .put("brand", brandEnum.getBrand())
                     .put("modelName", carInfoBean.getModelName())
                     .put("suspension", suspensionEnum.getType())
