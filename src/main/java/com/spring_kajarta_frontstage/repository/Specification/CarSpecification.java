@@ -15,9 +15,9 @@ import jakarta.persistence.criteria.Predicate;
 
 public class CarSpecification {
 
-    public static Specification<Car> dynamicSearch(String modelName, Integer productionYear,
+    public static Specification<Car> dynamicSearch(String carinfoId, String modelName, Integer productionYear,
             BigDecimal price,
-            Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
+            Integer milage, Integer score, Integer hp, String torque, Integer brand, Integer suspension, Integer door,
             Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -26,6 +26,9 @@ public class CarSpecification {
             Join<Car, Carinfo> carinfoJoin = root.join("carinfo", JoinType.LEFT);
 
             // 添加查询条件
+            if (carinfoId != null && !carinfoId.isEmpty()) {
+                predicates.add(cb.like(cb.toString(carinfoJoin.get("id")), "%" + carinfoId + "%"));
+            }
             if (modelName != null && !modelName.isEmpty()) {
                 predicates.add(cb.like(carinfoJoin.get("modelName"), "%" + modelName + "%"));
             }
@@ -44,7 +47,7 @@ public class CarSpecification {
             if (hp != null) {
                 predicates.add(cb.like(cb.toString(carinfoJoin.get("hp")), "%" + hp + "%"));
             }
-            if (torque != null) {// 有問題的地方
+            if (torque != null) {
                 predicates.add(cb.like(cb.toString(carinfoJoin.get("torque")), "%" +
                         torque + "%"));
             }
