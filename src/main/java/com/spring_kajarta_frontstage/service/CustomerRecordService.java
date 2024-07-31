@@ -263,18 +263,20 @@ public class CustomerRecordService {
                     }
                 }
 
-                switch (rearWheelId) {
-                    case 1:
-                        update.setRearWheelId01(update.getRearWheelId01() + 1);
-                        break;
-                    case 2:
-                        update.setRearWheelId02(update.getRearWheelId02() + 1);
-                        break;
-                    case 3:
-                        update.setRearWheelId03(update.getRearWheelId03() + 1);
-                        break;
-                    default:
-                        break;
+                if (rearWheelId != null) {
+                    switch (rearWheelId) {
+                        case 1:
+                            update.setRearWheelId01(update.getRearWheelId01() + 1);
+                            break;
+                        case 2:
+                            update.setRearWheelId02(update.getRearWheelId02() + 1);
+                            break;
+                        case 3:
+                            update.setRearWheelId03(update.getRearWheelId03() + 1);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 if (suspensionId != null) {
