@@ -247,13 +247,14 @@ public class PreferenceService {
     }
 
     // 動態查詢Car
-    public List<Car> searchPreferencesCarJoinCarinfo(String modelName, Integer productionYear,
+    public List<Car> searchPreferencesCarJoinCarinfo(String carinfoId, String modelName, Integer productionYear,
             BigDecimal price,
-            Integer milage, Integer score, Integer hp, Double torque, Integer brand, Integer suspension, Integer door,
+            Integer milage, Integer score, Integer hp, String torque, Integer brand, Integer suspension, Integer door,
             Integer passenger, Integer rearwheel, Integer gasoline, Integer transmission, Integer cc) {
 
         return carRepo.findAll(
-                CarSpecification.dynamicSearch(modelName, productionYear, price, milage, score, hp, torque, brand,
+                CarSpecification.dynamicSearch(carinfoId, modelName, productionYear, price, milage, score, hp, torque,
+                        brand,
                         suspension, door, passenger, rearwheel, gasoline, transmission, cc));
     }
 
