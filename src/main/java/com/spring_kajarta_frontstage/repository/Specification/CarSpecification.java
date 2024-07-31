@@ -44,8 +44,9 @@ public class CarSpecification {
             if (hp != null) {
                 predicates.add(cb.like(cb.toString(carinfoJoin.get("hp")), "%" + hp + "%"));
             }
-            if (torque != null) {
-                predicates.add(cb.like(cb.toString(carinfoJoin.get("torque")), "%" + torque + "%"));
+            if (torque != null) {// 有問題的地方
+                predicates.add(cb.like(cb.toString(carinfoJoin.get("torque")), "%" +
+                        torque + "%"));
             }
             if (brand != null) {
                 predicates.add(cb.like(cb.toString(carinfoJoin.get("brand")), "%" + brand +
