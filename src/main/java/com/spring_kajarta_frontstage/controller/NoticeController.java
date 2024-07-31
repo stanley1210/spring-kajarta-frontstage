@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Notice;
+import com.kajarta.demo.model.Preference;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
@@ -32,6 +33,8 @@ public class NoticeController {
     private NoticeService noticeService;
     @Autowired
     private CarService carService;
+    @Autowired
+    private PreferenceController preferenceController;
 
     // 計算數量
     @GetMapping("/count")
@@ -205,5 +208,10 @@ public class NoticeController {
         System.out.println("array.toString(): " + array.toString());
         return array.toString();
     }
+
+    public List<Preference> customer(){
+        
+    }
+
 
 }
