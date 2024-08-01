@@ -58,8 +58,7 @@ public class ImageController {
     public String isMainPic(@PathVariable(name = "carId") Integer photoid) {
         JSONObject responseBody = new JSONObject();
         Image image = imageService.findIsMainPic(photoid);
-        String imageUrl = "/kajarta/image/getImage/" + image.getId();
-        return responseBody.put("isMainPic", imageUrl).toString();
+        return responseBody.put("isMainPic", image.getId()).toString();
     }
 
     // 查是否為清單圖
@@ -68,9 +67,8 @@ public class ImageController {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
         for (Image image : imageService.findIsListPic(photoid)) {
-            String imageUrl = "/kajarta/image/getImage/" + image.getId();
             JSONObject item = new JSONObject()
-                    .put(imageUrl, imageUrl);
+                    .put("imageId", image.getId());
             array.put(item);
         }
         return responseBody.put("isListPic", array).toString();
