@@ -39,6 +39,11 @@ public class CarService {
         return carRepo.findAll();
     }
 
+    // 查customerID
+    public List<Car> findByCustomerId(Integer Id) {
+        return carRepo.findByCustomerId(Id);
+    }
+
     // 查ID
     public Car findById(Integer Id) {
         Optional<Car> optional = carRepo.findById(Id);
@@ -173,7 +178,7 @@ public class CarService {
         return carRepo.findAll(pageable);
     }
 
-      // 查找指定时间后的新增车辆
+    // 查找指定时间后的新增车辆
     public List<Car> findCarsAddedAfter(LocalDateTime since) {
         return carRepo.findByCreateTimeAfter(since);
     }
