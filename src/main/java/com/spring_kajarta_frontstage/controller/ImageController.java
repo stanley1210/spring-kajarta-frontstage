@@ -53,6 +53,29 @@ public class ImageController {
         return responseBody.put("imageList", array).toString();
     }
 
+    // 查是否為主圖
+    @GetMapping(path = "/isMainPic/{carId}")
+    public String isMainPic(@PathVariable(name = "carId") Integer photoid) {
+        JSONObject responseBody = new JSONObject();
+        Image image = imageService.findIsMainPic(photoid);
+        String imageUrl = "/kajarta/image/getImage/" + image.getId();
+        return responseBody.put("isMainPic", imageUrl).toString();
+    }
+
+    // 查是否為清單圖
+    @GetMapping(path = "/isListPic/{carId}")
+    public String isListPic(@PathVariable(name = "carId") Integer photoid) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        for (Image image : imageService.findIsListPic(photoid)) {
+            String imageUrl = "/kajarta/image/getImage/" + image.getId();
+            JSONObject item = new JSONObject()
+                    .put(imageUrl, imageUrl);
+            array.put(item);
+        }
+        return responseBody.put("isListPic", array).toString();
+    }
+
     // 查詢單筆
     @GetMapping("/find/{Id}")
     @ResponseBody
