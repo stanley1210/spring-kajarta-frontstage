@@ -42,6 +42,10 @@ public class PreferenceService {
         return preferenceRepo.existsById(id);
     }
 
+    public List<Preference> findByCustomerId(Integer Id) { // 查單筆
+        return preferenceRepo.findByCustomerId(Id);
+    }
+
     public Preference findById(Integer Id) { // 查單筆
         Optional<Preference> optional = preferenceRepo.findById(Id);
         if (optional.isPresent()) {
