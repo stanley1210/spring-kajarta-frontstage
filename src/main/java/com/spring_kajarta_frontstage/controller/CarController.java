@@ -122,6 +122,67 @@ public class CarController {
         return responseBody.toString();
     }
 
+    // CustomerId查詢單筆
+    @GetMapping("/findCustomerId/{Id}")
+    @ResponseBody
+    public String findDataByCustomerId(@PathVariable(name = "Id") Integer Id) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        if (Id == null) {
+            responseBody.put("success", false);
+            responseBody.put("message", "ID不得為空");
+        } else {
+            List<Car> carList = carService.findByCustomerId(Id);
+            for (Car car : carList) {
+                Carinfo carInfoBean = carInfoService.findById(car.getCarinfo().getId());
+                Brand brandEnum = brandService.findById(carInfoBean.getBrand());
+                Negotiable negotiableEnum = negotiableService.findById(car.getNegotiable());
+                Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
+                Door doorEnum = doorService.findById(carInfoBean.getDoor());
+                Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
+                Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearwheel());
+                Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
+                Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
+                Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
+                BranchEnum branch = BranchEnum.getByCode(car.getBranch());
+
+                Car carModel = car;
+                JSONObject carJson = new JSONObject()
+                        .put("id", carModel.getId())
+                        .put("productionYear", carModel.getProductionYear())
+                        .put("milage", carModel.getMilage())
+                        .put("customerId", carModel.getCustomer().getId())
+                        .put("employeeId", carModel.getEmployee().getId())
+                        .put("negotiable", negotiableEnum.getPercent())
+                        .put("conditionScore", carModel.getConditionScore())
+                        .put("branch", branch.getBranchName())
+                        .put("state", carModel.getState())
+                        .put("price", carModel.getPrice())
+                        .put("launchDate", carModel.getLaunchDate())
+                        .put("color", carModel.getColor())
+                        .put("remark", carModel.getRemark())
+                        // CarInfo的值
+                        .put("carinfoId", carModel.getCarinfo().getId())
+                        .put("carinfoBrand", brandEnum.getBrand())
+                        .put("carinfoModelName", carInfoBean.getModelName())
+                        .put("carinfoSuspension", suspensionEnum.getType())
+                        .put("carinfoDoor", doorEnum.getCardoor())
+                        .put("carinfoPassenger", passengerEnum.getSeat())
+                        .put("carinfoRearWheel", rearwheelEnum.getWheel())
+                        .put("carinfoGasoline", gasolineEnum.getGaso())
+                        .put("carinfoTransmission", transmissionEnum.getTrans())
+                        .put("carinfoCc", displacementEnum.getCc())
+                        .put("carinfoHp", carInfoBean.getHp())
+                        .put("carinfoTorque", carInfoBean.getTorque())
+                        .put("carinfoCreateTime", carInfoBean.getCreateTime())
+                        .put("carinfoUpdateTime", carInfoBean.getUpdateTime());
+                array = array.put(carJson);
+            }
+            responseBody.put("list", array);
+        }
+        return responseBody.toString();
+    }
+
     // 查詢單筆
     @GetMapping("/find/{Id}")
     @ResponseBody
