@@ -1,10 +1,9 @@
 package com.spring_kajarta_frontstage.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.spring_kajarta_frontstage.service.CarService;
-import com.spring_kajarta_frontstage.service.NoticeService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +17,35 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kajarta.demo.model.Brand;
 import com.kajarta.demo.model.Car;
+import com.kajarta.demo.model.Carinfo;
+import com.kajarta.demo.model.Customer;
+import com.kajarta.demo.model.Displacement;
+import com.kajarta.demo.model.Door;
+import com.kajarta.demo.model.Gasoline;
 import com.kajarta.demo.model.Notice;
+import com.kajarta.demo.model.Passenger;
 import com.kajarta.demo.model.Preference;
+import com.kajarta.demo.model.Rearwheel;
+import com.kajarta.demo.model.Suspension;
+import com.kajarta.demo.model.Transmission;
+import com.spring_kajarta_frontstage.service.BrandService;
+import com.spring_kajarta_frontstage.service.CarInfoService;
+import com.spring_kajarta_frontstage.service.CarService;
+import com.spring_kajarta_frontstage.service.CustomerService;
+import com.spring_kajarta_frontstage.service.DisplacementService;
+import com.spring_kajarta_frontstage.service.DoorService;
+import com.spring_kajarta_frontstage.service.GasolineService;
+import com.spring_kajarta_frontstage.service.NoticeService;
+import com.spring_kajarta_frontstage.service.PassengerService;
+import com.spring_kajarta_frontstage.service.PreferenceService;
+import com.spring_kajarta_frontstage.service.RearWheelService;
+import com.spring_kajarta_frontstage.service.SuspensionService;
+import com.spring_kajarta_frontstage.service.TransmissionService;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
 
 @RestController
@@ -34,7 +57,28 @@ public class NoticeController {
     @Autowired
     private CarService carService;
     @Autowired
-    private PreferenceController preferenceController;
+    private CarInfoService carInfoService;
+    @Autowired
+    private PreferenceService preferenceService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private BrandService brandService;
+    @Autowired
+    private SuspensionService suspensionService;
+    @Autowired
+    private DoorService doorService;
+    @Autowired
+    private PassengerService passengerService;
+    @Autowired
+    private RearWheelService rearWheelService;
+    @Autowired
+    private GasolineService gasolineService;
+    @Autowired
+    private TransmissionService transmissionService;
+    @Autowired
+    private DisplacementService displacementService;
+
 
     // 計算數量
     @GetMapping("/count")
@@ -178,6 +222,10 @@ public class NoticeController {
         return responseBody.toString();
     }
 
+
+
+
+
     @GetMapping("/new-cars")
     public String findNewCars(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime since) {
         List<Car> newCars = carService.findCarsAddedAfter(since);
@@ -204,12 +252,161 @@ public class NoticeController {
                     .put("updateTime", updateTime);
             array.put(item);
         }
-        System.out.println("Since parameter: " + since);
-        System.out.println("array.toString(): " + array.toString());
         return array.toString();
     }
 
 
+
+    @GetMapping("/findByCustomerId/{Id}") // CustomerId查詢會員搜尋條件列表並模糊搜尋二手車
+    @ResponseBody
+    public String findDataByCustomerId(@PathVariable(name = "Id") Integer Id) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        
+        // 查找用戶喜好清單
+        List<Preference> preferenceList = preferenceService.findByCustomerId(Id);
+        Customer customer = customerService.findById(Id);
+        List<Car> carList = carService.findByCustomerId(Id);
+        Carinfo carInfo = new Carinfo();
+        for (Car car : carList) {
+            carInfo = carInfoService.findById(car.getCarinfo().getId());
+        }
+    
+        // 用來儲存模糊搜尋結果
+        JSONArray carArray = new JSONArray();
+    
+        for (Preference preference : preferenceList) {
+            if (preference != null) {
+                JSONObject item = new JSONObject()
+                        .put("id", preference.getId())
+                        .put("selectName", preference.getSelectName())
+                        .put("productionYear", preference.getProductionYear())
+                        .put("price", preference.getPrice())
+                        .put("milage", preference.getMilage())
+                        .put("score", preference.getScore())
+                        .put("customer_id", customer.getId())
+                        .put("carinfo_id", carInfo.getId())
+                        .put("gasoline", preference.getGasoline())
+                        .put("brand", preference.getBrand())
+                        .put("suspension", preference.getSuspension())
+                        .put("door", preference.getDoor())
+                        .put("passenger", preference.getPassenger())
+                        .put("rearWheel", preference.getRearWheel())
+                        .put("gasoline", preference.getGasoline())
+                        .put("transmission", preference.getTransmission())
+                        .put("cc", preference.getCc())
+                        .put("hp", preference.getHp())
+                        .put("torque", preference.getTorque() != null ? preference.getTorque().toString() : null) // 確保在null的情況下傳遞null
+                        .put("createTime", preference.getCreateTime())
+                        .put("updateTime", preference.getUpdateTime())
+                        .put("preferencesLists", preference.getPreferencesLists());
+                array.put(item);
+    
+                // 使用喜好清單中的條件來模糊搜尋二手車
+                JSONArray searchResult = searchPreferences(
+                    carInfo.getId().toString(), 
+                    carInfo.getModelName(), 
+                    preference.getProductionYear(), 
+                    preference.getPrice(), 
+                    preference.getMilage(), 
+                    preference.getScore(), 
+                    preference.getHp(), 
+                    preference.getTorque() != null ? preference.getTorque().toString() : null, // 確保在null的情況下傳遞null
+                    carInfo.getBrand(), 
+                    carInfo.getSuspension(), 
+                    carInfo.getDoor(), 
+                    carInfo.getPassenger(), 
+                    carInfo.getRearwheel(), 
+                    carInfo.getGasoline(), 
+                    carInfo.getTransmission(), 
+                    carInfo.getCc()
+                );
+    
+                for (int i = 0; i < searchResult.length(); i++) {
+                    carArray.put(searchResult.getJSONObject(i));
+                }
+            }
+        }
+    
+        responseBody.put("preferenceCarList", carArray);
+        return responseBody.toString();
+    }
+    
+    // 多條件動態查詢
+    public JSONArray searchPreferences(
+            String carinfoId,
+            String modelName,
+            Integer productionYear,
+            BigDecimal price,
+            Integer milage,
+            Integer score,
+            Integer hp,
+            String torque,
+            Integer brand,
+            Integer suspension,
+            Integer door,
+            Integer passenger,
+            Integer rearwheel,
+            Integer gasoline,
+            Integer transmission,
+            Integer cc) {
+    
+        List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(carinfoId, modelName, productionYear,
+                price, milage,
+                score,
+                hp, torque, brand, suspension, door, passenger, rearwheel, gasoline, transmission, cc);
+    
+        JSONArray carArray = new JSONArray();
+    
+        for (Car car : carList) {
+            Carinfo carInfoBean = carInfoService.findById(car.getCarinfo().getId());
+            Brand brandEnum = brandService.findById(carInfoBean.getBrand());
+            Suspension suspensionEnum = suspensionService.findById(carInfoBean.getSuspension());
+            Door doorEnum = doorService.findById(carInfoBean.getDoor());
+            Passenger passengerEnum = passengerService.findById(carInfoBean.getPassenger());
+            Rearwheel rearwheelEnum = rearWheelService.findById(carInfoBean.getRearwheel());
+            Gasoline gasolineEnum = gasolineService.findById(carInfoBean.getGasoline());
+            Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
+            Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
+            String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
+            String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
+    
+            JSONObject item = new JSONObject()
+                    .put("id", car.getId())
+                    .put("productionYear", car.getProductionYear())
+                    .put("milage", car.getMilage())
+                    .put("customerId", car.getCustomer().getId())
+                    .put("employeeId", car.getEmployee().getId())
+                    .put("negotiable", car.getNegotiable())
+                    .put("conditionScore", car.getConditionScore())
+                    .put("branch", car.getBranch())
+                    .put("state", car.getState())
+                    .put("price", car.getPrice())
+                    .put("launchDate", car.getLaunchDate())
+                    .put("modelName", carInfoBean.getModelName())
+                    .put("color", car.getColor())
+                    .put("remark", car.getRemark())
+                    .put("createTime", createTime)
+                    .put("updateTime", updateTime)
+                    // CarInfo的值
+                    .put("carinfoId", carInfoBean.getId())
+                    .put("brand", brandEnum.getBrand())
+                    .put("modelName", carInfoBean.getModelName())
+                    .put("suspension", suspensionEnum.getType())
+                    .put("door", doorEnum.getCardoor())
+                    .put("passenger", passengerEnum.getSeat())
+                    .put("rearWheel", rearwheelEnum.getWheel())
+                    .put("gasoline", gasolineEnum.getGaso())
+                    .put("transmission", transmissionEnum.getTrans())
+                    .put("cc", displacementEnum.getCc())
+                    .put("hp", carInfoBean.getHp())
+                    .put("torque", carInfoBean.getTorque() != null ? carInfoBean.getTorque().toString() : null);
+            carArray.put(item);
+        }
+    
+        return carArray;
+    }
+    
 
 
 }
