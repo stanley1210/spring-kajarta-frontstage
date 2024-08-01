@@ -27,6 +27,7 @@ import com.kajarta.demo.model.Car;
 import com.kajarta.demo.model.Carinfo;
 import com.kajarta.demo.model.Displacement;
 import com.kajarta.demo.model.Door;
+import com.kajarta.demo.model.Employee;
 import com.kajarta.demo.model.Gasoline;
 import com.kajarta.demo.model.Negotiable;
 import com.kajarta.demo.model.Passenger;
@@ -39,6 +40,7 @@ import com.spring_kajarta_frontstage.service.CarInfoService;
 import com.spring_kajarta_frontstage.service.CarService;
 import com.spring_kajarta_frontstage.service.DisplacementService;
 import com.spring_kajarta_frontstage.service.DoorService;
+import com.spring_kajarta_frontstage.service.EmployeeService;
 import com.spring_kajarta_frontstage.service.GasolineService;
 import com.spring_kajarta_frontstage.service.NegotiableService;
 import com.spring_kajarta_frontstage.service.PassengerService;
@@ -84,6 +86,9 @@ public class CarController {
     @Autowired
     private DisplacementService displacementService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     // 查全部
     @GetMapping("/findAll")
     public String findAll(@RequestParam Integer pageNumber,
@@ -96,12 +101,15 @@ public class CarController {
         for (Car car : Cars) {
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
+            Brand brandEnum = brandService.findById(car.getCarinfo().getBrand());
+            Employee employee = employeeService.findById(car.getEmployee().getId());
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
                     .put("milage", car.getMilage())
                     .put("customerId", car.getCustomer().getId())
                     .put("employeeId", car.getEmployee().getId())
+                    .put("employeeName", employee.getName())
                     .put("negotiable", car.getNegotiable())
                     .put("conditionScore", car.getConditionScore())
                     .put("branch", car.getBranch())
@@ -110,6 +118,7 @@ public class CarController {
                     .put("launchDate", car.getLaunchDate())
                     .put("carinfoId", car.getCarinfo().getId())
                     .put("carinfoModelName", car.getCarinfo().getModelName())
+                    .put("cainfoBrand", brandEnum.getBrand())
                     .put("color", car.getColor())
                     .put("remark", car.getRemark())
                     .put("createTime", createTime)
