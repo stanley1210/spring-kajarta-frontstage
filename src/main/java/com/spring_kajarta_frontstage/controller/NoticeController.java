@@ -79,7 +79,6 @@ public class NoticeController {
     @Autowired
     private DisplacementService displacementService;
 
-
     // 計算數量
     @GetMapping("/count")
     public long count() {
@@ -197,7 +196,43 @@ public class NoticeController {
         return responseBody.toString();
     }
 
-    // 多條件查詢
+    // 多條件查詢 Integer milage = obj.isNull("milage") ? null : obj.getInt("milage");
+    @GetMapping("/findPreferenceDatasId/{id}")
+    public String findPreferenceDatasId(@PathVariable(name = "id") Integer id) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        for (Preference preference : preferenceService.findByCustomerId(id)) {
+            String carinfoId = preference.getCarinfo() == null ? null : preference.getCarinfo().getId().toString();
+            String modelName = preference.getSelectName() == null ? null : preference.getSelectName();
+            Integer productionYear = preference.getProductionYear() == null ? null : preference.getProductionYear();
+            BigDecimal price = preference.getPrice() == null ? null : preference.getPrice();
+            Integer milage = preference.getMilage() == null ? null : preference.getMilage();
+            Integer score = preference.getScore() == null ? null : preference.getScore();
+            Integer hp = preference.getHp() == null ? null : preference.getHp();
+            String torque = preference.getTorque() == null ? null : preference.getTorque().toString();// 可能會有問題
+            Integer brand = preference.getBrand() == null ? null : preference.getBrand();
+            Integer suspension = preference.getSuspension() == null ? null : preference.getSuspension();
+            Integer door = preference.getDoor() == null ? null : preference.getDoor();
+            Integer passenger = preference.getPassenger() == null ? null : preference.getPassenger();
+            Integer rearwheel = preference.getRearWheel() == null ? null : preference.getRearWheel();
+            Integer gasoline = preference.getGasoline() == null ? null : preference.getGasoline();
+            Integer transmission = preference.getTransmission() == null ? null : preference.getTransmission();
+            Integer cc = preference.getCc() == null ? null : preference.getCc();
+            List<Car> preferenceCarList = preferenceService.searchPreferencesCarJoinCarinfo(carinfoId, modelName,
+                    productionYear,
+                    price, milage,
+                    score,
+                    hp, torque, brand, suspension, door, passenger, rearwheel, gasoline, transmission, cc);
+            for (Car car : preferenceCarList) {
+                JSONObject item = new JSONObject()
+                        .put("id", car.getId());
+                array.put(item);
+            }
+        }
+        responseBody.put("list", array);
+        return responseBody.toString();
+    }
+
     // 刪除
     @DeleteMapping("/delete/{id}")
     public String remove(@PathVariable Integer id) {
@@ -221,10 +256,6 @@ public class NoticeController {
         }
         return responseBody.toString();
     }
-
-
-
-
 
     @GetMapping("/new-cars")
     public String findNewCars(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime since) {
@@ -255,14 +286,12 @@ public class NoticeController {
         return array.toString();
     }
 
-
-
     @GetMapping("/findByCustomerId/{Id}") // CustomerId查詢會員搜尋條件列表並模糊搜尋二手車
     @ResponseBody
     public String findDataByCustomerId(@PathVariable(name = "Id") Integer Id) {
         JSONObject responseBody = new JSONObject();
         JSONArray array = new JSONArray();
-        
+
         // 查找用戶喜好清單
         List<Preference> preferenceList = preferenceService.findByCustomerId(Id);
         Customer customer = customerService.findById(Id);
@@ -271,10 +300,10 @@ public class NoticeController {
         for (Car car : carList) {
             carInfo = carInfoService.findById(car.getCarinfo().getId());
         }
-    
+
         // 用來儲存模糊搜尋結果
         JSONArray carArray = new JSONArray();
-    
+
         for (Preference preference : preferenceList) {
             if (preference != null) {
                 JSONObject item = new JSONObject()
@@ -301,37 +330,36 @@ public class NoticeController {
                         .put("updateTime", preference.getUpdateTime())
                         .put("preferencesLists", preference.getPreferencesLists());
                 array.put(item);
-    
+
                 // 使用喜好清單中的條件來模糊搜尋二手車
                 JSONArray searchResult = searchPreferences(
-                    carInfo.getId().toString(), 
-                    carInfo.getModelName(), 
-                    preference.getProductionYear(), 
-                    preference.getPrice(), 
-                    preference.getMilage(), 
-                    preference.getScore(), 
-                    preference.getHp(), 
-                    preference.getTorque() != null ? preference.getTorque().toString() : null, // 確保在null的情況下傳遞null
-                    carInfo.getBrand(), 
-                    carInfo.getSuspension(), 
-                    carInfo.getDoor(), 
-                    carInfo.getPassenger(), 
-                    carInfo.getRearwheel(), 
-                    carInfo.getGasoline(), 
-                    carInfo.getTransmission(), 
-                    carInfo.getCc()
-                );
-    
+                        carInfo.getId().toString(),
+                        carInfo.getModelName(),
+                        preference.getProductionYear(),
+                        preference.getPrice(),
+                        preference.getMilage(),
+                        preference.getScore(),
+                        preference.getHp(),
+                        preference.getTorque() != null ? preference.getTorque().toString() : null, // 確保在null的情況下傳遞null
+                        carInfo.getBrand(),
+                        carInfo.getSuspension(),
+                        carInfo.getDoor(),
+                        carInfo.getPassenger(),
+                        carInfo.getRearwheel(),
+                        carInfo.getGasoline(),
+                        carInfo.getTransmission(),
+                        carInfo.getCc());
+
                 for (int i = 0; i < searchResult.length(); i++) {
                     carArray.put(searchResult.getJSONObject(i));
                 }
             }
         }
-    
+
         responseBody.put("preferenceCarList", carArray);
         return responseBody.toString();
     }
-    
+
     // 多條件動態查詢
     public JSONArray searchPreferences(
             String carinfoId,
@@ -350,14 +378,14 @@ public class NoticeController {
             Integer gasoline,
             Integer transmission,
             Integer cc) {
-    
+
         List<Car> carList = preferenceService.searchPreferencesCarJoinCarinfo(carinfoId, modelName, productionYear,
                 price, milage,
                 score,
                 hp, torque, brand, suspension, door, passenger, rearwheel, gasoline, transmission, cc);
-    
+
         JSONArray carArray = new JSONArray();
-    
+
         for (Car car : carList) {
             Carinfo carInfoBean = carInfoService.findById(car.getCarinfo().getId());
             Brand brandEnum = brandService.findById(carInfoBean.getBrand());
@@ -370,7 +398,7 @@ public class NoticeController {
             Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
             String createTime = DatetimeConverter.toString(car.getCreateTime(), "yyyy-MM-dd");
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
-    
+
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
@@ -403,10 +431,8 @@ public class NoticeController {
                     .put("torque", carInfoBean.getTorque() != null ? carInfoBean.getTorque().toString() : null);
             carArray.put(item);
         }
-    
+
         return carArray;
     }
-    
-
 
 }
