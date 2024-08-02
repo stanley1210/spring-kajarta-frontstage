@@ -57,8 +57,13 @@ public class ImageController {
     @GetMapping(path = "/isMainPic/{carId}")
     public String isMainPic(@PathVariable(name = "carId") Integer photoid) {
         JSONObject responseBody = new JSONObject();
-        Image image = imageService.findIsMainPic(photoid);
-        return responseBody.put("isMainPic", image.getId()).toString();
+        Image image = imageService.findIsMainPic(photoid) == null ? null : imageService.findIsMainPic(photoid);
+        if (image == null) {
+            return responseBody.put("isMainPic", "沒有這張圖").toString();
+        } else {
+            return responseBody.put("isMainPic", image.getId()).toString();
+
+        }
     }
 
     // 查是否為清單圖
