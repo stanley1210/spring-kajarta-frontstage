@@ -94,6 +94,8 @@ public class PreferenceController {
     @Autowired
     private DisplacementService displacementService;
 
+
+
     @GetMapping("/findByCustomerId/{Id}") // CustomerId查單筆ID
     @ResponseBody
     public String findDataByCustomerId(@PathVariable(name = "Id") Integer Id) {
