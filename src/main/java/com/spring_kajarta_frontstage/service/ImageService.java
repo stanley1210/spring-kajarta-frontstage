@@ -33,6 +33,16 @@ public class ImageService {
         return imageRepo.findAll();
     }
 
+    // 查是否為主圖
+    public Image findIsMainPic(Integer Id) {
+        return imageRepo.findIsMainPic(Id);
+    }
+
+    // 查是否為清單圖
+    public List<Image> findIsListPic(Integer Id) {
+        return imageRepo.findIsListPic(Id);
+    }
+
     // 查ID
     public Image findById(Integer Id) {
         Optional<Image> optional = imageRepo.findById(Id);
