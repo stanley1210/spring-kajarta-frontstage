@@ -229,6 +229,7 @@ public class NoticeController {
                 array.put(item);
             }
         }
+
         responseBody.put("list", array);
         return responseBody.toString();
     }
