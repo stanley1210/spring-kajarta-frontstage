@@ -94,6 +94,8 @@ public class PreferenceController {
     @Autowired
     private DisplacementService displacementService;
 
+
+
     @GetMapping("/findByCustomerId/{Id}") // CustomerId查單筆ID
     @ResponseBody
     public String findDataByCustomerId(@PathVariable(name = "Id") Integer Id) {
@@ -682,6 +684,7 @@ public class PreferenceController {
                     .put("milage", car.getMilage())
                     .put("customerId", car.getCustomer().getId())
                     .put("employeeId", car.getEmployee().getId())
+                    .put("employeeName", car.getEmployee().getName())
                     .put("negotiable", car.getNegotiable())
                     .put("conditionScore", car.getConditionScore())
                     .put("branch", car.getBranch())
