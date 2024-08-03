@@ -37,6 +37,7 @@ import com.kajarta.demo.model.Suspension;
 import com.kajarta.demo.model.Transmission;
 import com.spring_kajarta_frontstage.service.BrandService;
 import com.spring_kajarta_frontstage.service.CarInfoService;
+import com.spring_kajarta_frontstage.service.CarService;
 import com.spring_kajarta_frontstage.service.CustomerService;
 import com.spring_kajarta_frontstage.service.DisplacementService;
 import com.spring_kajarta_frontstage.service.DoorService;
@@ -64,6 +65,9 @@ public class PreferenceController {
     private CarInfoService carinfoService;
 
     @Autowired
+    private CarService carService;
+
+    @Autowired
     private BrandService brandService;
 
     @Autowired
@@ -89,6 +93,56 @@ public class PreferenceController {
 
     @Autowired
     private DisplacementService displacementService;
+
+    @GetMapping("/findByCustomerId/{Id}") // CustomerId查單筆ID
+    @ResponseBody
+    public String findDataByCustomerId(@PathVariable(name = "Id") Integer Id) {
+        JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Preference> preferenceList = preferenceService.findByCustomerId(Id);
+        Customer customer = customerService.findById(Id);
+
+        for (Preference preference : preferenceList) {
+            Integer preferenceCarinfoId = preference.getCarinfo() == null ? null : preference.getCarinfo().getId();
+            Carinfo carInfo = new Carinfo();
+            if (preferenceCarinfoId != null) {
+                carInfo = carinfoService.findById(preference.getCarinfo().getId());
+            }
+            JSONObject item = new JSONObject()
+                    .put("id", preference.getId())
+                    .put("selectName", preference.getSelectName())
+                    .put("productionYear", preference.getProductionYear())
+                    .put("price", preference.getPrice())
+                    .put("milage", preference.getMilage())
+                    .put("score", preference.getScore())
+                    .put("customer_id", customer.getId())
+                    .put("gasoline", preference.getGasoline())
+                    .put("brand", preference.getBrand())
+                    .put("suspension", preference.getSuspension())
+                    .put("door", preference.getDoor())
+                    .put("passenger", preference.getPassenger())
+                    .put("rearWheel", preference.getRearWheel())
+                    .put("gasoline", preference.getGasoline())
+                    .put("transmission", preference.getTransmission())
+                    .put("cc", preference.getCc())
+                    .put("hp", preference.getHp())
+                    .put("torque", preference.getTorque())
+                    .put("createTime", preference.getCreateTime())
+                    .put("updateTime", preference.getUpdateTime())
+                    .put("preferencesLists", preference.getPreferencesLists());
+            if (preferenceCarinfoId != null) {
+                item.put("carinfo_id", carInfo.getId())
+                        .put("carinfoModelName", carInfo.getModelName());
+            } else {
+                item.put("carinfo_id", JSONObject.NULL);
+            }
+            array = array.put(item);
+
+        }
+
+        responseBody.put("list", array);
+        return responseBody.toString();
+    }
 
     @GetMapping("/find/{Id}") // 查單筆ID
     @ResponseBody
@@ -658,4 +712,5 @@ public class PreferenceController {
         responseBody.put("preferenceCarList", carArray);
         return responseBody.toString();
     }
+
 }

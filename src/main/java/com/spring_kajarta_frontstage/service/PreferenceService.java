@@ -42,6 +42,10 @@ public class PreferenceService {
         return preferenceRepo.existsById(id);
     }
 
+    public List<Preference> findByCustomerId(Integer Id) { // 查單筆
+        return preferenceRepo.findByCustomerId(Id);
+    }
+
     public Preference findById(Integer Id) { // 查單筆
         Optional<Preference> optional = preferenceRepo.findById(Id);
         if (optional.isPresent()) {
@@ -152,7 +156,10 @@ public class PreferenceService {
             Integer preferencesLists = obj.isNull("preferences_lists") ? null : obj.getInt("preferences_lists");
 
             Customer customer = customerService.findById(customerId);
-            Carinfo carInfo = carinfoService.findById(carinfoId);
+            Carinfo carInfo = new Carinfo();
+            if (carinfoId != null) {
+                carInfo = carinfoService.findById(carinfoId);
+            }
 
             Preference insert = new Preference();
             insert.setSelectName(selectName);
@@ -161,7 +168,9 @@ public class PreferenceService {
             insert.setMilage(milage);
             insert.setScore(score);
             insert.setCustomer(customer);
-            insert.setCarinfo(carInfo);
+            if (carinfoId != null) {
+                insert.setCarinfo(carInfo);
+            }
             insert.setBrand(brand);
             insert.setSuspension(suspension);
             insert.setDoor(door);
@@ -207,7 +216,10 @@ public class PreferenceService {
             Integer preferencesLists = obj.isNull("preferences_lists") ? null : obj.getInt("preferences_lists");
 
             Customer customer = customerService.findById(customerId);
-            Carinfo carInfo = carinfoService.findById(carinfoId);
+            Carinfo carInfo = new Carinfo();
+            if (carinfoId != null) {
+                carInfo = carinfoService.findById(carinfoId);
+            }
             Optional<Preference> optional = preferenceRepo.findById(id);
             if (optional.isPresent()) {
                 Preference update = optional.get();
@@ -217,7 +229,9 @@ public class PreferenceService {
                 update.setMilage(milage);
                 update.setScore(score);
                 update.setCustomer(customer);
-                update.setCarinfo(carInfo);
+                if (carinfoId != null) {
+                    update.setCarinfo(carInfo);
+                }
                 update.setBrand(brand);
                 update.setSuspension(suspension);
                 update.setDoor(door);

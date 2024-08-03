@@ -42,14 +42,15 @@ public class MyFilter implements Filter {
             return;
         }
 
-//        String customerId = ((HttpServletRequest) request).getHeader("token");
-//        if (customerId != null) {
-//            String token = getTokenFromRedis(Long.parseLong(customerId));
-//            if (token != null) {
-//                // Set the token in SecurityContext or other context
-//                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(token, null, new ArrayList<>()));
-//            }
-//        }
+        // String customerId = ((HttpServletRequest) request).getHeader("token");
+        // if (customerId != null) {
+        // String token = getTokenFromRedis(Long.parseLong(customerId));
+        // if (token != null) {
+        // // Set the token in SecurityContext or other context
+        // SecurityContextHolder.getContext().setAuthentication(new
+        // UsernamePasswordAuthenticationToken(token, null, new ArrayList<>()));
+        // }
+        // }
 
         chain.doFilter(request, response);
     }

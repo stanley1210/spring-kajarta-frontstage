@@ -60,4 +60,7 @@ public interface PreferenceRepository extends JpaRepository<Preference, Integer>
         @Query(value = "SELECT * FROM Preference WHERE torque LIKE %:word%", nativeQuery = true)
         List<Preference> searchByTorque(@Param(value = "word") String word); // 鎖定torque欄位
 
+        @Query(value = "SELECT * FROM Preference WHERE customer_id= :Id", nativeQuery = true)
+        List<Preference> findByCustomerId(Integer Id); // 搜尋會員心儀清單
+
 }
