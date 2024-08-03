@@ -682,6 +682,7 @@ public class PreferenceController {
                     .put("milage", car.getMilage())
                     .put("customerId", car.getCustomer().getId())
                     .put("employeeId", car.getEmployee().getId())
+                    .put("employeeName", car.getEmployee().getName())
                     .put("negotiable", car.getNegotiable())
                     .put("conditionScore", car.getConditionScore())
                     .put("branch", car.getBranch())
