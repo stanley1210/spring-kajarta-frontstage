@@ -103,6 +103,18 @@ public class CarController {
             String updateTime = DatetimeConverter.toString(car.getUpdateTime(), "yyyy-MM-dd");
             Brand brandEnum = brandService.findById(car.getCarinfo().getBrand());
             Employee employee = employeeService.findById(car.getEmployee().getId());
+            Integer stateCode = car.getState();
+            String state = "無狀態";
+            if (stateCode == 1) {
+                state = "草稿";
+            } else if (stateCode == 2) {
+                state = "上架";
+            } else if (stateCode == 3) {
+                state = "下架";
+            } else if (stateCode == 4) {
+                state = "暫時下架";
+            }
+
             JSONObject item = new JSONObject()
                     .put("id", car.getId())
                     .put("productionYear", car.getProductionYear())
@@ -114,6 +126,7 @@ public class CarController {
                     .put("conditionScore", car.getConditionScore())
                     .put("branch", car.getBranch())
                     .put("state", car.getState())
+                    .put("stateName", state)
                     .put("price", car.getPrice())
                     .put("launchDate", car.getLaunchDate())
                     .put("carinfoId", car.getCarinfo().getId())
