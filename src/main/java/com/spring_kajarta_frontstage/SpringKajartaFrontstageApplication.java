@@ -4,10 +4,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import javax.crypto.SecretKey;
 
 @SpringBootApplication(scanBasePackages = {"com.spring_kajarta_frontstage", "com.kajarta"})
+@EntityScan(basePackages = "com.kajarta.demo.model")
 public class SpringKajartaFrontstageApplication {
 
 
