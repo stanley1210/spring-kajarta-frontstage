@@ -29,6 +29,11 @@ public class ViewCarService {
     @Autowired
     private CustomerService customerService;
 
+    // 以carId查銷售分數
+    public List<ViewCar> findSalesScoreByCarId(Integer carId) {
+        return viewCarRepo.findSalesScoreByCarId(carId);
+    }
+
     // 計算數量
     public long count() {
         return viewCarRepo.count();
@@ -138,7 +143,7 @@ public class ViewCarService {
         return viewCarRepo.findAll();
     }
 
-    public Page<ViewCar> findByPage(Integer pageNumeber,  Integer max) {
+    public Page<ViewCar> findByPage(Integer pageNumeber, Integer max) {
         Pageable pgb = PageRequest.of(pageNumeber - 1, max, Sort.Direction.ASC, "viewCarDate");
         Page<ViewCar> page = viewCarRepo.findAll(pgb);
         return page;
@@ -149,8 +154,7 @@ public class ViewCarService {
         return viewCarRepo.findPageByCustomerId(customerId, pageable);
     }
 
-
-    //用customerId查詢
+    // 用customerId查詢
     public List<ViewCar> findByCustomerId(Integer customerId) {
         return viewCarRepo.findByCustomer_Id(customerId);
     }

@@ -182,4 +182,8 @@ public class CarService {
     public List<Car> findCarsAddedAfter(LocalDateTime since) {
         return carRepo.findByCreateTimeAfter(since);
     }
+
+    public List<Car> findCarByEmployeeId(Integer employeeId) {
+        return carRepo.findCarByEmployeeId(employeeId);
+    }
 }
