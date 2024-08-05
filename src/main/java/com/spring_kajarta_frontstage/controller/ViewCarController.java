@@ -94,6 +94,7 @@ public class ViewCarController {
                     .put("id", viewCar.getId())
                     // .put("viewTimeSection", viewCar.getViewTimeSection())
                     .put("viewTimeSection", ViewTimeSectionEnum.getByCode(viewCar.getViewTimeSection()).getTimeRange())
+                    .put("viewTimeSectionNb", viewCar.getViewTimeSection())
                     .put("car", viewCar.getCar().getId())
                     .put("salesScore", viewCar.getSalesScore())
                     .put("factoryScore", viewCar.getFactoryScore())
