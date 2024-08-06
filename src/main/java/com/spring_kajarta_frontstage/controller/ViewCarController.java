@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.spring_kajarta_frontstage.service.CarService;
 import com.spring_kajarta_frontstage.service.EmployeeService;
+import com.spring_kajarta_frontstage.service.KpiService;
 import com.spring_kajarta_frontstage.service.ViewCarService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kajarta.demo.enums.ViewTimeSectionEnum;
 import com.kajarta.demo.model.Car;
+import com.kajarta.demo.model.Kpi;
 import com.kajarta.demo.model.ViewCar;
 import com.kajarta.demo.vo.EmployeeVO;
 import com.spring_kajarta_frontstage.util.DatetimeConverter;
@@ -41,17 +43,24 @@ public class ViewCarController {
     @Autowired
     private CarService carService;
 
+    @Autowired
+    private KpiService kpiService;
+
     // KPI運算
-    @PutMapping("/KPI")
+    @GetMapping("/KPI")
     public String updateKPI() {
         List<EmployeeVO> employeeVOsList = employeeService.findAll();
+        JSONObject kpiFindJson = new JSONObject();
+        JSONObject kpiModifyJson = new JSONObject();
+        JSONObject responseBody = new JSONObject();
         Integer employeeId;
         Integer employeeType;
         Integer carId;
         Integer salesScore;
         Integer totalScore = 0;
-        BigDecimal salesAvgScore;
-
+        Integer salesAvgScore;
+        String result;
+        Kpi kpiModify = new Kpi();
         for (EmployeeVO employeeVO : employeeVOsList) {
             employeeId = employeeVO.getId();
             employeeType = employeeVO.getAccountType();
@@ -60,35 +69,60 @@ public class ViewCarController {
                 Integer salesCount = 0;
                 for (Car car : carList) {
                     carId = car.getId();
-                    // System.out.println("銷售員" + employeeId + "負責的car" + carId);
                     List<ViewCar> viewCarList = viewCarService.findSalesScoreByCarId(carId);
                     for (ViewCar viewCar : viewCarList) {
-                        salesScore = viewCar == null ? 0 : viewCar.getSalesScore();
-                        totalScore = totalScore + salesScore;
-                        salesCount++;
-                        // System.out.println("銷售員" + employeeId + "負責的car:" + carId + " 並獲得:" +
-                        // salesScore);
+                        salesScore = viewCar == null ? 0 : viewCar.getSalesScore();// 解決客戶沒評分狀況：沒評分為0
+                        totalScore = totalScore + salesScore;// 計算總分
+                        salesCount++;// 計算共賣出幾台
                     }
                 }
-                // System.out.println("銷售員" + employeeId + " 獲得總分:" + totalScore + " 共賣出:" +
-                // salesCount);
-                BigDecimal totalScoreBD = new BigDecimal(totalScore).setScale(1, RoundingMode.HALF_UP);
-                BigDecimal salesCountBD = new BigDecimal(salesCount).setScale(1, RoundingMode.HALF_UP);
-                if (salesCount != 0) {
-                    salesAvgScore = totalScoreBD.divide(salesCountBD, 1, RoundingMode.HALF_UP);
+                if (salesCount != 0) {// 只計算有賣出且有分數
+                    salesAvgScore = totalScore / salesCount;
                 } else {
-                    String x = "這廢物一台都沒賣出去";
-                    salesAvgScore = BigDecimal.ZERO;
-                    System.out.println(
-                            "銷售員" + employeeId + " 獲得總分:" + totalScore + " 共賣出:" + salesCount + x);
+                    salesAvgScore = 0;
+                    responseBody.put("須辭退的員工", "銷售員" + employeeVO.getName() + "在混");
                 }
-                System.out.println(
-                        "銷售員" + employeeId + " 獲得總分:" + totalScore + " 共賣出:" + salesCount + "平均分數為:" + salesAvgScore);
+                kpiFindJson.put("selectStrDay", "2024-07-01")
+                        .put("selectEndDay", "2024-07-31")
+                        .put("employeeId", employeeId)
+                        .put("isPage", 0)
+                        .put("dir", true)
+                        .put("order", "id")
+                        .put("max", 5);
+                Page<Kpi> kpiPage = kpiService.findByHQL(kpiFindJson.toString());
+                if (kpiPage.isEmpty()) {
+                    return result = "page輸入錯誤";
+                }
+                List<Kpi> kpiList = kpiPage.getContent();
+                for (Kpi kpi : kpiList) {
+                    Integer kpiId = kpi.getId();
+                    Integer kpiTeamLeaderRating = kpi.getTeamLeaderRating();
+                    BigDecimal kpiTotalScoreBD = new BigDecimal(salesAvgScore).add(new BigDecimal(kpiTeamLeaderRating));
+                    if (kpiTotalScoreBD != BigDecimal.ZERO) {
+                        BigDecimal avgKpiTotalScoreBD = kpiTotalScoreBD.divide(BigDecimal.valueOf(2), 2,
+                                RoundingMode.HALF_UP);
+                        kpiModifyJson.put("id", kpiId)
+                                .put("salesScore", salesAvgScore)
+                                .put("teamLeaderRating", kpiTeamLeaderRating)
+                                .put("totalScore", avgKpiTotalScoreBD);
+                        kpiModify = kpiService.modify(kpiModifyJson.toString());
+                        responseBody.put("success", "修改成功")
+                                .put("受修改的viewCarId:", kpiModify.getId())
+                                .put("員工id：", employeeVO.getId());
+                    } else {
+                        kpiModify = null;
+                        responseBody.put("false", "沒有成功修改");
+                    }
+                }
+                // 重置totalScore
                 totalScore = 0;
+
+                // 重置salesCount
                 salesCount = 0;
             }
         }
-        return null;
+        // response只有一個 懶得寫了
+        return responseBody.toString();
     }
 
     // 計算數量
