@@ -74,6 +74,7 @@ public class ViewCarController {
                         salesScore = viewCar == null ? 0 : viewCar.getSalesScore();// 解決客戶沒評分狀況：沒評分為0
                         totalScore = totalScore + salesScore;// 計算總分
                         salesCount++;// 計算共賣出幾台
+                        System.out.println("銷售員:"+employeeId+"負責car:"+carId+"分數:"+salesScore);
                     }
                 }
                 if (salesCount != 0) {// 只計算有賣出且有分數
@@ -82,8 +83,9 @@ public class ViewCarController {
                     salesAvgScore = 0;
                     responseBody.put("須辭退的員工", "銷售員" + employeeVO.getName() + "在混");
                 }
+                System.out.println("員工ID:"+employeeId+"總分:"+salesAvgScore);
                 kpiFindJson.put("selectStrDay", "2024-07-01")
-                        .put("selectEndDay", "2024-07-31")
+                        .put("selectEndDay", "2024-09-30")
                         .put("employeeId", employeeId)
                         .put("isPage", 0)
                         .put("dir", true)
