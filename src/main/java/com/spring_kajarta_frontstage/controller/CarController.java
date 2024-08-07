@@ -227,6 +227,25 @@ public class CarController {
             Transmission transmissionEnum = transmissionService.findById(carInfoBean.getTransmission());
             Displacement displacementEnum = displacementService.findById(carInfoBean.getCc());
             BranchEnum branch = BranchEnum.getByCode(carBean.getBranch());
+            Integer stateCode = carBean.getState();
+            Integer remarkCode = carBean.getRemark();
+            String state = "無狀態";
+            if (stateCode == 1) {
+                state = "草稿";
+            } else if (stateCode == 2) {
+                state = "上架";
+            } else if (stateCode == 3) {
+                state = "下架";
+            } else if (stateCode == 4) {
+                state = "暫時下架";
+            }
+            String remark;
+            if (remarkCode == 0) {
+                remark = "無";
+            } else {
+                remark = "有";
+            }
+
             if (carBean != null) {
                 Car carModel = carBean;
                 String compareUrl = "kajarta/car/compare";
@@ -236,14 +255,17 @@ public class CarController {
                         .put("milage", carModel.getMilage())
                         .put("customerId", carModel.getCustomer().getId())
                         .put("employeeId", carModel.getEmployee().getId())
+                        .put("employeeName", carModel.getEmployee().getName())
                         .put("negotiable", negotiableEnum.getPercent())
                         .put("conditionScore", carModel.getConditionScore())
                         .put("branch", branch.getBranchName())
                         .put("state", carModel.getState())
+                        .put("stateName", state)
                         .put("price", carModel.getPrice())
                         .put("launchDate", carModel.getLaunchDate())
                         .put("color", carModel.getColor())
                         .put("remark", carModel.getRemark())
+                        .put("remarkName", remark)
                         .put("compare", compareUrl)
                         // CarInfo的值
                         .put("carinfoId", carModel.getCarinfo().getId())
