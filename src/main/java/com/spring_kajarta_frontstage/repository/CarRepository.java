@@ -20,7 +20,4 @@ public interface CarRepository extends JpaRepository<Car, Integer>, JpaSpecifica
     @Query(value = "SELECT * FROM Car WHERE customer_id= :Id", nativeQuery = true)
     List<Car> findByCustomerId(Integer Id); // 搜尋會員心儀清單
 
-    @Query(value = "SELECT * FROM Car WHERE employee_id= :Id", nativeQuery = true)
-    List<Car> findCarByEmployeeId(Integer Id); // 搜尋銷售員負責的車
-
 }

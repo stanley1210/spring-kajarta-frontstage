@@ -171,4 +171,8 @@ public class ViewCarService {
         return false;
     }
 
+    public List<ViewCar> findViewCarByEmployeeId(Integer employeeId) {
+        return viewCarRepo.findViewCarByEmployeeId(employeeId);
+    }
+
 }

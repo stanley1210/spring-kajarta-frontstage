@@ -53,9 +53,10 @@ public class ViewCarController {
         JSONObject kpiFindJson = new JSONObject();
         JSONObject kpiModifyJson = new JSONObject();
         JSONObject responseBody = new JSONObject();
+        JSONArray array = new JSONArray();
         Integer employeeId;
         Integer employeeType;
-        Integer carId;
+        Integer viewcarId;
         Integer salesScore;
         Integer totalScore = 0;
         Integer salesAvgScore;
@@ -65,55 +66,57 @@ public class ViewCarController {
             employeeId = employeeVO.getId();
             employeeType = employeeVO.getAccountType();
             if (employeeType == 3) {
-                List<Car> carList = carService.findCarByEmployeeId(employeeId);
+                List<ViewCar> viewcarList = viewCarService.findViewCarByEmployeeId(employeeId);
                 Integer salesCount = 0;
-                for (Car car : carList) {
-                    carId = car.getId();
-                    List<ViewCar> viewCarList = viewCarService.findSalesScoreByCarId(carId);
-                    for (ViewCar viewCar : viewCarList) {
-                        salesScore = viewCar == null ? 0 : viewCar.getSalesScore();// 解決客戶沒評分狀況：沒評分為0
-                        totalScore = totalScore + salesScore;// 計算總分
-                        salesCount++;// 計算共賣出幾台
-                        System.out.println("銷售員:"+employeeId+"負責car:"+carId+"分數:"+salesScore);
+                for (ViewCar viewcar : viewcarList) {
+                    viewcarId = viewcar.getId();
+                    salesScore = viewcar.getSalesScore();// 只會有大於等於0
+                    totalScore = totalScore + salesScore;// 計算總分
+                    salesCount++;// 計算共幾台
+                    // System.out.println("銷售員:" + employeeId + "負責car:" + viewcar.getCar().getId()
+                    // + "分數:" + salesScore + "共負責:" + salesCount + "台");
+                }
+                if (salesCount != 0) {
+                    salesAvgScore = totalScore / salesCount;// 計算員工平均
+                    // System.out.println("總分" + salesAvgScore);
+                    System.out.println("員工ID:" + employeeId + "總分:" + salesAvgScore);
+                    kpiFindJson.put("selectStrDay", "2024-07-01")
+                            .put("selectEndDay", "2024-09-30")
+                            .put("employeeId", employeeId)
+                            .put("isPage", 0)
+                            .put("dir", true)
+                            .put("order", "id")
+                            .put("max", 5);
+                    Page<Kpi> kpiPage = kpiService.findByHQL(kpiFindJson.toString());
+                    if (kpiPage.isEmpty()) {
+                        return result = "page輸入錯誤";
                     }
-                }
-                if (salesCount != 0) {// 只計算有賣出且有分數
-                    salesAvgScore = totalScore / salesCount;
-                } else {
-                    salesAvgScore = 0;
-                    responseBody.put("須辭退的員工", "銷售員" + employeeVO.getName() + "在混");
-                }
-                System.out.println("員工ID:"+employeeId+"總分:"+salesAvgScore);
-                kpiFindJson.put("selectStrDay", "2024-07-01")
-                        .put("selectEndDay", "2024-09-30")
-                        .put("employeeId", employeeId)
-                        .put("isPage", 0)
-                        .put("dir", true)
-                        .put("order", "id")
-                        .put("max", 5);
-                Page<Kpi> kpiPage = kpiService.findByHQL(kpiFindJson.toString());
-                if (kpiPage.isEmpty()) {
-                    return result = "page輸入錯誤";
-                }
-                List<Kpi> kpiList = kpiPage.getContent();
-                for (Kpi kpi : kpiList) {
-                    Integer kpiId = kpi.getId();
-                    Integer kpiTeamLeaderRating = kpi.getTeamLeaderRating();
-                    BigDecimal kpiTotalScoreBD = new BigDecimal(salesAvgScore).add(new BigDecimal(kpiTeamLeaderRating));
-                    if (kpiTotalScoreBD != BigDecimal.ZERO) {
-                        BigDecimal avgKpiTotalScoreBD = kpiTotalScoreBD.divide(BigDecimal.valueOf(2), 2,
-                                RoundingMode.HALF_UP);
-                        kpiModifyJson.put("id", kpiId)
-                                .put("salesScore", salesAvgScore)
-                                .put("teamLeaderRating", kpiTeamLeaderRating)
-                                .put("totalScore", avgKpiTotalScoreBD);
-                        kpiModify = kpiService.modify(kpiModifyJson.toString());
-                        responseBody.put("success", "修改成功")
-                                .put("受修改的viewCarId:", kpiModify.getId())
-                                .put("員工id：", employeeVO.getId());
-                    } else {
-                        kpiModify = null;
-                        responseBody.put("false", "沒有成功修改");
+                    List<Kpi> kpiList = kpiPage.getContent();
+                    for (Kpi kpi : kpiList) {
+                        Integer kpiId = kpi.getId();
+                        Integer kpiTeamLeaderRating = kpi.getTeamLeaderRating();
+                        BigDecimal kpiTotalScoreBD = new BigDecimal(salesAvgScore)
+                                .add(new BigDecimal(kpiTeamLeaderRating));
+                        if (kpiTotalScoreBD != BigDecimal.ZERO) {
+                            BigDecimal avgKpiTotalScoreBD = kpiTotalScoreBD.divide(BigDecimal.valueOf(2),
+                                    2,
+                                    RoundingMode.HALF_UP);
+                            kpiModifyJson.put("id", kpiId)
+                                    .put("salesScore", salesAvgScore)
+                                    .put("teamLeaderRating", kpiTeamLeaderRating)
+                                    .put("totalScore", avgKpiTotalScoreBD);
+                            System.out.println("員工ID:" + employeeId + " 平均分數為:" + avgKpiTotalScoreBD);
+                            System.out.println("=========================");
+                            kpiModify = kpiService.modify(kpiModifyJson.toString());
+                            // responseBody.put("員工Id:", employeeId)
+                            // .put("銷售平均分數:", salesAvgScore)
+                            // .put("總平均分數:", avgKpiTotalScoreBD);
+                            // array = array.put(responseBody);
+                        } else {
+                            kpiModify = null;
+                            return result = "修改失敗";
+                            // responseBody.put("false", "沒有成功修改");
+                        }
                     }
                 }
                 // 重置totalScore
@@ -123,8 +126,8 @@ public class ViewCarController {
                 salesCount = 0;
             }
         }
-        // response只有一個 懶得寫了
-        return responseBody.toString();
+        // return responseBody.put("list", array).toString();
+        return result = "成功";
     }
 
     // 計算數量
