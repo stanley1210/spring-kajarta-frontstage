@@ -27,7 +27,7 @@ public class CarSpecification {
 
             // 添加查询条件
             if (carinfoId != null && !carinfoId.isEmpty()) {
-                predicates.add(cb.like(cb.toString(carinfoJoin.get("id")), "%" + carinfoId + "%"));
+                predicates.add(cb.equal(cb.toString(carinfoJoin.get("id")), carinfoId));
             }
             if (modelName != null && !modelName.isEmpty()) {
                 predicates.add(cb.like(carinfoJoin.get("modelName"), "%" + modelName + "%"));
