@@ -26,4 +26,6 @@ public interface ViewCarRepository extends JpaRepository<ViewCar, Integer> {
 
 	@Query(value = "select view_car.* from view_car join view_car_assigned on view_car.id=view_car_assigned.view_car_id where employee_id=:employeeId And sales_score>=0", nativeQuery = true)
 	List<ViewCar> findViewCarByEmployeeId(Integer employeeId); // 搜尋銷售員負責的車
+
+	ViewCar findTopByOrderByIdDesc();//查詢最新ID
 }

@@ -46,6 +46,22 @@ public class ViewCarController {
     @Autowired
     private KpiService kpiService;
 
+// 找最新的ID
+    @GetMapping("/latestId")
+    public String findLatestViewCarId() {
+        JSONObject responseBody = new JSONObject();
+        ViewCar latestViewCar = viewCarService.findLatestViewCar();
+        if (latestViewCar != null) {
+            responseBody.put("success", true);
+            responseBody.put("latestId", latestViewCar.getId());
+        } else {
+            responseBody.put("success", false);
+            responseBody.put("message", "No ViewCar records found.");
+        }
+        return responseBody.toString();
+    }
+
+
     // KPI運算
     @GetMapping("/KPI")
     public String updateKPI() {

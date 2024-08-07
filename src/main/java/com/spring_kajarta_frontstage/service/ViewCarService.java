@@ -29,6 +29,14 @@ public class ViewCarService {
     @Autowired
     private CustomerService customerService;
 
+    
+    //查詢最新ID
+    public ViewCar findLatestViewCar() {
+        return viewCarRepo.findTopByOrderByIdDesc();
+    }
+
+
+
     // 以carId查銷售分數
     public List<ViewCar> findSalesScoreByCarId(Integer carId) {
         return viewCarRepo.findSalesScoreByCarId(carId);
